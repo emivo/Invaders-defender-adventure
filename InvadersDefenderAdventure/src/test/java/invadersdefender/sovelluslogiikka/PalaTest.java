@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package invadersdefender.sovelluslogiikka;
 
 import org.junit.After;
@@ -9,11 +14,11 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author emivo
+ * @author Emil
  */
-public class AmmusTest {
+public class PalaTest {
     
-    public AmmusTest() {
+    public PalaTest() {
     }
     
     @BeforeClass
@@ -33,7 +38,7 @@ public class AmmusTest {
     }
 
     @Test
-    public void ammusLiikkuu() {
+    public void palaLiikkuu() {
         
     }
 }
