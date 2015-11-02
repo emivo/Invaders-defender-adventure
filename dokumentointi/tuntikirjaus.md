@@ -1,4 +1,5 @@
-Työtunnit:
-päivämäärä	työskentelyaika
-26.10.		1 tunti
+#Työtunnit:
+|päiväys|aihe|työaika|
+|-------|----|-------|
+|26.10.|Projektinluonti sekä dokumentoinnin aloitus|1,5 tunti|
 
