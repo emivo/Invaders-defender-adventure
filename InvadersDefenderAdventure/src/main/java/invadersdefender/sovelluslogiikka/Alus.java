@@ -8,35 +8,36 @@ import java.util.List;
  */
 public class Alus {
     
-    private int koko;
-    private List<Pala> aluksenPalat;
-    private int alkuX;
-    private int alkuY;
-    // tästä laajennetaan varmaan sitten vihollinen ja oma alus?
+    private int koko; // aluksen sivunpituus
+    private Pala pala;
+
+    // aluksen x koordinaatti on x + aluksenkoko. samoin y
+    // getsijainti antaa listan x,y pareja
 
     public Alus(int alkuX, int alkuY) {
-        koko = 9; // täytyy olla neliö
-        /*
-        Olisi kenties helpompi aluksi pitää kaikki liikkuvat asiat yhden kokoisina
+        koko = 3; //pariton on kiva
         
-        Toisaalta saatan haluta hieman tarkempaa ohjausta sekä osumista
         
-        */
-        aluksenPalat = new ArrayList<>();
-        for (int i = 0; i < koko; i++) {
-            // Luodaan palat alku pisteestä oikealle ja alas
-            aluksenPalat.add(new Pala(alkuX + i, alkuY + (i % (int) Math.sqrt(koko))));
-        }
+        pala = new Pala(alkuX, alkuY);
     }
     
     public void liiku(Suunta suunta) {
-        for (int i = 0; i < koko; i++) {
-            aluksenPalat.get(i).liiku(suunta);
-        }
+        pala.liiku(suunta);
     }
     
     public Ammus ammu() {
-        return new Ammus(aluksenPalat.get((int)Math.sqrt(koko)/2).getX(), aluksenPalat.get(0).getY() + 1);
+        return new Ammus((pala.getX()+koko/2),pala.getY()+1);
     }
     
+    public List<Pala> sijainti() {
+        List<Pala> sijainnit = new ArrayList<>();
+        int x = pala.getX();
+        int y = pala.getY();
+        for (int i = 0; i < koko; i++) {
+            for (int j = 0; j < koko; j++) {
+                sijainnit.add(new Pala(x + i, y + j));
+            }
+        }
+        return sijainnit;
+    }
 }
