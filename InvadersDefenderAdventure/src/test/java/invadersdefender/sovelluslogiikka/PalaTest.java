@@ -38,6 +38,7 @@ public class PalaTest {
     
     @After
     public void tearDown() {
+        pala = null;
     }
 
     @Test

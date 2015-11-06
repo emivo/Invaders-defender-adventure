@@ -44,7 +44,7 @@ public class Pala {
         }
         final Pala other = (Pala) obj;
         
-        return ((this.y != other.y) && (this.x != other.x));
+        return ((this.y == other.y) && (this.x == other.x));
     }
 
     @Override
