@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 
 /**
@@ -18,17 +19,22 @@ public class Peli implements ActionListener {
     private int pelikentanKoko; // Sivunpituus
     private Timer kello;
 
-    public Peli(int koko) {
+    public Peli(int koko, Alus omaAlus) {
         this.pelikentanKoko = koko;
-        // oman aluksen alkusijainti alas keskelle
-        this.omaAlus = new Alus(pelikentanKoko/2 - 1, pelikentanKoko - 1);
+        
+        this.omaAlus = omaAlus;
         this.viholliset = new ArrayList<>();
         this.ammukset = new ArrayList<>();
         this.kello = new Timer();
         
     }
     
-    private void osuukoAmmukset() {
+    
+    public void alusAmpuu(Alus alus) {
+        ammukset.add(alus.ammu());
+    }
+    
+    public void osuukoAmmukset() {
         Iterator<Ammus> it = ammukset.iterator();
         while (it.hasNext()) {
             // jos ammus poistuu pelialueelta se poistuu listasta ja katoaa
@@ -36,18 +42,30 @@ public class Peli implements ActionListener {
         }
     }
     
-    private void ammuksetLiiku() {
+    public void vihollisetTulevatEsille() {
+        // kuinka monta vihollista tulee
+        int maara = 3;
+        int alustenKoko = omaAlus.getKoko();
+        for (int i = 0; i < maara; i++) {
+            
+            viholliset.add(new Vihollisolio(1 + (i * alustenKoko) , 1));
+        }
+    }
+    
+    public void ammuksetLiiku() {
         for (Ammus a : ammukset) {
             a.liiku();
         }
     }
     
-    private void vihollisetLiiku() {
+    public void vihollisetLiiku() {
         for (Vihollisolio o : viholliset) {
-            // vihollisten liikkuminen täytyy vielä keksiä
-            // esim vasenvasen alas oikea oikea alas...
             o.liiku();
         }
+    }
+    
+    public void jokuVihollinenAmpuu() {
+        viholliset.get(new Random().nextInt(viholliset.size())).ammu(); // ompas ruma koodinpätkä
     }
 
     

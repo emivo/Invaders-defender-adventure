@@ -18,6 +18,9 @@ import static org.junit.Assert.*;
  */
 public class PeliTest {
     
+    Peli peli;
+    Alus omaAlus;
+    
     public PeliTest() {
     }
     
@@ -31,15 +34,16 @@ public class PeliTest {
     
     @Before
     public void setUp() {
+        int koko = 20;
+        omaAlus = new Alus(koko/2, koko-1);
+        peli = new Peli(koko, omaAlus);
     }
     
     @After
     public void tearDown() {
     }
 
-    @Test
-    public void pelikenttaLuodaanOikein() {
-    }
+    
     
     @Test
     public void alusLoytyyAlussaKentalta() {

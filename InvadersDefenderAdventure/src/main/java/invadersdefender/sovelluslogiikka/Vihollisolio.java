@@ -5,24 +5,42 @@ package invadersdefender.sovelluslogiikka;
  * @author Emil
  */
 public class Vihollisolio extends Alus {
-    
-    private Suunta suunta;
 
+    private int liikkumisKuvionApuMuuttuja;
+    
     public Vihollisolio(int alkuX, int alkuY) {
         super(alkuX, alkuY);
-        this.suunta = Suunta.ALAS;
-    }
-
-    public Suunta getSuunta() {
-        return suunta;
-    }
-
-    public void setSuunta(Suunta suunta) {
-        this.suunta = suunta;
+        liikkumisKuvionApuMuuttuja = 0;
+        setSuunta(Suunta.ALAS);
     }
     
-    public void liiku() {
-        liiku(suunta);
+    @Override
+    public Ammus ammu() {
+        // viholliset ampuu alas
+        return new Ammus(getKoko()/2, getKoko()+1, Suunta.ALAS);
     }
-
+    
+    @Override
+    public void liiku() {
+        super.liiku();
+        // viholliset liiku aluksi siten, että oikea oikea alas vasen vasen alas
+        switch(liikkumisKuvionApuMuuttuja) {
+            case 0: case 1:
+                setSuunta(Suunta.OIKEA);
+                break;
+            case 2:
+                setSuunta(Suunta.ALAS);
+                break;
+            case 3: case 4:
+                setSuunta(Suunta.VASEN);
+                break;
+            case 5:
+                setSuunta(Suunta.ALAS);
+                break;
+        }
+        liikkumisKuvionApuMuuttuja++;
+        if (liikkumisKuvionApuMuuttuja > 5) {
+            liikkumisKuvionApuMuuttuja = 0;
+        }
+    }
 }

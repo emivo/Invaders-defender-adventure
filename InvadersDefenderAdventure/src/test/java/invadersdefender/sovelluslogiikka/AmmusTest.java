@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
  */
 public class AmmusTest {
     
+    Ammus ammus;
+    
     public AmmusTest() {
     }
     
@@ -30,10 +32,28 @@ public class AmmusTest {
     
     @After
     public void tearDown() {
+        ammus = null;
+    }
+    
+    private boolean ammusLiikkuu(Suunta suunta) {
+        ammus = new Ammus(1,1,suunta);
+        ammus.liiku();
+        Pala oikeaPala;
+        if (suunta == Suunta.YLOS) {
+            oikeaPala = new Pala(1,0);
+        } else {
+            oikeaPala = new Pala(1,2);
+        }
+        return oikeaPala.equals(ammus.getSijainti());
     }
 
     @Test
-    public void ammusLiikkuu() {
-        
+    public void ammusLiikkuuYlos() {
+        assertTrue("Ammus ei liiku oikein", ammusLiikkuu(Suunta.YLOS));
+    }
+    
+    @Test
+    public void ammusLiikkuuAlas() {
+        assertTrue("Ammus ei liiku oikein", ammusLiikkuu(Suunta.ALAS));
     }
 }

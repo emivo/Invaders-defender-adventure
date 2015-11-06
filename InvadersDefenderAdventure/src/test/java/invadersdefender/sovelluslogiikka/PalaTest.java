@@ -18,6 +18,8 @@ import static org.junit.Assert.*;
  */
 public class PalaTest {
     
+    Pala pala;
+    
     public PalaTest() {
     }
     
@@ -31,6 +33,7 @@ public class PalaTest {
     
     @Before
     public void setUp() {
+        pala = new Pala(1,1);
     }
     
     @After
@@ -39,6 +42,13 @@ public class PalaTest {
 
     @Test
     public void palaLiikkuu() {
-        
+        pala.liiku(Suunta.OIKEA);
+        assertTrue(pala.getX() == 2);
+        pala.liiku(Suunta.VASEN);
+        assertTrue(pala.getX() == 1);
+        pala.liiku(Suunta.ALAS);
+        assertTrue(pala.getY() == 2);
+        pala.liiku(Suunta.YLOS);
+        assertTrue(pala.getY() == 1);
     }
 }

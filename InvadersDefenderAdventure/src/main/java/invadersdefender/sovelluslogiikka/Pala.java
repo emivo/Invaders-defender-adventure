@@ -43,12 +43,15 @@ public class Pala {
             return false;
         }
         final Pala other = (Pala) obj;
-        if (this.x != other.x) {
-            return false;
-        }
-        if (this.y != other.y) {
-            return false;
-        }
-        return true;
+        
+        return ((this.y != other.y) && (this.x != other.x));
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 43 * hash + this.x;
+        hash = 43 * hash + this.y;
+        return hash;
     }
 }
