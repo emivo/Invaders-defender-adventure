@@ -6,4 +6,6 @@ package invadersdefender.sovelluslogiikka;
  */
 public interface Liikkuva {
     public void liiku();
+    public int getX();
+    public int getY();
 }

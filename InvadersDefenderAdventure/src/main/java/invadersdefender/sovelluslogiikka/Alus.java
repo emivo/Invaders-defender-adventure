@@ -9,18 +9,16 @@ import java.util.List;
 public class Alus implements Liikkuva {
     
     private int koko; // aluksen sivunpituus
-    private Pala pala;
+    private Pala sijainti;
     private Suunta suunta;
 
-    // aluksen x koordinaatti on x + aluksenkoko. samoin y
-    // getsijainti antaa listan Paloja
-
-    public Alus(int alkuX, int alkuY) {
-        this.koko = 3; //pariton on kiva
+    
+    public Alus(int alkuX, int alkuY, int koko) {
+        this.koko = koko;
 
         this.suunta = null;
         
-        this.pala = new Pala(alkuX, alkuY);
+        this.sijainti = new Pala(alkuX, alkuY);
     }
 
     public int getKoko() {
@@ -35,31 +33,43 @@ public class Alus implements Liikkuva {
         return suunta;
     }
     
+    
     public Ammus ammu() {
-        // oma alus ampuu aina ylos
-        return new Ammus((pala.getX()+koko/2), pala.getY()-1, Suunta.YLOS);
+        return new Ammus(getX() + koko / 2, getY() - 1, Suunta.YLOS);
+    }
+    /**
+     * metodi antaa aluksen vasemman reunan x koordinaatin
+     * @return 
+     */
+    @Override
+    public int getX() {
+        return sijainti.getX();
+    }
+    
+    /**
+     * metodi antaa luksen yläreunan koordinaatin
+     * @return 
+     */
+    @Override
+    public int getY() {
+        return sijainti.getY();
     }
     
     
-    public List<Pala> sijainti() {
-        List<Pala> sijainnit = new ArrayList<>();
-        int x = pala.getX();
-        int y = pala.getY();
-        for (int i = 0; i < koko; i++) {
-            for (int j = 0; j < koko; j++) {
-                sijainnit.add(new Pala(x + i, y + j));
-            }
-        }
-        return sijainnit;
+    /**
+     * metodilla saadaan aluksen vasemman yläreunan palan
+     * muiden palojen paikat voidaan laskea tämän avullla
+     * @return 
+     */
+    public Pala sijainti() {
+        return sijainti;
     }
 
     @Override
     public void liiku() {
         if (this.suunta != null) {
-            this.pala.liiku(suunta);
+            this.sijainti.liiku(suunta);
             this.suunta = null;
         }
-        // alus ei liiku ellei se saa uutta suuntaa
-        // siis alus pysyy paikoillaan, ellei sitä liikuta
     }
 }

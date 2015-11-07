@@ -8,16 +8,15 @@ public class Vihollisolio extends Alus {
 
     private int liikkumisKuvionApuMuuttuja;
     
-    public Vihollisolio(int alkuX, int alkuY) {
-        super(alkuX, alkuY);
+    public Vihollisolio(int alkuX, int alkuY, int koko) {
+        super(alkuX, alkuY, koko);
         liikkumisKuvionApuMuuttuja = 0;
         setSuunta(Suunta.ALAS);
     }
     
     @Override
     public Ammus ammu() {
-        // viholliset ampuu alas
-        return new Ammus(getKoko()/2, getKoko()+1, Suunta.ALAS);
+        return new Ammus(getX() + getKoko() / 2, getY() + getKoko() + 1, Suunta.ALAS);
     }
     
     @Override

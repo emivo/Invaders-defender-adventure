@@ -1,33 +1,51 @@
 package invadersdefender.sovelluslogiikka;
 
+import invadersdefender.gui.PelinPiirtoalusta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-//import java.util.Timer;
+import javax.swing.Timer;
 
 /**
  * @author emivo
  */
-public class Peli implements ActionListener {
+public class Peli extends Timer implements ActionListener {
     /* peli jatkuu kunnes oma alus tuhoutuu */
 
     private Alus omaAlus;
-    private final List<Vihollisolio> viholliset; // voi olla välillä tyhjä
-    private final List<Ammus> ammukset; // tyhjä aina välillä
+    private final List<Vihollisolio> viholliset; // voi olla vÃ¤lillÃ¤ tyhjÃ¤
+    private final List<Ammus> ammukset; // tyhjÃ¤ aina vÃ¤lillÃ¤
     private final int pelikentanKoko; // Sivunpituus
-//    private Timer kello; // TODO mietin vielä miten käytän
+    private PelinPiirtoalusta piirtoalusta;
+    private int vihollisetLiikkuViive;
+    private int vihollisetAmpuuViive;
+    private static final int ampumisViive = 15;
+    private static final int liikkumisViive = 11;
+    private int pisteet;
+    private boolean peliEiJatku;
 
-    public Peli(int koko, Alus omaAlus) {
-        this.pelikentanKoko = koko;
-
-        this.omaAlus = omaAlus;
+    public Peli(int pelikentanSivunpituus) {
+        super(100, null);
+        int aluksienKoko = 3;
+        
+        this.pelikentanKoko = pelikentanSivunpituus * aluksienKoko;
+        this.omaAlus = new Alus(this.pelikentanKoko / 2, this.pelikentanKoko - (aluksienKoko + 1), aluksienKoko);
+        
+        
         this.viholliset = new ArrayList<>();
         this.ammukset = new ArrayList<>();
-//        this.kello = new Timer();
-
+        
+        this.vihollisetAmpuuViive = ampumisViive;
+        this.vihollisetLiikkuViive = liikkumisViive;
+        
+        this.pisteet = 0;
+        this.peliEiJatku = false;
+        
+        addActionListener(this);
+        setInitialDelay(500);
     }
 
     public List<Ammus> getAmmukset() {
@@ -46,33 +64,45 @@ public class Peli implements ActionListener {
         return omaAlus;
     }
 
+    public void setPiirtoalusta(PelinPiirtoalusta piirtoalusta) {
+        this.piirtoalusta = piirtoalusta;
+    }
+
     public void alusAmmu(Alus alus) {
         ammukset.add(alus.ammu());
     }
 
-
+    /**
+     * Metodi tarkastaa osuuko parametrinÃ¤ annettu ammus johonkin pelissÃ¤
+     * olevaan alukseen
+     *
+     * @param ammus tarkasteltava ammus
+     * @return totuusarvo osuuko ammmus johonkin alukseen
+     */
     public boolean osuukoAmmus(Ammus ammus) {
-        for (Pala omanaluksenPala : omaAlus.sijainti()) {
-            // jos osuu nii peli myös loppuu WOW, sillä one shot one kill ainakin vielä
-            if (omanaluksenPala.equals(ammus.getSijainti())) {
-                omaAlus = null;
-                // lopeta peli
-                return true;
-            }
+        if (osuukoAlukseen(omaAlus, ammus)) {
+            // lopeta peli
+            peliEiJatku = true;
+            return true;
         }
-        
+
         Iterator<Vihollisolio> it = viholliset.iterator();
         while (it.hasNext()) {
             Vihollisolio vihu = it.next();
-            // tätä kenties täytyy tehostaa myöhemmin, sillä O(n*m*l)
-            for (Pala vihunPala : vihu.sijainti()) {
-                if (vihunPala.equals(ammus.getSijainti())) {
-                    it.remove();
-                    return true;
-                }
+            if (osuukoAlukseen(vihu, ammus)) {
+                it.remove();
+                pisteet += 10;
+                return true;
             }
         }
         return false;
+    }
+
+    private boolean osuukoAlukseen(Alus alus, Ammus ammus) {
+        return (alus.getX() <= ammus.getX()
+                && alus.getX() + alus.getKoko() > ammus.getX())
+                && (alus.getY() <= ammus.getY()
+                && alus.getY() + alus.getKoko() > ammus.getY());
     }
 
     public void vihollisetTulevatEsille() {
@@ -82,7 +112,7 @@ public class Peli implements ActionListener {
         int alustenKoko = omaAlus.getKoko();
         for (int i = 0; i < maara; i++) {
 
-            viholliset.add(new Vihollisolio(1 + (i * (alustenKoko + 1)), 1));
+            viholliset.add(new Vihollisolio(1 + ((pelikentanKoko / maara) * i), 1, omaAlus.getKoko()));
         }
     }
 
@@ -91,7 +121,7 @@ public class Peli implements ActionListener {
         while (it.hasNext()) {
             Ammus a = it.next();
             a.liiku();
-            // leveyssuuntaa ei tarvitse tarkistaa sillä ammuksien ei tulisi poistua kentän reunalta
+            // leveyssuuntaa ei tarvitse tarkistaa sillÃ¤ ammuksien ei tulisi poistua kentÃ¤n reunalta
             if (a.getSijainti().getY() < 0 || a.getSijainti().getY() > pelikentanKoko) {
                 it.remove();
             } else if (osuukoAmmus(a)) {
@@ -126,14 +156,16 @@ public class Peli implements ActionListener {
         alus.liiku();
     }
 
+    /**
+     * Metodilla voidaan tarkistaa onko alus poistumassa pelikentalta
+     *
+     * @param alus tarkastelva alus
+     * @return true - jos alus edelleen pelissä. false - jos poistunut
+     * pelikentältä
+     */
     private boolean tarkistaVoikoLiikkua(Alus alus) {
-        for (Pala pala : alus.sijainti()) {
-            if (pala.getX() < 0 || pala.getX() > pelikentanKoko
-                    || pala.getY() < 0 || pala.getY() > pelikentanKoko) {
-                return false;
-            }
-        }
-        return true;
+        return !(alus.getX() < 0 || alus.getX() + alus.getKoko() > pelikentanKoko
+                || alus.getY() < 0 || alus.getY() + alus.getKoko() > pelikentanKoko);
     }
 
     public void vihollisetLiiku() {
@@ -153,21 +185,43 @@ public class Peli implements ActionListener {
         }
     }
 
+    public void paivita() {
+        piirtoalusta.paivitaPiirto();
+    }
+
     public void jokuVihollinenAmpuu() {
         if (!viholliset.isEmpty()) {
             alusAmmu(viholliset.get(new Random().nextInt(viholliset.size())));
         }
     }
 
-    // älä tee tätä vielä
-    // kun näyppäimistössä painetaan näppäintä alus liikkuu
-    // kun aikaa on kulunt x millisekunttia ammukset liikkuu
-    // kun aikaa on kulunut y millisekunttia viholliset liikkuu
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (omaAlus == null) {
-            // Peliloppuu
+        if (peliEiJatku) {
+            // paluu valikkoon jota ei vielä ole
+            stop();
+            return;
+        }
+        if (viholliset.isEmpty()) {
+            // Tähän tarvitaan delay
+            vihollisetTulevatEsille();
+        }
+        ammuksetLiiku();
+        vihollistenViiveAmmustenLiikkeeseen();
+        paivita();
+    }
+
+    private void vihollistenViiveAmmustenLiikkeeseen() {
+        vihollisetLiikkuViive--;
+        vihollisetAmpuuViive--;
+        if (vihollisetLiikkuViive == 0) {
+            vihollisetLiiku();
+            vihollisetLiikkuViive = liikkumisViive;
         }
 
+        if (vihollisetAmpuuViive == 0) {
+            jokuVihollinenAmpuu();
+            vihollisetAmpuuViive = ampumisViive;
+        }
     }
 }

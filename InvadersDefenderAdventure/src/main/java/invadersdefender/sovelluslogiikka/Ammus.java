@@ -15,6 +15,16 @@ public class Ammus implements Liikkuva {
         this.suunta = suunta;
     }
 
+    @Override
+    public int getX() {
+        return sijainti.getX();
+    }
+
+    @Override
+    public int getY() {
+        return sijainti.getY();
+    }
+
     public Pala getSijainti() {
         return sijainti;
     }
