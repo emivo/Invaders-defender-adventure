@@ -8,22 +8,19 @@ import java.awt.event.KeyListener;
 
 /**
  *
- * @author Emil
+ * @author emivo
  */
 public class Nappaimistokuuntelija implements KeyListener {
-    
-    private Alus omaAlus;
+
     private Peli peli;
 
     public Nappaimistokuuntelija(Peli peli) {
-        this.omaAlus = peli.getOmaAlus();
         this.peli = peli;
     }
-    
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // ei mitään tänne
+        // ei mitÃ¤Ã¤n tÃ¤nne
     }
 
     @Override
@@ -42,21 +39,49 @@ public class Nappaimistokuuntelija implements KeyListener {
                 liiku(Suunta.OIKEA);
                 break;
             case KeyEvent.VK_SPACE:
-                peli.alusAmmu(omaAlus);
-                peli.paivita();
+                ammu();
+                break;
+            case KeyEvent.VK_P:
+                pause();
+                break;
+            // kokeilua varten
+            case KeyEvent.VK_ENTER:
+                if (peli.isPause() ||peli.isRunning()) {
+                    pause();
+                } else {
+                    uusiPeli();
+                }
                 break;
         }
     }
 
-    private void liiku(Suunta suunta) {
-        omaAlus.setSuunta(suunta);
-        peli.omaAlusLiiku();
+    private void uusiPeli() {
+        peli.kaynnistaPeliUuudelleen();
         peli.paivita();
+    }
+
+    private void pause() {
+        peli.pause();
+        peli.paivita();
+    }
+
+    private void ammu() {
+        if (peli.isRunning()) {
+            peli.alusAmmu(peli.getOmaAlus());
+            peli.paivita();
+        }
+    }
+
+    private void liiku(Suunta suunta) {
+        if (peli.isRunning()) {
+            peli.omaAlusLiiku(suunta);
+            peli.paivita();
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // ei mitään tänne
+        // ei mitÃ¤Ã¤n tÃ¤nne
     }
 
 }

@@ -16,36 +16,39 @@ public class Peli extends Timer implements ActionListener {
     /* peli jatkuu kunnes oma alus tuhoutuu */
 
     private Alus omaAlus;
-    private final List<Vihollisolio> viholliset; // voi olla vÃ¤lillÃ¤ tyhjÃ¤
-    private final List<Ammus> ammukset; // tyhjÃ¤ aina vÃ¤lillÃ¤
-    private final int pelikentanKoko; // Sivunpituus
+    private final List<Vihollisolio> viholliset;
+    private final List<Ammus> ammukset;
+    private final int pelikentanKoko;
     private PelinPiirtoalusta piirtoalusta;
     private int vihollisetLiikkuViive;
     private int vihollisetAmpuuViive;
-    private static final int ampumisViive = 15;
-    private static final int liikkumisViive = 11;
+    private static final int AMPUMISVIIVE = 15;
+    private static final int LIIKKUMISVIIVE = 11;
+    private static final int ALUKSIENKOKO = 3;
     private int pisteet;
-    private boolean peliEiJatku;
+    private boolean pause;
 
     public Peli(int pelikentanSivunpituus) {
         super(100, null);
-        int aluksienKoko = 3;
-        
-        this.pelikentanKoko = pelikentanSivunpituus * aluksienKoko;
-        this.omaAlus = new Alus(this.pelikentanKoko / 2, this.pelikentanKoko - (aluksienKoko + 1), aluksienKoko);
-        
-        
+
+        this.pelikentanKoko = pelikentanSivunpituus * ALUKSIENKOKO;
+        this.omaAlus = luoOmaAlus();
+
         this.viholliset = new ArrayList<>();
         this.ammukset = new ArrayList<>();
-        
-        this.vihollisetAmpuuViive = ampumisViive;
-        this.vihollisetLiikkuViive = liikkumisViive;
-        
+
+        this.vihollisetAmpuuViive = AMPUMISVIIVE;
+        this.vihollisetLiikkuViive = LIIKKUMISVIIVE;
+
         this.pisteet = 0;
-        this.peliEiJatku = false;
-        
+        this.pause = false;
+
         addActionListener(this);
         setInitialDelay(500);
+    }
+
+    private Alus luoOmaAlus() {
+        return new Alus(this.pelikentanKoko / 2, this.pelikentanKoko - (ALUKSIENKOKO + 1), ALUKSIENKOKO);
     }
 
     public List<Ammus> getAmmukset() {
@@ -64,12 +67,50 @@ public class Peli extends Timer implements ActionListener {
         return omaAlus;
     }
 
+    public int getPisteet() {
+        return pisteet;
+    }
+
+    /**
+     * Palauttaa true, jos peli on vielä käynnissä
+     *
+     * @return palauttaa true, jos peli on vielä käynnissä
+     */
+    public boolean isPause() {
+        return pause;
+    }
+
+    /**
+     * Pysäyttää pelin, kun peli on käynnissä. Käynnistää pelin, kun peli on
+     * pysäytetty
+     */
+    public void pause() {
+        this.pause = !this.pause;
+        if (this.pause) {
+            stop();
+        } else {
+            start();
+        }
+    }
+
     public void setPiirtoalusta(PelinPiirtoalusta piirtoalusta) {
         this.piirtoalusta = piirtoalusta;
     }
 
     public void alusAmmu(Alus alus) {
         ammukset.add(alus.ammu());
+    }
+
+    public void kaynnistaPeliUuudelleen() {
+        this.omaAlus = luoOmaAlus();
+
+        this.viholliset.clear();
+        this.ammukset.clear();
+
+        this.pisteet = 0;
+        this.pause = false;
+
+        start();
     }
 
     /**
@@ -80,17 +121,17 @@ public class Peli extends Timer implements ActionListener {
      * @return totuusarvo osuuko ammmus johonkin alukseen
      */
     public boolean osuukoAmmus(Ammus ammus) {
-        if (osuukoAlukseen(omaAlus, ammus)) {
+        if (omaAlus.osuukoAlukseen(ammus)) {
             // lopeta peli
-            peliEiJatku = true;
+            stop();
             return true;
         }
 
-        Iterator<Vihollisolio> it = viholliset.iterator();
-        while (it.hasNext()) {
-            Vihollisolio vihu = it.next();
-            if (osuukoAlukseen(vihu, ammus)) {
-                it.remove();
+        Iterator<Vihollisolio> iterator = viholliset.iterator();
+        while (iterator.hasNext()) {
+            Vihollisolio vihollinen = iterator.next();
+            if (vihollinen.osuukoAlukseen(ammus)) {
+                iterator.remove();
                 pisteet += 10;
                 return true;
             }
@@ -98,62 +139,65 @@ public class Peli extends Timer implements ActionListener {
         return false;
     }
 
-    private boolean osuukoAlukseen(Alus alus, Ammus ammus) {
-        return (alus.getX() <= ammus.getX()
-                && alus.getX() + alus.getKoko() > ammus.getX())
-                && (alus.getY() <= ammus.getY()
-                && alus.getY() + alus.getKoko() > ammus.getY());
-    }
-
     public void vihollisetTulevatEsille() {
         // kuinka monta vihollista tulee
         // KESKEN
-        int maara = 3;
+        int esiinTulevienVihollisteMaara = 3;
         int alustenKoko = omaAlus.getKoko();
-        for (int i = 0; i < maara; i++) {
+        for (int i = 0; i < esiinTulevienVihollisteMaara; i++) {
 
-            viholliset.add(new Vihollisolio(1 + ((pelikentanKoko / maara) * i), 1, omaAlus.getKoko()));
+            viholliset.add(new Vihollisolio(1 + ((pelikentanKoko / esiinTulevienVihollisteMaara) * i), 1, omaAlus.getKoko()));
         }
     }
 
     public void ammuksetLiiku() {
-        Iterator<Ammus> it = ammukset.iterator();
-        while (it.hasNext()) {
-            Ammus a = it.next();
-            a.liiku();
+        Iterator<Ammus> iterator = ammukset.iterator();
+        while (iterator.hasNext()) {
+            Ammus ammus = iterator.next();
+            ammus.liiku();
             // leveyssuuntaa ei tarvitse tarkistaa sillÃ¤ ammuksien ei tulisi poistua kentÃ¤n reunalta
-            if (a.getSijainti().getY() < 0 || a.getSijainti().getY() > pelikentanKoko) {
-                it.remove();
-            } else if (osuukoAmmus(a)) {
-                it.remove();
+            if (ammus.getSijainti().getY() < 0 || ammus.getSijainti().getY() > pelikentanKoko) {
+                iterator.remove();
+            } else if (osuukoAmmus(ammus)) {
+                iterator.remove();
             }
         }
     }
 
-    public void omaAlusLiiku() {
-        Suunta suuntaJohonAlusOnLiikkumassa = omaAlus.getSuunta();
-        omaAlus.liiku();
+    private boolean osuukoAmmuksetOmaanAlukseen() {
+        for (Ammus ammus : ammukset) {
+            if (osuukoAmmus(ammus)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void omaAlusLiiku(Suunta suunta) {
+        omaAlus.liiku(suunta);
+        if (osuukoVihollisetOmaanAlukseen() || osuukoAmmuksetOmaanAlukseen()) {
+            stop();
+        }
         if (!tarkistaVoikoLiikkua(omaAlus)) {
-            peruLiikumminen(omaAlus, suuntaJohonAlusOnLiikkumassa);
+            peruLiikumminen(omaAlus, suunta);
         }
     }
 
     private void peruLiikumminen(Alus alus, Suunta suunta) {
         switch (suunta) {
             case ALAS:
-                alus.setSuunta(Suunta.YLOS);
+                alus.liiku(Suunta.YLOS);
                 break;
             case YLOS:
-                alus.setSuunta(Suunta.ALAS);
+                alus.liiku(Suunta.ALAS);
                 break;
             case OIKEA:
-                alus.setSuunta(Suunta.VASEN);
+                alus.liiku(Suunta.VASEN);
                 break;
             case VASEN:
-                alus.setSuunta(Suunta.OIKEA);
+                alus.liiku(Suunta.OIKEA);
                 break;
         }
-        alus.liiku();
     }
 
     /**
@@ -173,16 +217,25 @@ public class Peli extends Timer implements ActionListener {
         if (!viholliset.isEmpty()) {
             Suunta suuntaJohonOliotAikovatLiikkua = viholliset.get(0).getSuunta();
             boolean voikoLiikkua = true;
-            for (Vihollisolio o : viholliset) {
-                o.liiku();
-                voikoLiikkua = voikoLiikkua && tarkistaVoikoLiikkua(o);
+            for (Vihollisolio olio : viholliset) {
+                olio.liiku();
+                voikoLiikkua = voikoLiikkua && tarkistaVoikoLiikkua(olio);
             }
             if (!voikoLiikkua) {
-                for (Vihollisolio o : viholliset) {
-                    peruLiikumminen(o, suuntaJohonOliotAikovatLiikkua);
+                for (Vihollisolio olio : viholliset) {
+                    peruLiikumminen(olio, suuntaJohonOliotAikovatLiikkua);
                 }
             }
         }
+    }
+
+    public boolean osuukoVihollisetOmaanAlukseen() {
+        for (Vihollisolio olio : viholliset) {
+            if (omaAlus.osuukoAlukseen(olio)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void paivita() {
@@ -197,17 +250,16 @@ public class Peli extends Timer implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (peliEiJatku) {
-            // paluu valikkoon jota ei vielä ole
-            stop();
-            return;
-        }
+
         if (viholliset.isEmpty()) {
             // Tähän tarvitaan delay
             vihollisetTulevatEsille();
         }
         ammuksetLiiku();
         vihollistenViiveAmmustenLiikkeeseen();
+        if (osuukoVihollisetOmaanAlukseen()) {
+            stop();
+        }
         paivita();
     }
 
@@ -216,12 +268,12 @@ public class Peli extends Timer implements ActionListener {
         vihollisetAmpuuViive--;
         if (vihollisetLiikkuViive == 0) {
             vihollisetLiiku();
-            vihollisetLiikkuViive = liikkumisViive;
+            vihollisetLiikkuViive = LIIKKUMISVIIVE;
         }
 
         if (vihollisetAmpuuViive == 0) {
             jokuVihollinenAmpuu();
-            vihollisetAmpuuViive = ampumisViive;
+            vihollisetAmpuuViive = AMPUMISVIIVE;
         }
     }
 }

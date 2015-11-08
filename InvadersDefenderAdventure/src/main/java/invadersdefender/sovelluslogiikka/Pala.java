@@ -2,7 +2,7 @@ package invadersdefender.sovelluslogiikka;
 /**
  * @author emivo
  */
-public class Pala {
+public class Pala implements Liikkuva {
     
     private int x;
     private int y;
@@ -12,14 +12,17 @@ public class Pala {
         this.y = y;
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getY() {
         return y;
     }
     
+    @Override
     public void liiku(Suunta suunta) {
         
         switch(suunta) {
@@ -53,5 +56,10 @@ public class Pala {
         hash = 43 * hash + this.x;
         hash = 43 * hash + this.y;
         return hash;
+    }
+
+    @Override
+    public int getKoko() {
+        return 1;
     }
 }

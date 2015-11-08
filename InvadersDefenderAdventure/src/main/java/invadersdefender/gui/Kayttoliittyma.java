@@ -8,7 +8,7 @@ import javax.swing.WindowConstants;
 
 /**
  *
- * @author Emil
+ * @author emivo
  */
 public class Kayttoliittyma implements Runnable {
     
@@ -30,7 +30,7 @@ public class Kayttoliittyma implements Runnable {
         frame = new JFrame("Invaders defender adventures");
         int ikkunanKoko = peli.getPelikentanKoko() * palojenKoko + 10;
         
-        frame.setPreferredSize(new Dimension(ikkunanKoko, ikkunanKoko));
+        frame.setPreferredSize(new Dimension(ikkunanKoko, ikkunanKoko + 10));
  
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         

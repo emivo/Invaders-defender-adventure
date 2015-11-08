@@ -31,8 +31,17 @@ public class Ammus implements Liikkuva {
     
     
     @Override
-    public void liiku() {
+    public void liiku(Suunta suunta) {
         sijainti.liiku(suunta);
+    }
+
+    public void liiku() {
+        liiku(this.suunta);
+    }
+    
+    @Override
+    public int getKoko() {
+        return 1;
     }
 
 }
