@@ -29,37 +29,35 @@ public class AlusTest {
 
     @Before
     public void setUp() {
-        alus = new Alus(1, 1);
+        alus = new Alus(1, 1, 1);
     }
 
     @After
     public void tearDown() {
         alus = null;
     }
-    
+
     private boolean alusLiikkuuSuuntaan(Suunta suunta) {
-        alus.setSuunta(suunta);
-        alus.liiku();
+        alus.liiku(suunta);
         Pala oikeaSijantipalalle;
         if (suunta == Suunta.OIKEA) {
-            oikeaSijantipalalle = new Pala(2,1);
+            oikeaSijantipalalle = new Pala(2, 1);
         } else if (suunta == Suunta.VASEN) {
-            oikeaSijantipalalle = new Pala(0,1);
+            oikeaSijantipalalle = new Pala(0, 1);
         } else if (suunta == Suunta.ALAS) {
-            oikeaSijantipalalle = new Pala(1,2);
+            oikeaSijantipalalle = new Pala(1, 2);
         } else {
             oikeaSijantipalalle = new Pala(1, 0);
         }
-        List<Pala> palat = alus.sijainti();
-        return palat.get(0).equals(oikeaSijantipalalle);
+        return alus.sijainti().equals(oikeaSijantipalalle);
     }
-    
+
     // Testit
     @Test
     public void alusPysyyPaikkoillaan() {
-        alus.liiku();
-        assertEquals("Alus liikkuu, vaikkei pitäisi", new Pala(1,1), alus.sijainti().get(0));
+        assertEquals("Alus liikkuu, vaikkei pitäisi", new Pala(1, 1), alus.sijainti());
     }
+
     @Test
     public void alusLiikkuuOikealle() {
         assertTrue("Alus ei liiku oikealle", alusLiikkuuSuuntaan(Suunta.OIKEA));
@@ -79,10 +77,33 @@ public class AlusTest {
     public void alusLiikkuuAlas() {
         assertTrue("Alus ei liiku alas", alusLiikkuuSuuntaan(Suunta.ALAS));
     }
-    
+
     @Test
     public void alusAmpuu() {
         Ammus ammus = alus.ammu();
-        assertTrue("Alus ei ammu ammuksia",(ammus != null));
+        assertTrue("Alus ei ammu ammuksia", (ammus != null));
+    }
+
+    @Test
+    public void osuuLiikkuvaanToimii() {
+        Ammus ammus = new Ammus(1, 1, Suunta.ALAS);
+        assertTrue("Ammus osuu alukseen", alus.osuukoAlukseen(ammus));
+        Alus toinenAlus = new Alus(alus.getX(), alus.getY(), alus.getKoko());
+        // samassa kohdassa
+        assertTrue(alus.osuukoAlukseen(toinenAlus));
+        
+        // Kulmat kohtaa
+        int koordinaattiMuutos = (alus.getKoko() - 1);
+        
+        osuukoToiseenAlukseen(koordinaattiMuutos, -1*koordinaattiMuutos);
+        osuukoToiseenAlukseen(-1*koordinaattiMuutos, koordinaattiMuutos);
+        osuukoToiseenAlukseen(-1*koordinaattiMuutos, -1*koordinaattiMuutos);
+        osuukoToiseenAlukseen(koordinaattiMuutos, koordinaattiMuutos);
+    }
+
+    private void osuukoToiseenAlukseen(int x, int y) {
+        Alus toinenAlus;
+        toinenAlus = new Alus(alus.getX() + x, alus.getY() + y, alus.getKoko());
+        assertTrue(alus.osuukoAlukseen(toinenAlus));
     }
 }

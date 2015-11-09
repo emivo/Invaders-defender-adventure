@@ -16,7 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         
-        Peli peli = new Peli(10);
+        Peli peli = new Peli(15);
 
         Kayttoliittyma kaytto = new Kayttoliittyma(peli, 10);
         SwingUtilities.invokeLater(kaytto);

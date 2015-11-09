@@ -6,5 +6,6 @@
 |6.11.|Testejä, luokkia ja niiden metodeita sekä pit-raportti|4 tuntia|
 |7.11.|Graafinen käyttöliittymä aloitettu|3 - 5 tuntia|
 |8.11.|Päivitystä käyttöliittymään ja pelilogiikkaan| 3 tuntia|
+|9.11.|Testien ja grafiikan päivittelyä| 3 tuntia|
 
 

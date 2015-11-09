@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
 public class PeliTest {
 
     Peli peli;
-    Alus omaAlus;
 
     public PeliTest() {
     }
@@ -35,8 +34,7 @@ public class PeliTest {
     @Before
     public void setUp() {
         int koko = 20;
-        omaAlus = new Alus(koko / 2, koko - 1);
-        peli = new Peli(koko, omaAlus);
+        peli = new Peli(koko);
     }
 
     @After
@@ -46,13 +44,13 @@ public class PeliTest {
 
     @Test
     public void omaAlusAmpuuAmmuksenKentalle() {
-        peli.alusAmmu(omaAlus);
+        peli.alusAmmu(peli.getOmaAlus());
         assertTrue("Yhtään ammusta ei ilmesty kentälle", !peli.getAmmukset().isEmpty());
     }
 
     @Test
     public void ammuksetLiikkuvatKentalla() {
-        peli.alusAmmu(omaAlus);
+        peli.alusAmmu(peli.getOmaAlus());
         try {
             Ammus ammus = peli.getAmmukset().get(0);
             int x = ammus.getSijainti().getX();
@@ -64,6 +62,32 @@ public class PeliTest {
         } catch (Exception e) {
             assertTrue("Alus ei ammu, jolloin ammuksen liikkumista ei voi testata", false);
         }
+    }
+    
+    @Test
+    public void omaAlusEiPoistuKentalta() {
+        Alus omaAlus = peli.getOmaAlus();
+        
+        int matkaPoisAlhaalta = peli.getPelikentanKoko() - omaAlus.getY() + omaAlus.getKoko();
+        for (int i = 0; i <= matkaPoisAlhaalta; i++) {
+            peli.omaAlusLiiku(Suunta.ALAS);
+        }
+        assertTrue("Oma alus poistuu pelikentän alareunan yli", omaAlus.getY() + omaAlus.getKoko() <= peli.getPelikentanKoko());
+        int matkaYlhaaltaPois = omaAlus.getY();
+        for (int i = 0; i <= matkaYlhaaltaPois; i++) {
+            peli.omaAlusLiiku(Suunta.YLOS);
+        }
+        assertTrue("Oma alus poistuu pelikentän yläreunan yli", omaAlus.getY() >= 0);
+        int matkaVasemmaltaPois = omaAlus.getX();
+        for (int i = 0; i <= matkaVasemmaltaPois; i++) {
+            peli.omaAlusLiiku(Suunta.VASEN);
+        }
+        assertTrue("Oma alus poistuu pelikentän vasemmanreunan yli", omaAlus.getX() >= 0);
+        int matkaOikealtaUlos = peli.getPelikentanKoko() - omaAlus.getX() + omaAlus.getKoko();
+        for (int i = 0; i < matkaOikealtaUlos; i++) {
+            peli.omaAlusLiiku(Suunta.OIKEA);
+        }
+        assertTrue("Oma alus poistuu pelikentän oikeanreunan yli", omaAlus.getX() <= peli.getPelikentanKoko());
     }
 
     @Test
@@ -90,16 +114,16 @@ public class PeliTest {
             peli.vihollisetTulevatEsille();
             int vihollisiaKpl = peli.getViholliset().size();
             // ammukset generoidaan alusten päälle
-            int vihollisalusX = peli.getViholliset().get(0).sijainti().get(0).getX();
-            int vihollisalusY = peli.getViholliset().get(0).sijainti().get(0).getY();
+            int vihollisalusX = peli.getViholliset().get(0).getX();
+            int vihollisalusY = peli.getViholliset().get(0).getY();
             peli.getAmmukset().add(new Ammus(vihollisalusX, vihollisalusY + 1, Suunta.YLOS));
             peli.ammuksetLiiku();
             assertEquals("Vihollisalukset eivät tuhoudu", vihollisiaKpl - 1, peli.getViholliset().size());
-            int omaalusX = peli.getOmaAlus().sijainti().get(0).getX();
-            int omaalusY = peli.getOmaAlus().sijainti().get(0).getY();
+            int omaalusX = peli.getOmaAlus().getX();
+            int omaalusY = peli.getOmaAlus().getY();
             peli.getAmmukset().add(new Ammus(omaalusX, omaalusY - 1, Suunta.ALAS));
             peli.ammuksetLiiku();
-            assertTrue("Oma alus ei tuhoudu", peli.getOmaAlus() == null);
+            assertTrue("Omaan alukseen osuminen ei lopeta pelia", !peli.isRunning());
         } catch (Exception e) {
             assertTrue("Kaikkien muiden testien on onnistuttava, että tätä testiä voidaan testata", false);
         }

@@ -35,19 +35,19 @@ public class Alus implements Liikkuva {
      */
     public boolean osuukoAlukseen(Liikkuva liikkuva) {
         // liikkuvat ovat neliön muotoisia jolloin nurkat riittää tarkistaa
-        boolean oikeaYlakulma = (getX() <= liikkuva.getX()
+        boolean vasenYlakulma = (getX() <= liikkuva.getX()
                 && getX() + getKoko() > liikkuva.getX())
                 && (getY() <= liikkuva.getY()
                 && getY() + getKoko() > liikkuva.getY());
-        if (liikkuva.getKoko() == 1 || oikeaYlakulma) {
-            return oikeaYlakulma;
+        if (liikkuva.getKoko() == 1 || vasenYlakulma) {
+            return vasenYlakulma;
         }
-        boolean vasenYlakulma = osuukoAlukseen(new Pala(liikkuva.getX() + liikkuva.getKoko(), liikkuva.getY()));
-        if (vasenYlakulma) return vasenYlakulma;
-        boolean oikeaAlakulma = osuukoAlukseen(new Pala(liikkuva.getX(), liikkuva.getY() + liikkuva.getKoko()));
-        if (oikeaAlakulma) return oikeaAlakulma;
-        // vasen alakulma
-        return osuukoAlukseen(new Pala(liikkuva.getX() + liikkuva.getKoko(), liikkuva.getY() + liikkuva.getKoko()));
+        boolean oikeaYlakulma = osuukoAlukseen(new Pala(liikkuva.getX() + (liikkuva.getKoko() - 1), liikkuva.getY()));
+        if (oikeaYlakulma) return oikeaYlakulma;
+        boolean vasenAlakulma = osuukoAlukseen(new Pala(liikkuva.getX(), liikkuva.getY() + (liikkuva.getKoko() - 1)));
+        if (vasenAlakulma) return vasenAlakulma;
+        // oikea alakulma
+        return osuukoAlukseen(new Pala(liikkuva.getX() + (liikkuva.getKoko() - 1), liikkuva.getY() + (liikkuva.getKoko() - 1)));
 
     }
 

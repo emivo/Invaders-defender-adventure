@@ -7,6 +7,9 @@ import invadersdefender.sovelluslogiikka.Peli;
 import invadersdefender.sovelluslogiikka.Vihollisolio;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.io.File;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
@@ -38,6 +41,8 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraPeli(Graphics graphics) {
+        piirraTausta(graphics);
+
         piirraOmaAlus(graphics);
         piirraViholliset(graphics);
         piirraAmmukset(graphics);
@@ -71,8 +76,14 @@ public class PelinPiirtoalusta extends JPanel {
     private void piirraOmaAlus(Graphics graphics) {
 
         // piirrä oma alus [TODO] Kunnolliset kuviot
-        graphics.setColor(Color.BLACK);
-        piirraLiikkuva(graphics, peli.getOmaAlus());
+        try {
+            Image omaAlusKuva = ImageIO.read(new File("D:\\Users\\Emil\\Javalab\\Invaders-defender-adventure\\InvadersDefenderAdventure\\src\\main\\resources\\grafiikat\\omaAlus.jpg"));
+            graphics.drawImage(omaAlusKuva, peli.getOmaAlus().getX() * palojenKoko, peli.getOmaAlus().getY() * palojenKoko, peli.getOmaAlus().getKoko() * palojenKoko, peli.getOmaAlus().getKoko() * palojenKoko, this);
+        } catch (Exception e) {
+            System.out.println("YHYYYY");
+        }
+//        graphics.setColor(Color.BLACK);
+//        piirraLiikkuva(graphics, peli.getOmaAlus());
     }
 
     private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva) {
@@ -110,12 +121,21 @@ public class PelinPiirtoalusta extends JPanel {
         String pisteet = "Your score: " + peli.getPisteet();
         graphics.drawString(pisteet, paikka, paikka + palojenKoko + 3);
         graphics.drawString("Press enter to start again", paikka, paikka + (palojenKoko + 3) * 2);
-        
+
     }
 
     private void piirraPause(Graphics graphics) {
         graphics.setColor(Color.red);
         int paikka = (peli.getPelikentanKoko() + palojenKoko) / 2;
         graphics.drawString("Pause. Press enter to continue", paikka, paikka);
+    }
+
+    private void piirraTausta(Graphics graphics) {
+        try {
+            Image tausta = ImageIO.read(new File("D:\\Users\\Emil\\Javalab\\Invaders-defender-adventure\\InvadersDefenderAdventure\\src\\main\\resources\\grafiikat\\tausta.jpg"));
+            graphics.drawImage(tausta, 0, 0, peli.getPelikentanKoko() * palojenKoko, peli.getPelikentanKoko() * palojenKoko, this);
+        } catch (Exception e) {
+            System.out.println("TAUSTA EI LÖYDY");
+        }
     }
 }

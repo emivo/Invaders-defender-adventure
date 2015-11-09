@@ -174,58 +174,62 @@ public class Peli extends Timer implements ActionListener {
     }
 
     public void omaAlusLiiku(Suunta suunta) {
-        omaAlus.liiku(suunta);
+        if (voikoLiikkua(omaAlus, suunta)) {
+            omaAlus.liiku(suunta);
+        }
         if (osuukoVihollisetOmaanAlukseen() || osuukoAmmuksetOmaanAlukseen()) {
             stop();
         }
-        if (!tarkistaVoikoLiikkua(omaAlus)) {
-            peruLiikumminen(omaAlus, suunta);
-        }
-    }
-
-    private void peruLiikumminen(Alus alus, Suunta suunta) {
-        switch (suunta) {
-            case ALAS:
-                alus.liiku(Suunta.YLOS);
-                break;
-            case YLOS:
-                alus.liiku(Suunta.ALAS);
-                break;
-            case OIKEA:
-                alus.liiku(Suunta.VASEN);
-                break;
-            case VASEN:
-                alus.liiku(Suunta.OIKEA);
-                break;
-        }
-    }
-
-    /**
-     * Metodilla voidaan tarkistaa onko alus poistumassa pelikentalta
-     *
-     * @param alus tarkastelva alus
-     * @return true - jos alus edelleen pelissä. false - jos poistunut
-     * pelikentältä
-     */
-    private boolean tarkistaVoikoLiikkua(Alus alus) {
-        return !(alus.getX() < 0 || alus.getX() + alus.getKoko() > pelikentanKoko
-                || alus.getY() < 0 || alus.getY() + alus.getKoko() > pelikentanKoko);
     }
 
     public void vihollisetLiiku() {
-        // kaikilla vihollisilla sama suunta
         if (!viholliset.isEmpty()) {
-            Suunta suuntaJohonOliotAikovatLiikkua = viholliset.get(0).getSuunta();
-            boolean voikoLiikkua = true;
-            for (Vihollisolio olio : viholliset) {
-                olio.liiku();
-                voikoLiikkua = voikoLiikkua && tarkistaVoikoLiikkua(olio);
+            valitseVihollistenSuunta();
+            if (viholliset.get(0).getY() > pelikentanKoko) {
+                viholliset.clear();
             }
-            if (!voikoLiikkua) {
-                for (Vihollisolio olio : viholliset) {
-                    peruLiikumminen(olio, suuntaJohonOliotAikovatLiikkua);
-                }
-            }
+        }
+    }
+
+    private void valitseVihollistenSuunta() {
+        Suunta suunta = viholliset.get(0).getSuunta();
+        if (suunta == Suunta.OIKEA) {
+            kasitteleKunMenossaOikealle();
+
+        } else if (suunta == Suunta.VASEN) {
+            kasitteleKunMenossaVasemmalle();
+        }
+    }
+
+    private void kasitteleKunMenossaVasemmalle() {
+        if (viholliset.get(0).getX() == 1) {
+            vihollisetAsetaSuunta(Suunta.ALAS);
+            liikutaVihollisia();
+            vihollisetAsetaSuunta(Suunta.OIKEA);
+        } else {
+            liikutaVihollisia();
+        }
+    }
+
+    private void kasitteleKunMenossaOikealle() {
+        if (viholliset.get(viholliset.size() - 1).getX() + ALUKSIENKOKO == pelikentanKoko - 1) {
+            vihollisetAsetaSuunta(Suunta.ALAS);
+            liikutaVihollisia();
+            vihollisetAsetaSuunta(Suunta.VASEN);
+        } else {
+            liikutaVihollisia();
+        }
+    }
+
+    private void liikutaVihollisia() {
+        for (Vihollisolio vihu : viholliset) {
+            vihu.liiku();
+        }
+    }
+
+    private void vihollisetAsetaSuunta(Suunta suunta) {
+        for (Vihollisolio vihu : viholliset) {
+            vihu.setSuunta(suunta);
         }
     }
 
@@ -252,7 +256,7 @@ public class Peli extends Timer implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (viholliset.isEmpty()) {
-            // Tähän tarvitaan delay
+            // Tähän tarvitaan viive kenties tulevaisuudessa
             vihollisetTulevatEsille();
         }
         ammuksetLiiku();
@@ -275,5 +279,12 @@ public class Peli extends Timer implements ActionListener {
             jokuVihollinenAmpuu();
             vihollisetAmpuuViive = AMPUMISVIIVE;
         }
+    }
+
+    private boolean voikoLiikkua(Alus alus, Suunta suunta) {
+        Pala uusiSijainti = new Pala(alus.getX(),alus.getY());
+        uusiSijainti.liiku(suunta);
+        return !(uusiSijainti.getX() < 0 || uusiSijainti.getX() + alus.getKoko() > pelikentanKoko
+                || uusiSijainti.getY() < 0 || uusiSijainti.getY() + alus.getKoko() > pelikentanKoko);
     }
 }
