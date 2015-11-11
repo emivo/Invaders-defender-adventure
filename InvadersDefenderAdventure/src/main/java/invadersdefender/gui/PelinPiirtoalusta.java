@@ -1,14 +1,14 @@
 package invadersdefender.gui;
 
-import invadersdefender.sovelluslogiikka.Alus;
 import invadersdefender.sovelluslogiikka.Ammus;
 import invadersdefender.sovelluslogiikka.Liikkuva;
 import invadersdefender.sovelluslogiikka.Peli;
+import invadersdefender.sovelluslogiikka.Suunta;
 import invadersdefender.sovelluslogiikka.Vihollisolio;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.io.File;
+import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -61,7 +61,14 @@ public class PelinPiirtoalusta extends JPanel {
         // piirrä ammukset
         graphics.setColor(Color.red);
         for (Ammus ammus : peli.getAmmukset()) {
-            piirraLiikkuva(graphics, ammus);
+            URL kuvanOsoite;
+            if (ammus.getSuunta() == Suunta.YLOS) {
+                kuvanOsoite = haeOsoite("/ammus.png");
+            } else {
+                kuvanOsoite = haeOsoite("/vihollisenammus.png");
+            }
+            piirraLiikkuva(graphics, ammus, lueKuva(kuvanOsoite));
+//            piirraYmpyra(graphics, ammus.getX() * palojenKoko, ammus.getY() * palojenKoko, palojenKoko);
         }
     }
 
@@ -69,47 +76,39 @@ public class PelinPiirtoalusta extends JPanel {
         // piirrä vihollisoliot
         graphics.setColor(Color.GREEN);
         for (Vihollisolio vihu : peli.getViholliset()) {
-            piirraLiikkuva(graphics, vihu);
+            URL kuvanOsoite = haeOsoite("/vihollisolio.png");
+            piirraLiikkuva(graphics, vihu, lueKuva(kuvanOsoite));
+        }
+    }
+
+    private URL haeOsoite(String tiedostonNimi) {
+        return getClass().getResource(tiedostonNimi);
+    }
+
+    private Image lueKuva(URL osoite) {
+        try {
+            return ImageIO.read(osoite);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void piirraKuva(Graphics graphics, int x, int y, int koko, Image kuva) {
+        if (kuva != null) {
+            graphics.drawImage(kuva, x, y, koko, koko, this);
+        } else {
+            // KÄSITTELE VIRHE
         }
     }
 
     private void piirraOmaAlus(Graphics graphics) {
-
-        // piirrä oma alus [TODO] Kunnolliset kuviot
-        try {
-            Image omaAlusKuva = ImageIO.read(new File("D:\\Users\\Emil\\Javalab\\Invaders-defender-adventure\\InvadersDefenderAdventure\\src\\main\\resources\\grafiikat\\omaAlus.jpg"));
-            graphics.drawImage(omaAlusKuva, peli.getOmaAlus().getX() * palojenKoko, peli.getOmaAlus().getY() * palojenKoko, peli.getOmaAlus().getKoko() * palojenKoko, peli.getOmaAlus().getKoko() * palojenKoko, this);
-        } catch (Exception e) {
-            System.out.println("YHYYYY");
-        }
-//        graphics.setColor(Color.BLACK);
-//        piirraLiikkuva(graphics, peli.getOmaAlus());
+        URL kuvanOsoite = haeOsoite("/omaalus.png");
+        piirraLiikkuva(graphics, peli.getOmaAlus(), lueKuva(kuvanOsoite));
     }
 
-    private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva) {
-        int koko = 1;
-        if (liikkuva.getClass() != Ammus.class) {
-            koko = ((Alus) liikkuva).getKoko();
-        }
-        piirra(graphics, liikkuva, liikkuva.getX() * palojenKoko, liikkuva.getY() * palojenKoko, koko * palojenKoko);
-    }
-
-    private void piirra(Graphics graphics, Liikkuva liikkuva, int x, int y, int sivunpituus) {
-        if (liikkuva.getClass() == Ammus.class) {
-            piirraYmpyra(graphics, x, y, sivunpituus);
-        } else {
-            piirraNelio(graphics, x, y, sivunpituus);
-        }
-    }
-
-    private void piirraNelio(Graphics graphics, int x, int y, int sivunpituus) {
-        graphics.fill3DRect(x, y, sivunpituus, sivunpituus, true);
-    }
-
-    private void piirraYmpyra(Graphics graphics, int x, int y, int sivunpituus) {
-        graphics.fillOval(x, y, sivunpituus, sivunpituus);
-    }
-
+//    private void piirraYmpyra(Graphics graphics, int x, int y, int sivunpituus) {
+//        graphics.fillOval(x, y, sivunpituus, sivunpituus);
+//    }
     public void paivitaPiirto() {
         super.repaint();
     }
@@ -131,11 +130,11 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraTausta(Graphics graphics) {
-        try {
-            Image tausta = ImageIO.read(new File("D:\\Users\\Emil\\Javalab\\Invaders-defender-adventure\\InvadersDefenderAdventure\\src\\main\\resources\\grafiikat\\tausta.jpg"));
-            graphics.drawImage(tausta, 0, 0, peli.getPelikentanKoko() * palojenKoko, peli.getPelikentanKoko() * palojenKoko, this);
-        } catch (Exception e) {
-            System.out.println("TAUSTA EI LÖYDY");
-        }
+        URL taustanOsoite = haeOsoite("/tausta.jpg");
+        piirraKuva(graphics, 0, 0, peli.getPelikentanKoko() * palojenKoko, lueKuva(taustanOsoite));
+    }
+
+    private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva, Image kuva) {
+        piirraKuva(graphics, liikkuva.getX() * palojenKoko, liikkuva.getY() * palojenKoko, liikkuva.getKoko() * palojenKoko, kuva);
     }
 }

@@ -1,7 +1,6 @@
 package invadersdefender;
 
 import invadersdefender.gui.Kayttoliittyma;
-import invadersdefender.sovelluslogiikka.Alus;
 import invadersdefender.sovelluslogiikka.Peli;
 import javax.swing.SwingUtilities;
 
@@ -15,6 +14,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        
         
         Peli peli = new Peli(15);
 

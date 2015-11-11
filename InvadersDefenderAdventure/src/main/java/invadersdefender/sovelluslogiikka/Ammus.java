@@ -28,7 +28,10 @@ public class Ammus implements Liikkuva {
     public Pala getSijainti() {
         return sijainti;
     }
-    
+
+    public Suunta getSuunta() {
+        return suunta;
+    }
     
     @Override
     public void liiku(Suunta suunta) {

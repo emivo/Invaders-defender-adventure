@@ -121,7 +121,7 @@ public class Peli extends Timer implements ActionListener {
      * @return totuusarvo osuuko ammmus johonkin alukseen
      */
     public boolean osuukoAmmus(Ammus ammus) {
-        if (omaAlus.osuukoAlukseen(ammus)) {
+        if (omaAlus.osuukoAlukseen(ammus)  && (ammus.getSuunta() == Suunta.ALAS)) {
             // lopeta peli
             stop();
             return true;
@@ -142,7 +142,7 @@ public class Peli extends Timer implements ActionListener {
     public void vihollisetTulevatEsille() {
         // kuinka monta vihollista tulee
         // KESKEN
-        int esiinTulevienVihollisteMaara = 3;
+        int esiinTulevienVihollisteMaara = 5;
         int alustenKoko = omaAlus.getKoko();
         for (int i = 0; i < esiinTulevienVihollisteMaara; i++) {
 
