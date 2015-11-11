@@ -68,7 +68,6 @@ public class PelinPiirtoalusta extends JPanel {
                 kuvanOsoite = haeOsoite("/vihollisenammus.png");
             }
             piirraLiikkuva(graphics, ammus, lueKuva(kuvanOsoite));
-//            piirraYmpyra(graphics, ammus.getX() * palojenKoko, ammus.getY() * palojenKoko, palojenKoko);
         }
     }
 
@@ -105,10 +104,7 @@ public class PelinPiirtoalusta extends JPanel {
         URL kuvanOsoite = haeOsoite("/omaalus.png");
         piirraLiikkuva(graphics, peli.getOmaAlus(), lueKuva(kuvanOsoite));
     }
-
-//    private void piirraYmpyra(Graphics graphics, int x, int y, int sivunpituus) {
-//        graphics.fillOval(x, y, sivunpituus, sivunpituus);
-//    }
+    
     public void paivitaPiirto() {
         super.repaint();
     }
