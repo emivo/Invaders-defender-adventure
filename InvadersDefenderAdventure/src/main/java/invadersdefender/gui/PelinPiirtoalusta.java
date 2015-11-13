@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -20,10 +22,14 @@ public class PelinPiirtoalusta extends JPanel {
 
     private Peli peli;
     private int palojenKoko;
+    private Map<String,Image> kuvat;
 
     public PelinPiirtoalusta(Peli peli, int palojenKoko) {
         this.peli = peli;
         this.palojenKoko = palojenKoko;
+        this.kuvat = new HashMap<>();
+        
+        lataaKuvat();
     }
 
     @Override
@@ -61,13 +67,13 @@ public class PelinPiirtoalusta extends JPanel {
         // piirrä ammukset
         graphics.setColor(Color.red);
         for (Ammus ammus : peli.getAmmukset()) {
-            URL kuvanOsoite;
+            Image kuva;
             if (ammus.getSuunta() == Suunta.YLOS) {
-                kuvanOsoite = haeOsoite("/ammus.png");
+                kuva = kuvat.get("ammus");
             } else {
-                kuvanOsoite = haeOsoite("/vihollisenammus.png");
+                kuva = kuvat.get("vihollisenammus");
             }
-            piirraLiikkuva(graphics, ammus, lueKuva(kuvanOsoite));
+            piirraLiikkuva(graphics, ammus, kuva);
         }
     }
 
@@ -75,8 +81,7 @@ public class PelinPiirtoalusta extends JPanel {
         // piirrä vihollisoliot
         graphics.setColor(Color.GREEN);
         for (Vihollisolio vihu : peli.getViholliset()) {
-            URL kuvanOsoite = haeOsoite("/vihollisolio.png");
-            piirraLiikkuva(graphics, vihu, lueKuva(kuvanOsoite));
+            piirraLiikkuva(graphics, vihu, kuvat.get("vihollisolio"));
         }
     }
 
@@ -101,8 +106,7 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraOmaAlus(Graphics graphics) {
-        URL kuvanOsoite = haeOsoite("/omaalus.png");
-        piirraLiikkuva(graphics, peli.getOmaAlus(), lueKuva(kuvanOsoite));
+        piirraLiikkuva(graphics, peli.getOmaAlus(), kuvat.get("omaalus"));
     }
     
     public void paivitaPiirto() {
@@ -126,11 +130,18 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraTausta(Graphics graphics) {
-        URL taustanOsoite = haeOsoite("/tausta.jpg");
-        piirraKuva(graphics, 0, 0, peli.getPelikentanKoko() * palojenKoko, lueKuva(taustanOsoite));
+        piirraKuva(graphics, 0, 0, peli.getPelikentanKoko() * palojenKoko, kuvat.get("tausta"));
     }
 
     private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva, Image kuva) {
         piirraKuva(graphics, liikkuva.getX() * palojenKoko, liikkuva.getY() * palojenKoko, liikkuva.getKoko() * palojenKoko, kuva);
+    }
+
+    private void lataaKuvat() {
+        kuvat.put("ammus", lueKuva(haeOsoite("/ammus.png")));
+        kuvat.put("vihollisenammus", lueKuva(haeOsoite("/vihollisenammus.png")));
+        kuvat.put("tausta", lueKuva(haeOsoite("/tausta.jpg")));
+        kuvat.put("omaalus", lueKuva(haeOsoite("/omaalus.png")));
+        kuvat.put("vihollisolio", lueKuva(haeOsoite("/vihollisolio.png")));
     }
 }
