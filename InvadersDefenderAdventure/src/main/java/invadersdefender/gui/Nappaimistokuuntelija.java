@@ -20,7 +20,7 @@ public class Nappaimistokuuntelija implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // ei mitÃ¤Ã¤n tÃ¤nne
+        // ei mitään tänne
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Nappaimistokuuntelija implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // ei mitÃ¤Ã¤n tÃ¤nne
+        // ei mitään tänne
     }
 
 }

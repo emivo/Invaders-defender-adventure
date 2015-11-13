@@ -8,5 +8,6 @@
 |8.11.|Päivitystä käyttöliittymään ja pelilogiikkaan| 3 tuntia|
 |9.11.|Testien ja grafiikan päivittelyä| 3 tuntia|
 |11.11.|Grafiikkaa| 2 tuntia|
+|13.11.|Testien rivikattavuutta parannettu| 0,5 tuntia|
 
 
