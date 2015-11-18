@@ -1,15 +1,15 @@
 package invadersdefender.sovelluslogiikka;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
+ * Luokka muodostaa olioita, joita voidaan liikutella x,y koordinaatistossa ja voiva ampua {@link Ammus} luokan oliota
+ * 
  * @author emivo
  */
 public class Alus implements Liikkuva {
 
-    private int koko; // aluksen sivunpituus
-    private Pala sijainti;
+    private final int koko; // aluksen sivunpituus
+    private final Pala sijainti;
 
     public Alus(int alkuX, int alkuY, int koko) {
         this.koko = koko;
@@ -22,13 +22,19 @@ public class Alus implements Liikkuva {
         return koko;
     }
 
+    /**
+     * Luo {@link Ammus} -luokan olion aluksen yläreunan yläpuolelle ja leveyssuunnassa aluksen keskelle
+     * 
+     * @return {@link Ammus} -luokan olio
+     */
     public Ammus ammu() {
         return new Ammus(getX() + koko / 2, getY() - 1, Suunta.YLOS);
     }
 
     /**
-     * Palauttaa totuus arvon osuuko alukseen jokin toinen liikkuva
-     *
+     * Palauttaa totuus arvon osuuko alukseen jokin toinen liikkuva.
+     * Kaikki liikkuvat ovat neliön muotoisia, joten metodi tutkii osuuko jokin kulma 
+     * 
      * @param liikkuva vertailtava liikkuva
      * @return Palauttaa true, jos jokin liikkuva on samalla koordinaatilla
      * aluksen kanssa
@@ -62,7 +68,7 @@ public class Alus implements Liikkuva {
     }
 
     /**
-     * metodi antaa luksen yläreunan koordinaatin
+     * metodi antaa aluksen yläreunan koordinaatin
      *
      * @return
      */
@@ -72,8 +78,8 @@ public class Alus implements Liikkuva {
     }
 
     /**
-     * metodilla saadaan aluksen vasemman yläreunan palan muiden palojen paikat
-     * voidaan laskea tämän avullla
+     * metodilla saadaan aluksen vasemman yläreunan palan. Muiden palojen paikat
+     * voidaan laskea tämän avulla 
      *
      * @return
      */

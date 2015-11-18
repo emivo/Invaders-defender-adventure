@@ -16,10 +16,11 @@ public class Main {
     public static void main(String[] args) {
         
         
-        
-        Peli peli = new Peli(15);
+        int pelikentanKoko = 25;
+        int palojenKoko = 10;
+        Peli peli = new Peli(pelikentanKoko);
 
-        Kayttoliittyma kaytto = new Kayttoliittyma(peli, 10);
+        Kayttoliittyma kaytto = new Kayttoliittyma(peli, palojenKoko);
         SwingUtilities.invokeLater(kaytto);
 
         while (kaytto.getPiirtoalusta() == null) {

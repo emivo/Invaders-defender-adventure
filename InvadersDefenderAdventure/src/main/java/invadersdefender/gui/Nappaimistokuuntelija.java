@@ -1,7 +1,8 @@
 package invadersdefender.gui;
 
-import invadersdefender.sovelluslogiikka.Alus;
 import invadersdefender.sovelluslogiikka.Peli;
+import invadersdefender.sovelluslogiikka.Pelikentta;
+import invadersdefender.sovelluslogiikka.Pelitilanne;
 import invadersdefender.sovelluslogiikka.Suunta;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -13,9 +14,11 @@ import java.awt.event.KeyListener;
 public class Nappaimistokuuntelija implements KeyListener {
 
     private Peli peli;
+    private Pelikentta pelikentta;
 
     public Nappaimistokuuntelija(Peli peli) {
         this.peli = peli;
+        this.pelikentta = peli.getPelikentta();
     }
 
     @Override
@@ -44,12 +47,11 @@ public class Nappaimistokuuntelija implements KeyListener {
             case KeyEvent.VK_P:
                 pause();
                 break;
-            // kokeilua varten
             case KeyEvent.VK_ENTER:
-                if (peli.isPause() ||peli.isRunning()) {
-                    pause();
-                } else {
+                if (peli.getTilanne() == Pelitilanne.LOPPU) {
                     uusiPeli();
+                } else {
+                    pause();
                 }
                 break;
         }
@@ -67,14 +69,14 @@ public class Nappaimistokuuntelija implements KeyListener {
 
     private void ammu() {
         if (peli.isRunning()) {
-            peli.alusAmmu(peli.getOmaAlus());
+            pelikentta.alusAmmu(pelikentta.getOmaAlus());
             peli.paivita();
         }
     }
 
     private void liiku(Suunta suunta) {
         if (peli.isRunning()) {
-            peli.omaAlusLiiku(suunta);
+            pelikentta.omaAlusLiiku(suunta);
             peli.paivita();
         }
     }

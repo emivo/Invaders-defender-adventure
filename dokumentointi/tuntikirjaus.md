@@ -9,5 +9,6 @@
 |9.11.|Testien ja grafiikan päivittelyä| 3 tuntia|
 |11.11.|Grafiikkaa| 2 tuntia|
 |13.11.|Testien rivikattavuutta parannettu| 0,5 tuntia|
+|18.11.|Paljon kaikkea, huipputulokset, peli pilkottu pelikentäksi ja peliksi| 4-6 tuntia|
 
 
