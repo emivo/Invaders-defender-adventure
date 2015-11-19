@@ -26,13 +26,15 @@ public class Kayttoliittyma implements Runnable {
     @Override
     public void run() {
         ikkuna = new JFrame("Invaders defender adventures");
-        int ikkunanKoko = peli.getPelikentta().getPelikentanKoko() * palojenKoko + 5;
+        int ikkunanLeveys = peli.getPelikentta().getPelikentanLeveys()* palojenKoko + 5;
+        int ikkunanKorkeus = peli.getPelikentta().getPelikentanKorkeus() * palojenKoko + 40;
         peli.setIkkuna(ikkuna);
+        piirtoalusta.setIkkuna(ikkuna);
         
         ikkuna.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         rakennaIkkunanKomponentit(ikkuna.getContentPane());
-        ikkuna.setPreferredSize(new Dimension(ikkunanKoko, ikkunanKoko + ikkuna.getJMenuBar().getHeight() + 40));
+        ikkuna.setPreferredSize(new Dimension(ikkunanLeveys, ikkunanKorkeus + ikkuna.getJMenuBar().getHeight() ));
 
         ikkuna.pack();
         ikkuna.setVisible(true);

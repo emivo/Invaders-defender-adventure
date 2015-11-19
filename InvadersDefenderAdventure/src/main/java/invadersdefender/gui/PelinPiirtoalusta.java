@@ -11,14 +11,18 @@ import invadersdefender.sovelluslogiikka.huipputulokset.Pelaaja;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
+ * Luokka tarjoaa mahdollisuuden piirtää kuvina kostruktiossa annetun pelin
  *
  * @author emivo
  */
@@ -27,7 +31,8 @@ public class PelinPiirtoalusta extends JPanel {
     private Peli peli;
     private Pelikentta pelikentta;
     private int palojenKoko;
-    private Map<String, Image> kuvat;
+    private Map<String, BufferedImage> kuvat;
+    private JFrame ikkuna;
 
     public PelinPiirtoalusta(Peli peli, int palojenKoko) {
         this.peli = peli;
@@ -48,10 +53,14 @@ public class PelinPiirtoalusta extends JPanel {
             piirraPause(graphics);
         } else if (peli.getTilanne() == Pelitilanne.TULOKSET) {
             piirraHuipputulokset(graphics);
-        }else {
+        } else {
             piirraPeliLoppu(graphics);
         }
 
+    }
+
+    public void setIkkuna(JFrame ikkuna) {
+        this.ikkuna = ikkuna;
     }
 
     private void piirraPeli(Graphics graphics) {
@@ -97,7 +106,7 @@ public class PelinPiirtoalusta extends JPanel {
         return getClass().getResource(tiedostonNimi);
     }
 
-    private Image lueKuva(URL osoite) {
+    private BufferedImage lueKuva(URL osoite) {
         try {
             return ImageIO.read(osoite);
         } catch (Exception e) {
@@ -109,7 +118,7 @@ public class PelinPiirtoalusta extends JPanel {
         if (kuva != null) {
             graphics.drawImage(kuva, x, y, koko, koko, this);
         } else {
-            // KÄSITTELE VIRHE
+            virhe();
         }
     }
 
@@ -117,27 +126,51 @@ public class PelinPiirtoalusta extends JPanel {
         piirraLiikkuva(graphics, pelikentta.getOmaAlus(), kuvat.get("omaalus"));
     }
 
+    /**
+     * Metodi päivittää piirroksen ajan tasalle
+     */
     public void paivitaPiirto() {
         super.repaint();
     }
 
     private void piirraPeliLoppu(Graphics graphics) {
         graphics.setColor(Color.red);
-        int paikka = (pelikentta.getPelikentanKoko() + palojenKoko) / 2;
-        graphics.drawString("Game Over", paikka, paikka);
+        int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
+        int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
+        graphics.drawString("Game Over", paikkaX, paikkaY);
         String pisteet = "Your score: " + peli.getPisteet();
-        graphics.drawString(pisteet, paikka, paikka + palojenKoko + 3);
-        graphics.drawString("Press enter to start again", paikka, paikka + (palojenKoko + 3) * 2);
+        graphics.drawString(pisteet, paikkaX, paikkaY + palojenKoko + 3);
+        graphics.drawString("Press enter to start again", paikkaX, paikkaY + (palojenKoko + 3) * 2);
     }
 
     private void piirraPause(Graphics graphics) {
         graphics.setColor(Color.red);
-        int paikka = (pelikentta.getPelikentanKoko() + palojenKoko) / 2;
-        graphics.drawString("Pause. Press enter to continue", paikka, paikka);
+        int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
+        int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
+        graphics.drawString("Pause. Press enter to continue", paikkaX, paikkaY);
     }
 
     private void piirraTausta(Graphics graphics) {
-        piirraKuva(graphics, 0, 0, pelikentta.getPelikentanKoko() * palojenKoko, kuvat.get("tausta"));
+        try {
+            BufferedImage tausta = kuvat.get("tausta");
+            if (peli.getTaustanLeikkauskohta() > tausta.getHeight()) {
+                peli.setTaustanLeikkauskohta(0);
+            }
+            graphics.drawImage(tausta,
+                    0, 0,
+                    pelikentta.getPelikentanLeveys() * palojenKoko, peli.getTaustanLeikkauskohta(),
+                    0, tausta.getHeight() - peli.getTaustanLeikkauskohta(),
+                    tausta.getWidth(), tausta.getHeight(),
+                    this);
+            graphics.drawImage(tausta,
+                    0, peli.getTaustanLeikkauskohta(),
+                    pelikentta.getPelikentanLeveys() * palojenKoko, pelikentta.getPelikentanKorkeus() * palojenKoko,
+                    0, 0,
+                    tausta.getWidth(), tausta.getHeight() - peli.getTaustanLeikkauskohta(),
+                    this);
+        } catch (Exception e) {
+            virhe();
+        }
     }
 
     private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva, Image kuva) {
@@ -152,15 +185,16 @@ public class PelinPiirtoalusta extends JPanel {
         kuvat.put("vihollisolio", lueKuva(haeOsoite("/vihollisolio.png")));
     }
 
-    public void piirraHuipputulokset(Graphics graphics) {
+    private void piirraHuipputulokset(Graphics graphics) {
         graphics.setColor(Color.red);
-        int paikka = (pelikentta.getPelikentanKoko() + palojenKoko) / 2;
+        int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
+        int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
         PriorityQueue<Pelaaja> uusi = new PriorityQueue<>();
         Pelaaja pelaaja = peli.getHuipputulokset().getTulokset().poll();
         int i = 1;
         while (pelaaja != null) {
             uusi.add(pelaaja);
-            graphics.drawString(luoRivi(i, pelaaja), paikka, paikka + (i-1) * 2*palojenKoko);
+            graphics.drawString(luoRivi(i, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
             pelaaja = peli.getHuipputulokset().getTulokset().poll();
             i++;
         }
@@ -176,5 +210,14 @@ public class PelinPiirtoalusta extends JPanel {
         sb.append(" ");
         sb.append(pelaaja.getTulos());
         return sb.toString();
+    }
+
+    private void virhe() {
+        JOptionPane.showMessageDialog(ikkuna,
+                "Some graphic components are missing.\n"
+                        + "Try again later.",
+                "Fatal error",
+                JOptionPane.ERROR_MESSAGE);
+        peli.peliLoppuu();
     }
 }

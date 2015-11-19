@@ -16,12 +16,14 @@ public class Pelikentta {
     private Alus omaAlus;
     private final List<Vihollisolio> viholliset;
     private final List<Ammus> ammukset;
-    private final int pelikentanKoko;
+    private final int pelikentanLeveys;
+    private final int pelikentanKorkeus;
     private static final int ALUKSIENKOKO = 3;
 
     public Pelikentta(int pelikentanSivunpituus, Peli peli) {
         this.peli = peli;
-        this.pelikentanKoko = pelikentanSivunpituus * ALUKSIENKOKO;
+        this.pelikentanKorkeus = pelikentanSivunpituus * ALUKSIENKOKO;
+        this.pelikentanLeveys = (int) (pelikentanKorkeus * 2 / 3);
         this.omaAlus = luoOmaAlus();
 
         this.viholliset = new ArrayList<>();
@@ -29,7 +31,7 @@ public class Pelikentta {
     }
 
     private Alus luoOmaAlus() {
-        return new Alus(this.pelikentanKoko / 2, this.pelikentanKoko - (ALUKSIENKOKO + 1), ALUKSIENKOKO);
+        return new Alus(this.pelikentanLeveys / 2, this.pelikentanKorkeus - (ALUKSIENKOKO + 1), ALUKSIENKOKO);
     }
 
     public List<Ammus> getAmmukset() {
@@ -40,8 +42,12 @@ public class Pelikentta {
         return viholliset;
     }
 
-    public int getPelikentanKoko() {
-        return pelikentanKoko;
+    public int getPelikentanLeveys() {
+        return pelikentanLeveys;
+    }
+
+    public int getPelikentanKorkeus() {
+        return pelikentanKorkeus;
     }
 
     public Alus getOmaAlus() {
@@ -73,7 +79,7 @@ public class Pelikentta {
         Iterator<Vihollisolio> iterator = viholliset.iterator();
         while (iterator.hasNext()) {
             Vihollisolio vihollinen = iterator.next();
-            if (vihollinen.osuukoAlukseen(ammus)) {
+            if (vihollinen.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
                 iterator.remove();
                 peli.lisaaPisteita();
                 return true;
@@ -87,7 +93,7 @@ public class Pelikentta {
         // KESKEN
         int esiinTulevienVihollisteMaara = 5;
         // asetetaan viholliset pelikentältä liian ylös peli kentästä mistä ne voivat sitten "ryömiä esiin"
-        int ensimmaisenAluksenX = (int) (pelikentanKoko / 2) - (esiinTulevienVihollisteMaara - 1) * ALUKSIENKOKO;
+        int ensimmaisenAluksenX = (int) (pelikentanLeveys / 2) - (esiinTulevienVihollisteMaara - 1) * ALUKSIENKOKO;
         for (int i = 0; i < esiinTulevienVihollisteMaara; i++) {
             int x = ensimmaisenAluksenX + (ALUKSIENKOKO * 2 * i);
             int y = -1 * (esiinTulevienVihollisteMaara * ALUKSIENKOKO) + i * ALUKSIENKOKO;
@@ -102,8 +108,8 @@ public class Pelikentta {
         while (iterator.hasNext()) {
             Ammus ammus = iterator.next();
             ammus.liiku();
-            // leveyssuuntaa ei tarvitse tarkistaa sillÃ¤ ammuksien ei tulisi poistua kentän reunalta
-            if (ammus.getSijainti().getY() < 0 || ammus.getSijainti().getY() > pelikentanKoko) {
+            // ammukset eivät voi poistua kentänreunalta
+            if (ammus.getSijainti().getY() < 0 || ammus.getSijainti().getY() > pelikentanKorkeus) {
                 iterator.remove();
             } else if (osuukoAmmus(ammus)) {
                 iterator.remove();
@@ -111,13 +117,14 @@ public class Pelikentta {
         }
     }
 
-    private boolean osuukoAmmukset() {
-        for (Ammus ammus : ammukset) {
+    private void osuukoAmmukset() {
+        Iterator<Ammus> iterator = ammukset.iterator();
+        while (iterator.hasNext()) {
+            Ammus ammus = iterator.next();
             if (osuukoAmmus(ammus)) {
-                return true;
+                iterator.remove();
             }
         }
-        return false;
     }
 
     public void omaAlusLiiku(Suunta suunta) {
@@ -138,20 +145,20 @@ public class Pelikentta {
                 Vihollisolio vihollinen = iteraattori.next();
                 if (onkoViimeinenVihollinenKentalla) {
                     valitseVihollistenSuunta(vihollinen);
-                    if (vihollinen.getY() > pelikentanKoko) {
+                    if (vihollinen.getY() > pelikentanKorkeus) {
                         iteraattori.remove();
                     }
                 } else {
                     vihollinen.liiku(Suunta.ALAS);
                 }
             }
-            
+
             osuukoAmmukset();
             if (osuukoVihollisetOmaanAlukseen()) {
                 peli.peliLoppuu();
             }
             if (!viholliset.isEmpty()) {
-                if (viholliset.get(viholliset.size() - 1).getY() > pelikentanKoko) {
+                if (viholliset.get(viholliset.size() - 1).getY() > pelikentanKorkeus) {
                     viholliset.remove(viholliset.size() - 1);
                 }
             }
@@ -186,7 +193,7 @@ public class Pelikentta {
     }
 
     private void kasitteleKunMenossaOikealle(Vihollisolio vihollinen) {
-        if (vihollinen.getX() + ALUKSIENKOKO == pelikentanKoko - 1) {
+        if (vihollinen.getX() + ALUKSIENKOKO == pelikentanLeveys - 1) {
             kaannaVihollinen(vihollinen, Suunta.VASEN);
         } else {
             vihollinen.liiku();
@@ -214,8 +221,8 @@ public class Pelikentta {
     private boolean voikoLiikkua(Alus alus, Suunta suunta) {
         Pala uusiSijainti = new Pala(alus.getX(), alus.getY());
         uusiSijainti.liiku(suunta);
-        return !(uusiSijainti.getX() < 0 || uusiSijainti.getX() + alus.getKoko() > pelikentanKoko
-                || uusiSijainti.getY() < 0 || uusiSijainti.getY() + alus.getKoko() > pelikentanKoko);
+        return !(uusiSijainti.getX() < 0 || uusiSijainti.getX() + alus.getKoko() > pelikentanLeveys
+                || uusiSijainti.getY() < 0 || uusiSijainti.getY() + alus.getKoko() > pelikentanKorkeus);
     }
 
     void kaynnistaUudelleen() {

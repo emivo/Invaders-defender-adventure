@@ -69,11 +69,11 @@ public class PelikenttaTest {
     public void omaAlusEiPoistuKentalta() {
         Alus omaAlus = pelikentta.getOmaAlus();
 
-        int matkaPoisAlhaalta = pelikentta.getPelikentanKoko() - omaAlus.getY() + omaAlus.getKoko();
+        int matkaPoisAlhaalta = pelikentta.getPelikentanKorkeus()- omaAlus.getY() + omaAlus.getKoko();
         for (int i = 0; i <= matkaPoisAlhaalta; i++) {
             pelikentta.omaAlusLiiku(Suunta.ALAS);
         }
-        assertTrue("Oma alus poistuu pelikentän alareunan yli", omaAlus.getY() + omaAlus.getKoko() <= pelikentta.getPelikentanKoko());
+        assertTrue("Oma alus poistuu pelikentän alareunan yli", omaAlus.getY() + omaAlus.getKoko() <= pelikentta.getPelikentanKorkeus());
         int matkaYlhaaltaPois = omaAlus.getY();
         for (int i = 0; i <= matkaYlhaaltaPois; i++) {
             pelikentta.omaAlusLiiku(Suunta.YLOS);
@@ -84,11 +84,11 @@ public class PelikenttaTest {
             pelikentta.omaAlusLiiku(Suunta.VASEN);
         }
         assertTrue("Oma alus poistuu pelikentän vasemmanreunan yli", omaAlus.getX() >= 0);
-        int matkaOikealtaUlos = pelikentta.getPelikentanKoko() - omaAlus.getX() + omaAlus.getKoko();
+        int matkaOikealtaUlos = pelikentta.getPelikentanLeveys()- omaAlus.getX() + omaAlus.getKoko();
         for (int i = 0; i < matkaOikealtaUlos; i++) {
             pelikentta.omaAlusLiiku(Suunta.OIKEA);
         }
-        assertTrue("Oma alus poistuu pelikentän oikeanreunan yli", omaAlus.getX() <= pelikentta.getPelikentanKoko());
+        assertTrue("Oma alus poistuu pelikentän oikeanreunan yli", omaAlus.getX() <= pelikentta.getPelikentanLeveys());
     }
 
     @Test

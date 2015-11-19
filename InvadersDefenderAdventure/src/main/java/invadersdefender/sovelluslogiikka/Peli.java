@@ -24,6 +24,7 @@ public class Peli extends Timer implements ActionListener {
     private static final int LIIKKUMISVIIVE = 5;
     private Pelitilanne tilanne;
     private int pisteet;
+    private int taustanLeikkauskohta;
 
     public Peli(int pelikentanSivunpituus) {
         super(100, null);
@@ -33,6 +34,7 @@ public class Peli extends Timer implements ActionListener {
         this.vihollisetAmpuuViiveLaskuri = AMPUMISVIIVE;
         this.vihollisetLiikkuViiveLaskuri = LIIKKUMISVIIVE;
         this.huipputulokset = new Huipputulokset();
+        this.taustanLeikkauskohta = 0;
 
         this.pisteet = 0;
         this.tilanne = Pelitilanne.KAYNNISSA;
@@ -51,6 +53,14 @@ public class Peli extends Timer implements ActionListener {
 
     public int getPisteet() {
         return pisteet;
+    }
+
+    public int getTaustanLeikkauskohta() {
+        return taustanLeikkauskohta;
+    }
+
+    public void setTaustanLeikkauskohta(int taustanLeikkauskohta) {
+        this.taustanLeikkauskohta = taustanLeikkauskohta;
     }
 
     public Huipputulokset getHuipputulokset() {
@@ -113,6 +123,7 @@ public class Peli extends Timer implements ActionListener {
             setInitialDelay(getDelay() - pisteet / 10);
         }
         paivita();
+        taustanLeikkauskohta++;
     }
 
     public void peliLoppuu() {
@@ -126,7 +137,7 @@ public class Peli extends Timer implements ActionListener {
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     null,
-                    "Silver Surfer");
+                    "Galatic Warrior");
             if (input != null) {
                 huipputulokset.lisaaTulos(input, pisteet);
             } else {

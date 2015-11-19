@@ -10,5 +10,6 @@
 |11.11.|Grafiikkaa| 2 tuntia|
 |13.11.|Testien rivikattavuutta parannettu| 0,5 tuntia|
 |18.11.|Paljon kaikkea, huipputulokset, peli pilkottu pelikentäksi ja peliksi| 4-6 tuntia|
+|19.11.| Taustan liike ja javadoc aloitettu | 1,5 tuntia|
 
 
