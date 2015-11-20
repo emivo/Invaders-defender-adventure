@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 /**
- *
+ * Luokka luo pelille JFrame ikkunan ja lisää Nappaimistokuuntelijan ikkunalle
  * @author emivo
  */
 public class Kayttoliittyma implements Runnable {

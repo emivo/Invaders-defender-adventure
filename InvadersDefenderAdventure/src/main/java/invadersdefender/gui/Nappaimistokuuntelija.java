@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- *
+ * Luokka kuuntelee näppäimistötapahtumia ja antaa sen perusteella pelille käskyjä, mitä tulee tehdä
  * @author emivo
  */
 public class Nappaimistokuuntelija implements KeyListener {

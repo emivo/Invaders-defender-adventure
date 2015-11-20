@@ -9,6 +9,10 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
+ * Luokka on pelin ydin, joka luo pelikentän ja kertoo mitä pelissä tapahtuu.
+ * Luokka pitää huolen pelissä liikkuvien liikkeestä, pistetilanteesta ja
+ * taustakuvan vierityksestä
+ *
  * @author emivo
  */
 public class Peli extends Timer implements ActionListener {
@@ -16,7 +20,7 @@ public class Peli extends Timer implements ActionListener {
 
     private final Pelikentta pelikentta;
     private JFrame ikkuna;
-    private final Huipputulokset huipputulokset;
+    private Huipputulokset huipputulokset;
     private PelinPiirtoalusta piirtoalusta;
     private int vihollisetLiikkuViiveLaskuri;
     private int vihollisetAmpuuViiveLaskuri;
@@ -25,6 +29,7 @@ public class Peli extends Timer implements ActionListener {
     private Pelitilanne tilanne;
     private int pisteet;
     private int taustanLeikkauskohta;
+    private static boolean TEST = false;
 
     public Peli(int pelikentanSivunpituus) {
         super(100, null);
@@ -34,13 +39,24 @@ public class Peli extends Timer implements ActionListener {
         this.vihollisetAmpuuViiveLaskuri = AMPUMISVIIVE;
         this.vihollisetLiikkuViiveLaskuri = LIIKKUMISVIIVE;
         this.huipputulokset = new Huipputulokset();
+        huipputulokset.lataaTulokset();
         this.taustanLeikkauskohta = 0;
+        this.piirtoalusta = null;
 
         this.pisteet = 0;
-        this.tilanne = Pelitilanne.KAYNNISSA;
+        this.tilanne = Pelitilanne.ALKURUUTU;
 
-        setInitialDelay(500);
+        setInitialDelay(200);
         lisaaKuuntelija();
+    }
+
+    /**
+     * metodi asettaa olion testaus käyttöön, jolloin huipputuloksia ei lueta
+     * eikä tallenneta
+     */
+    public void setTEST() {
+        TEST = true;
+        huipputulokset = new Huipputulokset();
     }
 
     private void lisaaKuuntelija() {
@@ -89,8 +105,13 @@ public class Peli extends Timer implements ActionListener {
             setTilanne(Pelitilanne.PAUSE);
         } else if (tilanne != Pelitilanne.LOPPU) {
             start();
-            setTilanne(Pelitilanne.KAYNNISSA);
         }
+    }
+
+    @Override
+    public void start() {
+        setTilanne(Pelitilanne.KAYNNISSA);
+        super.start();
     }
 
     public void setPiirtoalusta(PelinPiirtoalusta piirtoalusta) {
@@ -101,13 +122,14 @@ public class Peli extends Timer implements ActionListener {
         pelikentta.kaynnistaUudelleen();
 
         this.pisteet = 0;
-        this.tilanne = Pelitilanne.KAYNNISSA;
 
         start();
     }
 
     public void paivita() {
-        piirtoalusta.paivitaPiirto();
+        if (!TEST && piirtoalusta != null) {
+            piirtoalusta.paivitaPiirto();
+        }
     }
 
     @Override
@@ -119,9 +141,6 @@ public class Peli extends Timer implements ActionListener {
         pelikentta.ammuksetLiiku();
         vihollistenViiveAmmustenLiikkeeseen();
 
-        if (getDelay() - pisteet / 10 > 30) {
-            setInitialDelay(getDelay() - pisteet / 10);
-        }
         paivita();
         taustanLeikkauskohta++;
     }
@@ -129,22 +148,24 @@ public class Peli extends Timer implements ActionListener {
     public void peliLoppuu() {
         stop();
         setTilanne(Pelitilanne.LOPPU);
-        if (huipputulokset.getTulokset().size() < 10 || huipputulokset.getViimeinen().getTulos() < pisteet) {
-            String input = (String) JOptionPane.showInputDialog(
-                    ikkuna,
-                    "Enter name:",
-                    "New Highscore",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    "Galatic Warrior");
-            if (input != null) {
-                huipputulokset.lisaaTulos(input, pisteet);
-            } else {
-                huipputulokset.lisaaTulos("xxxxx", pisteet);
+        if (!TEST) {
+            if (huipputulokset.getTulokset().size() < 10 || huipputulokset.getViimeinen().getTulos() < pisteet) {
+                String input = (String) JOptionPane.showInputDialog(
+                        ikkuna,
+                        "Enter name:",
+                        "New Highscore",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        "Galatic Warrior");
+                if (input != null) {
+                    huipputulokset.lisaaTulos(input, pisteet);
+                } else {
+                    huipputulokset.lisaaTulos("xxxxx", pisteet);
+                }
             }
+            tallennaTulokset();
         }
-        tallennaTulokset();
     }
 
     private void vihollistenViiveAmmustenLiikkeeseen() {
@@ -161,8 +182,17 @@ public class Peli extends Timer implements ActionListener {
         }
     }
 
+    /**
+     * metodi kasvattaa käynnissä olevan pelin pistetilannetta
+     */
     void lisaaPisteita() {
-        pisteet += 10;
+        if (tilanne == Pelitilanne.KAYNNISSA) {
+            pisteet += 10;
+            if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 40) {
+                setDelay(getDelay() - 1);
+                System.out.println(getDelay());
+            }
+        }
     }
 
     public void tallennaTulokset() {

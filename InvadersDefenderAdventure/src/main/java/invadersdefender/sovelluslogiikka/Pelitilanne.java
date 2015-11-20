@@ -1,4 +1,3 @@
-
 package invadersdefender.sovelluslogiikka;
 
 /**
@@ -7,5 +6,5 @@ package invadersdefender.sovelluslogiikka;
  */
 public enum Pelitilanne {
 
-    KAYNNISSA, PAUSE, LOPPU, TULOKSET
+    ALKURUUTU, KAYNNISSA, PAUSE, LOPPU, TULOKSET
 }

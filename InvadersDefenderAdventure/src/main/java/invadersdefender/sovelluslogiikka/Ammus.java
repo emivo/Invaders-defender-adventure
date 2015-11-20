@@ -1,50 +1,31 @@
 package invadersdefender.sovelluslogiikka;
+
 /**
+ * Luokan olioilla on konstruktiossa annettu suunta, johon luokan oliot liikuttaessa aina liikkuvat
  * @author emivo
  */
-public class Ammus implements Liikkuva {
-    
-    private final Suunta suunta;
-    private Pala sijainti;
+public class Ammus extends Pala {
 
-    
-    // ammus on nyt yhden kokoinen?!"
-    // Ammukset eivät ainakaan tässä vaiheessa saa vaihtaa suunta
+    private final Suunta suunta;
+
     public Ammus(int x, int y, Suunta suunta) {
-        this.sijainti = new Pala(x,y);
+        super(x, y);
         this.suunta = suunta;
     }
-
-    @Override
-    public int getX() {
-        return sijainti.getX();
-    }
-
-    @Override
-    public int getY() {
-        return sijainti.getY();
-    }
-
-    public Pala getSijainti() {
-        return sijainti;
-    }
-
+    /**
+     * metodi antaa suunnan johon ammus on liikkumassa
+     * @return paluttaa suunnan, johon ammus liikkuu
+     */
     public Suunta getSuunta() {
         return suunta;
     }
-    
-    @Override
-    public void liiku(Suunta suunta) {
-        sijainti.liiku(suunta);
-    }
 
+    /**
+     * metodilla siirretään oliota samoin kuin Pala.liiku(Suunta)
+     * @see Pala#liiku(Suunta)
+     */
     public void liiku() {
         liiku(this.suunta);
-    }
-    
-    @Override
-    public int getKoko() {
-        return 1;
     }
 
 }

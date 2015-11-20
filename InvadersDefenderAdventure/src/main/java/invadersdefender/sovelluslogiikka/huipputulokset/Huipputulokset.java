@@ -5,68 +5,64 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
+ * Luokka lukee, tallentaa ja kirjaa Pelaajia taulukkoon. Taulukossa
+ * maksimimäärä pelaajia on 10.
  *
  * @author emivo
  */
 public class Huipputulokset {
 
-    private PriorityQueue<Pelaaja> tulokset;
-    private Pelaaja viimeinen;
+    private ArrayList<Pelaaja> tulokset;
 
     public Huipputulokset() {
+        tulokset = new ArrayList<>();
+    }
+
+    public boolean lataaTulokset() {
         try {
             try (FileInputStream fis = new FileInputStream("huipputulokset.data"); ObjectInputStream ois = new ObjectInputStream(fis)) {
-                tulokset = (PriorityQueue<Pelaaja>) ois.readObject();
+                tulokset = (ArrayList<Pelaaja>) ois.readObject();
+                return true;
             }
         } catch (IOException | ClassNotFoundException e) {
-            tulokset = new PriorityQueue<>();
+            return false;
         }
-        viimeinen = tulokset.poll();
-
-        PriorityQueue<Pelaaja> uusiTulokset = new PriorityQueue<>();
-        boolean jatka = true;
-        while (jatka) {
-            Pelaaja tmp = tulokset.poll();
-            uusiTulokset.add(viimeinen);
-            jatka = false;
-            if (tmp != null) {
-                viimeinen = tmp;
-                jatka = true;
-            }
-        }
-        tulokset = uusiTulokset;
     }
 
     public Pelaaja getViimeinen() {
-        return viimeinen;
+        if (tulokset.isEmpty()) {
+            return null;
+        } else {
+            return tulokset.get(tulokset.size() - 1);
+        }
     }
 
     public void lisaaTulos(String nimi, int tulos) {
         Pelaaja pelaaja = new Pelaaja(tulos, nimi);
         tulokset.add(pelaaja);
         if (tulokset.size() > 10) {
-            // poista huonoint
-            PriorityQueue<Pelaaja> uusiTulokset = new PriorityQueue<>();
-            for (int i = 0; i < 10; ++i) {
-                viimeinen = tulokset.poll();
-                uusiTulokset.add(viimeinen);
-            }
-            tulokset = uusiTulokset;
-        } else if (viimeinen.getTulos() > tulos) {
-            viimeinen = pelaaja;
+            sort(10);
+        } else {
+            sort(tulokset.size());
         }
     }
 
-    public PriorityQueue<Pelaaja> getTulokset() {
-        return tulokset;
+    private void sort(int koko) {
+        Pelaaja[] pelaajat = new Pelaaja[koko];
+        pelaajat = tulokset.toArray(pelaajat);
+        Arrays.sort(pelaajat);
+        tulokset.clear();
+        for (int i = 0; i < pelaajat.length; ++i) {
+            tulokset.add(pelaajat[i]);
+        }
     }
 
-    public void setTulokset(PriorityQueue<Pelaaja> tulokset) {
-        this.tulokset = tulokset;
+    public ArrayList<Pelaaja> getTulokset() {
+        return tulokset;
     }
 
     public void tallennaTulokset() {
@@ -75,7 +71,6 @@ public class Huipputulokset {
                 oos.writeObject(tulokset);
                 oos.close();
                 fos.close();
-
             }
         } catch (Exception e) {
             // tänne ei pitäisi voida päätyä

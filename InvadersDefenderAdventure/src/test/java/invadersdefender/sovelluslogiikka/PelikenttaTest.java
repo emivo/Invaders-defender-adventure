@@ -35,6 +35,7 @@ public class PelikenttaTest {
     public void setUp() {
         int koko = 20;
         Peli p = new Peli(koko);
+        p.setTEST();
         pelikentta = p.getPelikentta();
     }
 
@@ -54,11 +55,11 @@ public class PelikenttaTest {
         pelikentta.alusAmmu(pelikentta.getOmaAlus());
         try {
             Ammus ammus = pelikentta.getAmmukset().get(0);
-            int x = ammus.getSijainti().getX();
-            int y = ammus.getSijainti().getY();
-            Pala alkusijaintiAmmuksella = new Pala(x, y);
+            int x = ammus.getX();
+            int y = ammus.getY();
+            Ammus alkusijaintiAmmuksella = new Ammus(x, y, Suunta.YLOS);
             pelikentta.ammuksetLiiku();
-            boolean testinTulos = !alkusijaintiAmmuksella.equals(pelikentta.getAmmukset().get(0).getSijainti());
+            boolean testinTulos = !alkusijaintiAmmuksella.equals(pelikentta.getAmmukset().get(0));
             assertTrue("Ammukset pysyvät paikoillaan, vaikka niiden pitäisi liikkua", testinTulos);
         } catch (Exception e) {
             assertTrue("Alus ei ammu, jolloin ammuksen liikkumista ei voi testata", false);
@@ -69,7 +70,7 @@ public class PelikenttaTest {
     public void omaAlusEiPoistuKentalta() {
         Alus omaAlus = pelikentta.getOmaAlus();
 
-        int matkaPoisAlhaalta = pelikentta.getPelikentanKorkeus()- omaAlus.getY() + omaAlus.getKoko();
+        int matkaPoisAlhaalta = pelikentta.getPelikentanKorkeus() - omaAlus.getY() + omaAlus.getKoko();
         for (int i = 0; i <= matkaPoisAlhaalta; i++) {
             pelikentta.omaAlusLiiku(Suunta.ALAS);
         }
@@ -84,7 +85,7 @@ public class PelikenttaTest {
             pelikentta.omaAlusLiiku(Suunta.VASEN);
         }
         assertTrue("Oma alus poistuu pelikentän vasemmanreunan yli", omaAlus.getX() >= 0);
-        int matkaOikealtaUlos = pelikentta.getPelikentanLeveys()- omaAlus.getX() + omaAlus.getKoko();
+        int matkaOikealtaUlos = pelikentta.getPelikentanLeveys() - omaAlus.getX() + omaAlus.getKoko();
         for (int i = 0; i < matkaOikealtaUlos; i++) {
             pelikentta.omaAlusLiiku(Suunta.OIKEA);
         }
@@ -120,9 +121,28 @@ public class PelikenttaTest {
     public void vihollisetTuhoutuvatAmmuksistaJaPisteetLisaantyy() {
         pelikentta.vihollisetTulevatEsille();
         Ammus ammus = new Ammus(pelikentta.getViholliset().get(0).getX(), pelikentta.getViholliset().get(0).getY(), Suunta.YLOS);
+        pelikentta.getPeli().start();
 
         assertTrue("Ammus ei osu viholliseen vaikka pitäisi", pelikentta.osuukoAmmus(ammus));
         assertEquals("Pisteet eivät kasva vaikka tuhoaa vihollisen", 10, pelikentta.getPeli().getPisteet());
+    }
+
+    @Test
+    public void osuukoAmmukset() {
+        pelikentta.getPeli().start();
+        pelikentta.vihollisetTulevatEsille();
+        Ammus ammus = new Ammus(pelikentta.getViholliset().get(0).getX(), pelikentta.getViholliset().get(0).getY(), Suunta.YLOS);
+        pelikentta.getAmmukset().add(ammus);
+        int ammuksiaAlussa = pelikentta.getAmmukset().size();
+        pelikentta.omaAlusLiiku(Suunta.OIKEA);
+        assertNotEquals(ammuksiaAlussa, pelikentta.getAmmukset().size());
+        
+        ammus = new Ammus(pelikentta.getOmaAlus().getX(), pelikentta.getOmaAlus().getY(), Suunta.ALAS);
+        pelikentta.getAmmukset().add(ammus);
+        ammuksiaAlussa = pelikentta.getAmmukset().size();
+        pelikentta.vihollisetLiiku();
+        assertNotEquals(ammuksiaAlussa, pelikentta.getAmmukset().size());
+        assertEquals(Pelitilanne.LOPPU, pelikentta.getPeli().getTilanne());
     }
 
     @Test
@@ -176,6 +196,16 @@ public class PelikenttaTest {
         for (int i = 0; i < pelikentta.getViholliset().size(); i++) {
             liikkuukoViholliset(i);
         }
+    }
+
+    @Test
+    public void ammuksetLiikkuuPoisKentalta() {
+        pelikentta.getAmmukset().add(new Ammus(1, 0, Suunta.YLOS));
+        pelikentta.ammuksetLiiku();
+        assertTrue(pelikentta.getAmmukset().isEmpty());
+        pelikentta.getAmmukset().add(new Ammus(1, pelikentta.getPelikentanKorkeus(), Suunta.ALAS));
+        pelikentta.ammuksetLiiku();
+        assertTrue(pelikentta.getAmmukset().isEmpty());
     }
 
     private void liikkuukoViholliset(int i) {

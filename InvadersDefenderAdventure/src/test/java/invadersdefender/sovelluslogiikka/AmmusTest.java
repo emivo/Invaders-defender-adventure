@@ -12,46 +12,46 @@ import static org.junit.Assert.*;
  * @author emivo
  */
 public class AmmusTest {
-    
+
     Ammus ammus;
-    
+
     public AmmusTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
         ammus = null;
     }
-    
+
     private boolean ammusLiikkuu(Suunta suunta) {
-        ammus = new Ammus(1,1,suunta);
+        ammus = new Ammus(1, 1, suunta);
         ammus.liiku();
-        Pala oikeaPala;
+        Ammus oikeaPala;
         if (suunta == Suunta.YLOS) {
-            oikeaPala = new Pala(1,0);
+            oikeaPala = new Ammus(1, 0, suunta);
         } else {
-            oikeaPala = new Pala(1,2);
+            oikeaPala = new Ammus(1, 2, suunta);
         }
-        return oikeaPala.equals(ammus.getSijainti());
+        return oikeaPala.equals(ammus);
     }
 
     @Test
     public void ammusLiikkuuYlos() {
         assertTrue("Ammus ei liiku oikein", ammusLiikkuu(Suunta.YLOS));
     }
-    
+
     @Test
     public void ammusLiikkuuAlas() {
         assertTrue("Ammus ei liiku oikein", ammusLiikkuu(Suunta.ALAS));

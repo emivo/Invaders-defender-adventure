@@ -47,12 +47,16 @@ public class PelinPiirtoalusta extends JPanel {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
+        piirraTausta(graphics);
+
         if (peli.getTilanne() == Pelitilanne.KAYNNISSA) {
             piirraPeli(graphics);
         } else if (peli.getTilanne() == Pelitilanne.PAUSE) {
             piirraPause(graphics);
         } else if (peli.getTilanne() == Pelitilanne.TULOKSET) {
             piirraHuipputulokset(graphics);
+        } else if (peli.getTilanne() == Pelitilanne.ALKURUUTU) {
+            piirraPelinAlkuruutu(graphics);
         } else {
             piirraPeliLoppu(graphics);
         }
@@ -64,7 +68,6 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraPeli(Graphics graphics) {
-        piirraTausta(graphics);
 
         piirraOmaAlus(graphics);
         piirraViholliset(graphics);
@@ -134,6 +137,7 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraPeliLoppu(Graphics graphics) {
+
         graphics.setColor(Color.red);
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
@@ -144,6 +148,8 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraPause(Graphics graphics) {
+        piirraPeli(graphics);
+
         graphics.setColor(Color.red);
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
@@ -189,35 +195,49 @@ public class PelinPiirtoalusta extends JPanel {
         graphics.setColor(Color.red);
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
-        PriorityQueue<Pelaaja> uusi = new PriorityQueue<>();
-        Pelaaja pelaaja = peli.getHuipputulokset().getTulokset().poll();
-        int i = 1;
-        while (pelaaja != null) {
-            uusi.add(pelaaja);
-            graphics.drawString(luoRivi(i, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
-            pelaaja = peli.getHuipputulokset().getTulokset().poll();
-            i++;
-        }
-        peli.getHuipputulokset().setTulokset(uusi);
+        int huipputuloksia = peli.getHuipputulokset().getTulokset().size();
 
+        for (int i = 0; i < 10; i++) {
+            Pelaaja pelaaja = null;
+            if (i < huipputuloksia) {
+                pelaaja = peli.getHuipputulokset().getTulokset().get(i);
+            }
+            graphics.drawString(luoRivi(i + 1, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
+        }
     }
 
     private String luoRivi(int i, Pelaaja pelaaja) {
+        
+        String pelaaTulos = "xxxx  0";
+        if (pelaaja != null) {
+            pelaaTulos = pelaaja.toString();
+        }
+        
         StringBuilder sb = new StringBuilder();
         sb.append(i);
-        sb.append(" ");
-        sb.append(pelaaja.getNimi());
-        sb.append(" ");
-        sb.append(pelaaja.getTulos());
+        sb.append(". ");
+        sb.append(pelaaTulos);
         return sb.toString();
     }
 
     private void virhe() {
         JOptionPane.showMessageDialog(ikkuna,
                 "Some graphic components are missing.\n"
-                        + "Try again later.",
+                + "Try again later.",
                 "Fatal error",
                 JOptionPane.ERROR_MESSAGE);
         peli.peliLoppuu();
+    }
+
+    private void piirraPelinAlkuruutu(Graphics graphics) {
+
+        graphics.setColor(Color.red);
+        int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
+        int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
+        graphics.drawString("Press enter to start a game", paikkaX, paikkaY);
+
+        piirraOmaAlus(graphics);
+
+        piirraPistetilanne(graphics);
     }
 }

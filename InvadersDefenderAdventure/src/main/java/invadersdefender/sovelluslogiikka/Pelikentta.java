@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- *
+ * Luokka hallistee aluksia ja ammuksia ja ilmoittaa tapahtuvista muutoksista {@code Peli}:lle
  * @author emivo
  */
 public class Pelikentta {
@@ -54,6 +54,10 @@ public class Pelikentta {
         return omaAlus;
     }
 
+    /**
+     * Metodi käskee parametrinä saatavaa alusta ampumaan ja asettaa tämän ampuman ammuksen ammukset listaan
+     * @param alus olio, jonka koordinaatien perusteella {@code Ammus} saa sijaintinsa ja suuntansa
+     */
     public void alusAmmu(Alus alus) {
         ammukset.add(alus.ammu());
     }
@@ -88,6 +92,9 @@ public class Pelikentta {
         return false;
     }
 
+    /**
+     * metodi asettaa vihollisoliota kentän yläreunan yläpuolelle, josta ne lähtevät liikkumaan alas kentälle päin
+     */
     public void vihollisetTulevatEsille() {
         // kuinka monta vihollista tulee
         // KESKEN
@@ -109,7 +116,7 @@ public class Pelikentta {
             Ammus ammus = iterator.next();
             ammus.liiku();
             // ammukset eivät voi poistua kentänreunalta
-            if (ammus.getSijainti().getY() < 0 || ammus.getSijainti().getY() > pelikentanKorkeus) {
+            if (ammus.getY() < 0 || ammus.getY() > pelikentanKorkeus) {
                 iterator.remove();
             } else if (osuukoAmmus(ammus)) {
                 iterator.remove();

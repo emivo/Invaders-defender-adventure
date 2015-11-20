@@ -31,7 +31,6 @@ public class Main {
             }
         }
         peli.setPiirtoalusta(kaytto.getPiirtoalusta());
-        peli.start();
     }
 
 }

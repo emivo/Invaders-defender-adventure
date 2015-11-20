@@ -87,6 +87,10 @@ public class Alus implements Liikkuva {
         return sijainti;
     }
 
+    /**
+     * Metodi liikutta aluksen sijainti palasta haluttuun suuntaan
+     * @param suunta Suunta, johon halutaan palasta liikuttaa
+     */
     @Override
     public void liiku(Suunta suunta) {
         this.sijainti.liiku(suunta);

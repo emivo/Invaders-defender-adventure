@@ -1,5 +1,6 @@
 package invadersdefender.sovelluslogiikka;
 /**
+ * Luokkalla voidaan luoda yksinkertainen kaksiulotteinen pala jota voidaan liikutella liiku metodin avulla
  * @author emivo
  */
 public class Pala implements Liikkuva {
@@ -22,6 +23,10 @@ public class Pala implements Liikkuva {
         return y;
     }
     
+    /**
+     * Olion koordinaatit muuttuvat sen mukaan mikä {@link Suunta} parametrinä annetaan
+     * @param suunta Suunta, johon halutaan palaa liikuttaa
+     */
     @Override
     public void liiku(Suunta suunta) {
         

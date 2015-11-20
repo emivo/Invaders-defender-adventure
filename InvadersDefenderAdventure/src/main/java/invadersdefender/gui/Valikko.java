@@ -10,7 +10,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 /**
- *
+ * Luokka luo peliin liittyvään JFrame ikkunaan valikkopalkin ja siihen valikot. Valikkopalkki sisältää yksinkertaisia toimitoja peliin liittyen
  * @author emivo
  */
 public class Valikko implements ActionListener {
@@ -22,7 +22,11 @@ public class Valikko implements ActionListener {
         this.peli = peli;
         this.ikkuna = ikkuna;
     }
-
+    
+    /**
+     * Metodi luo valikkopalkin ja valikot ja niihin liittyvyät toiminnot
+     * @return 
+     */
     public JMenuBar luoValikko() {
 
         JMenuBar valikkopalkki = new JMenuBar();
@@ -44,7 +48,7 @@ public class Valikko implements ActionListener {
         return valikkopalkki;
     }
 
-    public void lisaaValikkopainike(JMenu paavalikko, String nimi, int ke) {
+    private void lisaaValikkopainike(JMenu paavalikko, String nimi, int ke) {
         JMenuItem lisattava = new JMenuItem(nimi, ke);
         lisattava.addActionListener(this);
         paavalikko.add(lisattava);

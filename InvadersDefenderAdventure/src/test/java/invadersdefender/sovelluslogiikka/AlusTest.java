@@ -29,7 +29,7 @@ public class AlusTest {
 
     @Before
     public void setUp() {
-        alus = new Alus(1, 1, 1);
+        alus = new Alus(1, 1, 3);
     }
 
     @After
@@ -82,6 +82,10 @@ public class AlusTest {
     public void alusAmpuu() {
         Ammus ammus = alus.ammu();
         assertTrue("Alus ei ammu ammuksia", (ammus != null));
+        if (ammus != null) {
+            Ammus oletettu = new Ammus(alus.getX() + alus.getKoko() / 2, alus.getY() - 1, Suunta.OIKEA);
+            assertEquals(oletettu, ammus);
+        }
     }
 
     @Test
