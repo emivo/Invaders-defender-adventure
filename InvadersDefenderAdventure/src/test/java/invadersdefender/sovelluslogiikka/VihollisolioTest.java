@@ -63,6 +63,9 @@ public class VihollisolioTest {
     @Test
     public void vihollisetAmpuvatAlas() {
         Ammus ammus = vihollinen.ammu();
+        assertEquals(vihollinen.getX() + vihollinen.getKoko() / 2, ammus.getX());
+        assertEquals(vihollinen.getX() + vihollinen.getKoko() + 1, ammus.getY());
+        assertEquals(Suunta.ALAS, ammus.getSuunta());
         Ammus oikeaSijainti = new Ammus(ammus.getX(), ammus.getY(), ammus.getSuunta());
         oikeaSijainti.liiku(Suunta.ALAS);
         ammus.liiku();

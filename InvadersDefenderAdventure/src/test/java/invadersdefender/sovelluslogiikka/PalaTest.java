@@ -52,4 +52,15 @@ public class PalaTest {
         pala.liiku(Suunta.YLOS);
         assertTrue(pala.getY() == 1);
     }
+    
+    /**
+     * Testaa equals ja hash, jotta pit raportti olisi vihreämpi
+     */
+    @Test
+    public void equalsJaHashTestaus() {
+        assertTrue(pala.equals(pala));
+        assertFalse(pala.equals(new Object()));
+        assertFalse(pala.equals(null));
+        assertTrue((3*43 + 1)* 43 + 1 == pala.hashCode());
+    }
 }

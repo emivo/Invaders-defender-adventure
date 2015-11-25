@@ -44,7 +44,7 @@ public class Peli extends Timer implements ActionListener {
 
         this.pisteet = 0;
         this.tilanne = Pelitilanne.ALKURUUTU;
-        this.vihollistenMaara = 1;
+        this.vihollistenMaara = 2;
 
         setInitialDelay(200);
         lisaaKuuntelija();
@@ -195,13 +195,16 @@ public class Peli extends Timer implements ActionListener {
             pisteet += 10;
             if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 40) {
                 setDelay(getDelay() - 1);
-                if (getDelay() % 10 == 0) {
+                if (getDelay() % 5 == 0 && vihollistenMaara < 7) {
                     vihollistenMaara++;
                 }
             }
         }
     }
 
+    /**
+     * Pelin huipputuloslista tallennetaan 
+     */
     public void tallennaTulokset() {
         huipputulokset.tallennaTulokset();
     }
@@ -213,12 +216,14 @@ public class Peli extends Timer implements ActionListener {
         if (tilanne == Pelitilanne.LOPPU) {
             kaynnistaPeliUuudelleen();
         }
-        pause();
         stop();
         setTilanne(Pelitilanne.TULOKSET);
         paivitaPelinpiirto();
     }
 
+    /**
+     * Pelissä oleva huipputuloslista tyhjennetään
+     */
     public void tyhjennaHuipputulokset() {
         huipputulokset.tyhjennaHuipputulokset();
     }

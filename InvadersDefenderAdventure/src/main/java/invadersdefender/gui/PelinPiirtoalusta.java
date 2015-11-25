@@ -242,6 +242,10 @@ public class PelinPiirtoalusta extends JPanel {
         piirraPistetilanne(graphics);
     }
 
+    /**
+     * Metodi luo ikkunan pelaajan nimen kysymistä varten
+     * @return palauttaa nimen, jonka käyttäjä syöttää ikkunaan. Jos mitään ei syötetä palautetaan {@code XXXXX}
+     */
     public String uusiHuipputulos() {
         String nimi = (String) JOptionPane.showInputDialog(
                 ikkuna,

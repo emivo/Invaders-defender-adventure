@@ -113,6 +113,9 @@ public class Pelikentta {
         }
     }
 
+    /**
+     * Metodi liikuttaa kaikkia kentällä olevia ammuksia sekä tarkistaa osuvatko ne johonkin alukseen tai poistuvatko ne kentältä
+     */
     public void ammuksetLiiku() {
         Iterator<Ammus> iterator = ammukset.iterator();
         while (iterator.hasNext()) {
@@ -137,6 +140,10 @@ public class Pelikentta {
         }
     }
 
+    /**
+     * Metodi liikuttaa omaa alusta pelikentällä
+     * @param suunta Suunta, johon alusta halutaan liikuttaa
+     */
     public void omaAlusLiiku(Suunta suunta) {
         if (voikoLiikkua(omaAlus, suunta)) {
             omaAlus.liiku(suunta);
@@ -147,6 +154,9 @@ public class Pelikentta {
         osuukoAmmukset();
     }
 
+    /**
+     * Metodi käskee jokaisen vihollisolion kentällä liikkumaan
+     */
     public void vihollisetLiiku() {
         if (!viholliset.isEmpty()) {
             boolean onkoViimeinenVihollinenKentalla = viholliset.get(0).getY() >= 0;
@@ -210,6 +220,10 @@ public class Pelikentta {
         }
     }
 
+    /**
+     * Metodi tarkistaa osuuko jokin vihollisista omaan alukseen
+     * @return palauttaa {@code true}, jos jokin vihollinen osuu omaan alukseen
+     */
     public boolean osuukoVihollisetOmaanAlukseen() {
         for (Vihollisolio olio : viholliset) {
             if (omaAlus.osuukoAlukseen(olio)) {
@@ -219,6 +233,9 @@ public class Pelikentta {
         return false;
     }
 
+    /**
+     * Satunnainen kentällä oleva vihollinen ampuu {@code Ammus} olion
+     */
     public void jokuVihollinenAmpuu() {
         if (!viholliset.isEmpty()) {
             Vihollisolio vihu = viholliset.get(new Random().nextInt(viholliset.size()));
@@ -235,6 +252,9 @@ public class Pelikentta {
                 || uusiSijainti.getY() < 0 || uusiSijainti.getY() + alus.getKoko() > pelikentanKorkeus);
     }
 
+    /**
+     * Nollaa pelikentän alkuasentoon, ei ammuksia ei vihollisia ja oma alus alkupaikalla
+     */
     void kaynnistaUudelleen() {
         this.omaAlus = luoOmaAlus();
 

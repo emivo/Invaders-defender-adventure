@@ -136,7 +136,7 @@ public class PelikenttaTest {
         int ammuksiaAlussa = pelikentta.getAmmukset().size();
         pelikentta.omaAlusLiiku(Suunta.OIKEA);
         assertNotEquals(ammuksiaAlussa, pelikentta.getAmmukset().size());
-        
+
         ammus = new Ammus(pelikentta.getOmaAlus().getX(), pelikentta.getOmaAlus().getY(), Suunta.ALAS);
         pelikentta.getAmmukset().add(ammus);
         ammuksiaAlussa = pelikentta.getAmmukset().size();
@@ -212,6 +212,11 @@ public class PelikenttaTest {
         Pala vanhaSijaintiViholliselle = new Pala(pelikentta.getViholliset().get(i).getX(), pelikentta.getViholliset().get(i).getY());
         pelikentta.vihollisetLiiku();
         assertTrue(!pelikentta.getViholliset().get(i).sijainti().equals(vanhaSijaintiViholliselle));
+    }
+
+    @Test
+    public void testaaPelikentanleveys() {
+        assertEquals((int) (pelikentta.getPelikentanKorkeus() * 2 / 3), pelikentta.getPelikentanLeveys());
     }
 
 }

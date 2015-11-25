@@ -6,7 +6,6 @@
 package invadersdefender.sovelluslogiikka;
 
 import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -75,6 +74,7 @@ public class PeliTest {
         peli.start();
         peli.peliLoppuu();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.LOPPU, peli.getTilanne());
+        assertFalse("Timer on vielä käynnissä, kun peli on loppunut", peli.isRunning());
     }
 
     @Test
@@ -93,6 +93,7 @@ public class PeliTest {
     public void huipputuloksetSiirtymyminen() {
         peli.asetaHuipputuloistenKatselutilaan();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.TULOKSET, peli.getTilanne());
+        assertFalse(peli.isRunning());
         peli.pause();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.KAYNNISSA, peli.getTilanne());
         Alus vanhaAlus = peli.getPelikentta().getOmaAlus();
@@ -101,11 +102,12 @@ public class PeliTest {
         peli.pause();
         assertNotEquals(vanhaAlus, peli.getPelikentta().getOmaAlus());
         assertEquals("Peli on väärässä tilassa", Pelitilanne.KAYNNISSA, peli.getTilanne());
+        
     }
-    
+
     @Test
     public void peliNopeutuuPisteidenKasvaessa() {
-        
+
         peli.start();
         int alkuNopeus = peli.getDelay();
         for (int i = 0; i < 5; i++) {

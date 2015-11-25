@@ -1,7 +1,6 @@
 package invadersdefender.gui;
 
 import invadersdefender.sovelluslogiikka.Peli;
-import java.awt.Container;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -33,7 +32,7 @@ public class Kayttoliittyma implements Runnable {
         
         ikkuna.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        rakennaIkkunanKomponentit(ikkuna.getContentPane());
+        rakennaIkkunanKomponentit();
         ikkuna.setPreferredSize(new Dimension(ikkunanLeveys, ikkunanKorkeus + ikkuna.getJMenuBar().getHeight() ));
 
         ikkuna.pack();
@@ -46,8 +45,12 @@ public class Kayttoliittyma implements Runnable {
         return piirtoalusta;
     }
 
-    public void rakennaIkkunanKomponentit(Container container) {
-        container.add(piirtoalusta);
+    /**
+     * Metodi lisää pelinpiirtoalustan ikkunaan sekä valikon ja näppäimistökuuntelijan
+     */
+    public void rakennaIkkunanKomponentit() {
+        
+        ikkuna.getContentPane().add(piirtoalusta);
         ikkuna.setJMenuBar(new Valikko(peli, ikkuna).luoValikko());
 
         ikkuna.addKeyListener(new Nappaimistokuuntelija(peli));
