@@ -94,7 +94,7 @@ public class PelikenttaTest {
 
     @Test
     public void vihollisolioitaSaadaanKentalle() {
-        pelikentta.vihollisetTulevatEsille();
+        pelikentta.vihollisetTulevatEsille(1);
         assertTrue("Yhtään vihollista ei tule peliin", !pelikentta.getViholliset().isEmpty());
     }
 
@@ -119,7 +119,7 @@ public class PelikenttaTest {
 
     @Test
     public void vihollisetTuhoutuvatAmmuksistaJaPisteetLisaantyy() {
-        pelikentta.vihollisetTulevatEsille();
+        pelikentta.vihollisetTulevatEsille(3);
         Ammus ammus = new Ammus(pelikentta.getViholliset().get(0).getX(), pelikentta.getViholliset().get(0).getY(), Suunta.YLOS);
         pelikentta.getPeli().start();
 
@@ -130,7 +130,7 @@ public class PelikenttaTest {
     @Test
     public void osuukoAmmukset() {
         pelikentta.getPeli().start();
-        pelikentta.vihollisetTulevatEsille();
+        pelikentta.vihollisetTulevatEsille(3);
         Ammus ammus = new Ammus(pelikentta.getViholliset().get(0).getX(), pelikentta.getViholliset().get(0).getY(), Suunta.YLOS);
         pelikentta.getAmmukset().add(ammus);
         int ammuksiaAlussa = pelikentta.getAmmukset().size();
@@ -192,7 +192,7 @@ public class PelikenttaTest {
 
     @Test
     public void vihollisetLiikkuu() {
-        pelikentta.vihollisetTulevatEsille();
+        pelikentta.vihollisetTulevatEsille(5);
         for (int i = 0; i < pelikentta.getViholliset().size(); i++) {
             liikkuukoViholliset(i);
         }

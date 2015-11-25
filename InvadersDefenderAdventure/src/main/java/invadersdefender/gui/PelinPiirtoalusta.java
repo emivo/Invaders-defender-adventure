@@ -15,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -204,15 +203,17 @@ public class PelinPiirtoalusta extends JPanel {
             }
             graphics.drawString(luoRivi(i + 1, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
         }
+
+        graphics.drawString("Clear highscores press X", (int) (paikkaX * palojenKoko), paikkaY);
     }
 
     private String luoRivi(int i, Pelaaja pelaaja) {
-        
+
         String pelaaTulos = "xxxx  0";
         if (pelaaja != null) {
             pelaaTulos = pelaaja.toString();
         }
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append(i);
         sb.append(". ");
@@ -240,4 +241,20 @@ public class PelinPiirtoalusta extends JPanel {
 
         piirraPistetilanne(graphics);
     }
+
+    public String uusiHuipputulos() {
+        String nimi = (String) JOptionPane.showInputDialog(
+                ikkuna,
+                "Enter name:",
+                "New Highscore",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "Galatic Warrior");
+        if (nimi == null) {
+            nimi = "XXXXX";
+        }
+        return nimi;
+    }
+
 }

@@ -8,7 +8,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * Luokka kuuntelee näppäimistötapahtumia ja antaa sen perusteella pelille käskyjä, mitä tulee tehdä
+ * Luokka kuuntelee näppäimistötapahtumia ja antaa sen perusteella pelille
+ * käskyjä, mitä tulee tehdä
+ *
  * @author emivo
  */
 public class Nappaimistokuuntelija implements KeyListener {
@@ -54,31 +56,40 @@ public class Nappaimistokuuntelija implements KeyListener {
                     pause();
                 }
                 break;
+            case KeyEvent.VK_X:
+                if (peli.getTilanne() == Pelitilanne.TULOKSET) {
+                    tyhjennaHuipputulokset();
+                }
         }
     }
 
     private void uusiPeli() {
         peli.kaynnistaPeliUuudelleen();
-        peli.paivita();
+        peli.paivitaPelinpiirto();
     }
 
     private void pause() {
         peli.pause();
-        peli.paivita();
+        peli.paivitaPelinpiirto();
     }
 
     private void ammu() {
         if (peli.isRunning()) {
             pelikentta.alusAmmu(pelikentta.getOmaAlus());
-            peli.paivita();
+            peli.paivitaPelinpiirto();
         }
     }
 
     private void liiku(Suunta suunta) {
         if (peli.isRunning()) {
             pelikentta.omaAlusLiiku(suunta);
-            peli.paivita();
+            peli.paivitaPelinpiirto();
         }
+    }
+
+    private void tyhjennaHuipputulokset() {
+       peli.tyhjennaHuipputulokset();
+       peli.paivitaPelinpiirto();
     }
 
     @Override

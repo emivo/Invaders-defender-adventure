@@ -62,7 +62,7 @@ public class Valikko implements ActionListener {
                 break;
             case "Pause":
                 peli.pause();
-                peli.paivita();
+                peli.paivitaPelinpiirto();
                 break;
             case "Exit":
                 peli.tallennaTulokset();
@@ -71,7 +71,7 @@ public class Valikko implements ActionListener {
                 peli.stop();
                 break;
             case "Highscores":
-                peli.huipputulokset();
+                peli.asetaHuipputuloistenKatselutilaan();
                 break;
         }
     }

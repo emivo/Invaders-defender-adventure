@@ -5,7 +5,6 @@ import invadersdefender.gui.PelinPiirtoalusta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -29,7 +28,7 @@ public class Peli extends Timer implements ActionListener {
     private Pelitilanne tilanne;
     private int pisteet;
     private int taustanLeikkauskohta;
-    private static boolean TEST = false;
+    private int vihollistenMaara;
 
     public Peli(int pelikentanSivunpituus) {
         super(100, null);
@@ -45,6 +44,7 @@ public class Peli extends Timer implements ActionListener {
 
         this.pisteet = 0;
         this.tilanne = Pelitilanne.ALKURUUTU;
+        this.vihollistenMaara = 1;
 
         setInitialDelay(200);
         lisaaKuuntelija();
@@ -55,7 +55,6 @@ public class Peli extends Timer implements ActionListener {
      * eikä tallenneta
      */
     public void setTEST() {
-        TEST = true;
         huipputulokset = new Huipputulokset();
     }
 
@@ -108,6 +107,9 @@ public class Peli extends Timer implements ActionListener {
         }
     }
 
+    /**
+     * Käynnistää Timerin sekä asettaa pelitilanteen käynnissä tilaan
+     */
     @Override
     public void start() {
         setTilanne(Pelitilanne.KAYNNISSA);
@@ -118,16 +120,23 @@ public class Peli extends Timer implements ActionListener {
         this.piirtoalusta = piirtoalusta;
     }
 
+    /**
+     * Nollaa pelikentän ja pisteet sekä kännistä pelin
+     */
     public void kaynnistaPeliUuudelleen() {
         pelikentta.kaynnistaUudelleen();
 
         this.pisteet = 0;
+        this.vihollistenMaara = 1;
 
         start();
     }
 
-    public void paivita() {
-        if (!TEST && piirtoalusta != null) {
+    /**
+     * Metodi päivittää pelin piirtoalustan, jos sellainen on sille asetettu
+     */
+    public void paivitaPelinpiirto() {
+        if (piirtoalusta != null) {
             piirtoalusta.paivitaPiirto();
         }
     }
@@ -136,35 +145,31 @@ public class Peli extends Timer implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (pelikentta.getViholliset().isEmpty()) {
-            pelikentta.vihollisetTulevatEsille();
+            pelikentta.vihollisetTulevatEsille(vihollistenMaara);
+        }
+        // kun saavutetaan tuhat pistettä laitetaan vihollisia tulemaan tolkuton määrä siis jatkuvalla syötöllä
+        if (pisteet > 600 && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > 1) {
+            pelikentta.vihollisetTulevatEsille(vihollistenMaara);
         }
         pelikentta.ammuksetLiiku();
         vihollistenViiveAmmustenLiikkeeseen();
 
-        paivita();
+        paivitaPelinpiirto();
         taustanLeikkauskohta++;
     }
 
+    /**
+     * metodi asettaa pelin loppu tilaan ja tarkistaa onko syntynyt tallennetava
+     * huipputulos
+     */
     public void peliLoppuu() {
         stop();
         setTilanne(Pelitilanne.LOPPU);
-        if (!TEST) {
+        if (piirtoalusta != null) {
             if (huipputulokset.getTulokset().size() < 10 || huipputulokset.getViimeinen().getTulos() < pisteet) {
-                String input = (String) JOptionPane.showInputDialog(
-                        ikkuna,
-                        "Enter name:",
-                        "New Highscore",
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        null,
-                        "Galatic Warrior");
-                if (input != null) {
-                    huipputulokset.lisaaTulos(input, pisteet);
-                } else {
-                    huipputulokset.lisaaTulos("xxxxx", pisteet);
-                }
+                huipputulokset.lisaaTulos(piirtoalusta.uusiHuipputulos(), pisteet);
+                tallennaTulokset();
             }
-            tallennaTulokset();
         }
     }
 
@@ -190,7 +195,9 @@ public class Peli extends Timer implements ActionListener {
             pisteet += 10;
             if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 40) {
                 setDelay(getDelay() - 1);
-                System.out.println(getDelay());
+                if (getDelay() % 10 == 0) {
+                    vihollistenMaara++;
+                }
             }
         }
     }
@@ -199,14 +206,21 @@ public class Peli extends Timer implements ActionListener {
         huipputulokset.tallennaTulokset();
     }
 
-    public void huipputulokset() {
+    /**
+     * metodi asettaa pelin huipputulosten katselutilaan
+     */
+    public void asetaHuipputuloistenKatselutilaan() {
         if (tilanne == Pelitilanne.LOPPU) {
             kaynnistaPeliUuudelleen();
         }
         pause();
+        stop();
         setTilanne(Pelitilanne.TULOKSET);
-        paivita();
+        paivitaPelinpiirto();
+    }
 
+    public void tyhjennaHuipputulokset() {
+        huipputulokset.tyhjennaHuipputulokset();
     }
 
 }

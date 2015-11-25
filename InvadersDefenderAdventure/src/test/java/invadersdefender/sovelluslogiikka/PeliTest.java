@@ -91,13 +91,13 @@ public class PeliTest {
 
     @Test
     public void huipputuloksetSiirtymyminen() {
-        peli.huipputulokset();
+        peli.asetaHuipputuloistenKatselutilaan();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.TULOKSET, peli.getTilanne());
         peli.pause();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.KAYNNISSA, peli.getTilanne());
         Alus vanhaAlus = peli.getPelikentta().getOmaAlus();
         peli.peliLoppuu();
-        peli.huipputulokset();
+        peli.asetaHuipputuloistenKatselutilaan();
         peli.pause();
         assertNotEquals(vanhaAlus, peli.getPelikentta().getOmaAlus());
         assertEquals("Peli on väärässä tilassa", Pelitilanne.KAYNNISSA, peli.getTilanne());

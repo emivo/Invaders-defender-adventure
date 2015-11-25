@@ -24,7 +24,7 @@ public class Huipputulokset {
 
     public boolean lataaTulokset() {
         try {
-            try (FileInputStream fis = new FileInputStream("huipputulokset.data"); ObjectInputStream ois = new ObjectInputStream(fis)) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("huipputulokset.data"))) {
                 tulokset = (ArrayList<Pelaaja>) ois.readObject();
                 return true;
             }
@@ -45,13 +45,13 @@ public class Huipputulokset {
         Pelaaja pelaaja = new Pelaaja(tulos, nimi);
         tulokset.add(pelaaja);
         if (tulokset.size() > 10) {
-            sort(10);
+            jarjesta(10);
         } else {
-            sort(tulokset.size());
+            jarjesta(tulokset.size());
         }
     }
 
-    private void sort(int koko) {
+    private void jarjesta(int koko) {
         Pelaaja[] pelaajat = new Pelaaja[koko];
         pelaajat = tulokset.toArray(pelaajat);
         Arrays.sort(pelaajat);
@@ -75,6 +75,11 @@ public class Huipputulokset {
         } catch (Exception e) {
             // tänne ei pitäisi voida päätyä
         }
+    }
+    
+    public void tyhjennaHuipputulokset() {
+        tulokset.clear();
+        tallennaTulokset();
     }
 
 }

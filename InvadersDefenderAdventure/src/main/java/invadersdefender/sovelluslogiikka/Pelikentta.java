@@ -20,10 +20,10 @@ public class Pelikentta {
     private final int pelikentanKorkeus;
     private static final int ALUKSIENKOKO = 3;
 
-    public Pelikentta(int pelikentanSivunpituus, Peli peli) {
+    public Pelikentta(int pelikentanKorkeus, Peli peli) {
         this.peli = peli;
-        this.pelikentanKorkeus = pelikentanSivunpituus * ALUKSIENKOKO;
-        this.pelikentanLeveys = (int) (pelikentanKorkeus * 2 / 3);
+        this.pelikentanKorkeus = pelikentanKorkeus * ALUKSIENKOKO;
+        this.pelikentanLeveys = (int) (this.pelikentanKorkeus * 2 / 3);
         this.omaAlus = luoOmaAlus();
 
         this.viholliset = new ArrayList<>();
@@ -94,13 +94,16 @@ public class Pelikentta {
 
     /**
      * metodi asettaa vihollisoliota kentän yläreunan yläpuolelle, josta ne lähtevät liikkumaan alas kentälle päin
+     * @param montako Kuinka monta vihollista tulee esille
      */
-    public void vihollisetTulevatEsille() {
+    public void vihollisetTulevatEsille(int montako) {
         // kuinka monta vihollista tulee
         // KESKEN
-        int esiinTulevienVihollisteMaara = 5;
+        int esiinTulevienVihollisteMaara = montako;
         // asetetaan viholliset pelikentältä liian ylös peli kentästä mistä ne voivat sitten "ryömiä esiin"
-        int ensimmaisenAluksenX = (int) (pelikentanLeveys / 2) - (esiinTulevienVihollisteMaara - 1) * ALUKSIENKOKO;
+        Random satunaismuuttuja = new Random();
+        int ensimmaisenAluksenX = satunaismuuttuja.nextInt(pelikentanLeveys - ALUKSIENKOKO - 1) + 1;
+        
         for (int i = 0; i < esiinTulevienVihollisteMaara; i++) {
             int x = ensimmaisenAluksenX + (ALUKSIENKOKO * 2 * i);
             int y = -1 * (esiinTulevienVihollisteMaara * ALUKSIENKOKO) + i * ALUKSIENKOKO;
@@ -186,7 +189,7 @@ public class Pelikentta {
     }
 
     private void kasitteleKunMenossaVasemmalle(Vihollisolio vihollinen) {
-        if (vihollinen.getX() == 1) {
+        if (vihollinen.getX() <= 1) {
             kaannaVihollinen(vihollinen, Suunta.OIKEA);
         } else {
             vihollinen.liiku();
@@ -200,7 +203,7 @@ public class Pelikentta {
     }
 
     private void kasitteleKunMenossaOikealle(Vihollisolio vihollinen) {
-        if (vihollinen.getX() + ALUKSIENKOKO == pelikentanLeveys - 1) {
+        if (vihollinen.getX() + ALUKSIENKOKO >= pelikentanLeveys - 1) {
             kaannaVihollinen(vihollinen, Suunta.VASEN);
         } else {
             vihollinen.liiku();

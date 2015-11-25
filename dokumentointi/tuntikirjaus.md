@@ -12,5 +12,6 @@
 |18.11.|Paljon kaikkea, huipputulokset, peli pilkottu pelikentäksi ja peliksi| 4-6 tuntia|
 |19.11.| Taustan liike ja javadoc aloitettu | 1,5 tuntia|
 |20.11.| Testejä, javadoc ja luokkakaavio päivitys| n. 4 tuntia|
+|24.11.|päivitystä vihollisten liikkeeseen |1 tunti|
 
 
