@@ -13,5 +13,7 @@
 |19.11.| Taustan liike ja javadoc aloitettu | 1,5 tuntia|
 |20.11.| Testejä, javadoc ja luokkakaavio päivitys| n. 4 tuntia|
 |24.11.|päivitystä vihollisten liikkeeseen |1 tunti|
+|25.11.|Sekvenssikaavio ja joitain päivyksiä| 2 tuntia|
+|26.11.|Toinen sekvenssikaavio| 1,5 tuntia|
 
 
