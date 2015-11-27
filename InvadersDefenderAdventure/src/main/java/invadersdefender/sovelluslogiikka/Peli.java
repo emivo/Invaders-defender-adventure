@@ -127,7 +127,7 @@ public class Peli extends Timer implements ActionListener {
         pelikentta.kaynnistaUudelleen();
 
         this.pisteet = 0;
-        this.vihollistenMaara = 1;
+        this.vihollistenMaara = 2;
 
         start();
     }
@@ -150,6 +150,10 @@ public class Peli extends Timer implements ActionListener {
         // kun saavutetaan tuhat pistettä laitetaan vihollisia tulemaan tolkuton määrä siis jatkuvalla syötöllä
         if (pisteet > 600 && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > 1) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
+        }
+        
+        if (pelikentta.getPomo() == null && pisteet != 0 && pisteet % 500 == 0) {
+            pelikentta.pomoVihollinenTuleeEsille();
         }
         pelikentta.ammuksetLiiku();
         vihollistenViiveAmmustenLiikkeeseen();
@@ -193,7 +197,7 @@ public class Peli extends Timer implements ActionListener {
     void lisaaPisteita() {
         if (tilanne == Pelitilanne.KAYNNISSA) {
             pisteet += 10;
-            if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 40) {
+            if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 37) {
                 setDelay(getDelay() - 1);
                 if (getDelay() % 5 == 0 && vihollistenMaara < 7) {
                     vihollistenMaara++;

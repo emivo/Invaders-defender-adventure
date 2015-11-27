@@ -27,7 +27,7 @@ import javax.swing.JPanel;
  */
 public class PelinPiirtoalusta extends JPanel {
 
-    private Peli peli;
+    private final Peli peli;
     private Pelikentta pelikentta;
     private int palojenKoko;
     private Map<String, BufferedImage> kuvat;
@@ -70,6 +70,7 @@ public class PelinPiirtoalusta extends JPanel {
 
         piirraOmaAlus(graphics);
         piirraViholliset(graphics);
+        piirraPomo(graphics);
         piirraAmmukset(graphics);
 
         piirraPistetilanne(graphics);
@@ -78,13 +79,13 @@ public class PelinPiirtoalusta extends JPanel {
 
     private void piirraPistetilanne(Graphics graphics) {
         // pisteet oikeaan ylänurkkaan
+        graphics.setColor(Color.red);
         String pisteet = "" + peli.getPisteet();
         graphics.drawString(pisteet, palojenKoko, (int) (palojenKoko * 1.5));
     }
 
     private void piirraAmmukset(Graphics graphics) {
         // piirrä ammukset
-        graphics.setColor(Color.red);
         for (Ammus ammus : pelikentta.getAmmukset()) {
             Image kuva;
             if (ammus.getSuunta() == Suunta.YLOS) {
@@ -98,7 +99,6 @@ public class PelinPiirtoalusta extends JPanel {
 
     private void piirraViholliset(Graphics graphics) {
         // piirrä vihollisoliot
-        graphics.setColor(Color.GREEN);
         for (Vihollisolio vihu : pelikentta.getViholliset()) {
             piirraLiikkuva(graphics, vihu, kuvat.get("vihollisolio"));
         }
@@ -188,6 +188,7 @@ public class PelinPiirtoalusta extends JPanel {
         kuvat.put("tausta", lueKuva(haeOsoite("/tausta.jpg")));
         kuvat.put("omaalus", lueKuva(haeOsoite("/omaalus.png")));
         kuvat.put("vihollisolio", lueKuva(haeOsoite("/vihollisolio.png")));
+        kuvat.put("pomo", lueKuva(haeOsoite("/pomo.png")));
     }
 
     private void piirraHuipputulokset(Graphics graphics) {
@@ -222,6 +223,7 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void virhe() {
+        // TÄMÄ EI OLE HYVÄ 
         JOptionPane.showMessageDialog(ikkuna,
                 "Some graphic components are missing.\n"
                 + "Try again later.",
@@ -244,7 +246,9 @@ public class PelinPiirtoalusta extends JPanel {
 
     /**
      * Metodi luo ikkunan pelaajan nimen kysymistä varten
-     * @return palauttaa nimen, jonka käyttäjä syöttää ikkunaan. Jos mitään ei syötetä palautetaan {@code XXXXX}
+     *
+     * @return palauttaa nimen, jonka käyttäjä syöttää ikkunaan. Jos mitään ei
+     * syötetä palautetaan {@code XXXXX}
      */
     public String uusiHuipputulos() {
         String nimi = (String) JOptionPane.showInputDialog(
@@ -259,6 +263,12 @@ public class PelinPiirtoalusta extends JPanel {
             nimi = "XXXXX";
         }
         return nimi;
+    }
+
+    private void piirraPomo(Graphics graphics) {
+        if (pelikentta.getPomo() != null) {
+            piirraLiikkuva(graphics, pelikentta.getPomo(), kuvat.get("pomo"));
+        }
     }
 
 }
