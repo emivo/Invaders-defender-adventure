@@ -47,6 +47,8 @@ public class HuipputuloksetTest {
         Pelaaja testiPelaaja2 = new Pelaaja(tulos + 10, nimi);
         tulokset.lisaaTulos(nimi, tulos + 10);
         assertTrue("Pelaaja ei lisäydy huipputuloksiin", tulokset.getTulokset().contains(testiPelaaja2));
+        
+        
     }
 
     @Test

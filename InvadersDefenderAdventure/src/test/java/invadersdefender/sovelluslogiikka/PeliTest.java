@@ -102,7 +102,7 @@ public class PeliTest {
         peli.pause();
         assertNotEquals(vanhaAlus, peli.getPelikentta().getOmaAlus());
         assertEquals("Peli on väärässä tilassa", Pelitilanne.KAYNNISSA, peli.getTilanne());
-        
+
     }
 
     @Test
@@ -114,5 +114,16 @@ public class PeliTest {
             peli.lisaaPisteita();
         }
         assertTrue(alkuNopeus > peli.getDelay());
+    }
+
+    @Test
+    public void pomoTuleeKunPisteteitaOn500() {
+        peli.start();
+        while (peli.getPisteet() < 500) {
+            peli.lisaaPisteita();
+        }
+        peli.actionPerformed(null);
+        
+        assertTrue(peli.getPelikentta().getPomo() != null);
     }
 }

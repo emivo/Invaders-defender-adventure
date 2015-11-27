@@ -68,4 +68,15 @@ public class PelaajaTest {
         Pelaaja merkkijonoksiPelaaja = new Pelaaja(1, "Nimi");
         assertEquals("Nimi  1", merkkijonoksiPelaaja.toString());
     }
+
+    @Test
+    public void hashJaEqualsTestit() {
+        Pelaaja testipelaaja = new Pelaaja(20, "Testi");
+        Pelaaja testipelaaja2 = new Pelaaja(10, "Testi");
+        assertFalse(testipelaaja.equals(null));
+        assertFalse(testipelaaja.equals(new Object()));
+        assertFalse(testipelaaja.equals(testipelaaja2));
+
+        assertEquals((3 * 17 + 20) * 17 + "Testi".hashCode(), testipelaaja.hashCode());
+    }
 }

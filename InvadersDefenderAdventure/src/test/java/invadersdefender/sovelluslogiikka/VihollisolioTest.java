@@ -28,7 +28,7 @@ public class VihollisolioTest {
 
     @Before
     public void setUp() {
-        vihollinen = new Vihollisolio(1, 1, 1);
+        vihollinen = new Vihollisolio(1, 1, 3);
     }
 
     @After

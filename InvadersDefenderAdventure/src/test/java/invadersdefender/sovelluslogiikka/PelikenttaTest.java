@@ -99,6 +99,12 @@ public class PelikenttaTest {
     }
 
     @Test
+    public void pomoTuleeKentalle() {
+        pelikentta.pomoVihollinenTuleeEsille();
+        assertFalse(pelikentta.getPomo() == null);
+    }
+
+    @Test
     public void vihollisetAmpuvat() {
         pelikentta.getViholliset().add(new Vihollisolio(1, 1, 3));
         try {
@@ -107,6 +113,26 @@ public class PelikenttaTest {
         } catch (Exception e) {
             assertTrue("Vihollisia ei tule peliin", false);
         }
+        pelikentta.kaynnistaUudelleen();
+        pelikentta.pomoVihollinenTuleeEsille();
+        pelikentta.jokuVihollinenAmpuu();
+        assertFalse(pelikentta.getAmmukset().isEmpty());
+
+        pelikentta.kaynnistaUudelleen();
+
+        vihollinenKentanUlkopuolelleJaAmpuu(1, -1);
+
+        vihollinenKentanUlkopuolelleJaAmpuu(-4, 1);
+
+        vihollinenKentanUlkopuolelleJaAmpuu(pelikentta.getPelikentanLeveys() + 1, 1);
+    }
+
+    private void vihollinenKentanUlkopuolelleJaAmpuu(int x, int y) {
+        pelikentta.getViholliset().clear();
+        pelikentta.getAmmukset().clear();
+        pelikentta.getViholliset().add(new Vihollisolio(x, y, 3));
+        pelikentta.jokuVihollinenAmpuu();
+        assertTrue(pelikentta.getAmmukset().isEmpty());
     }
 
     @Test
@@ -123,8 +149,19 @@ public class PelikenttaTest {
         Ammus ammus = new Ammus(pelikentta.getViholliset().get(0).getX(), pelikentta.getViholliset().get(0).getY(), Suunta.YLOS);
         pelikentta.getPeli().start();
 
+        int pelikentanOletetutPisteet = pelikentta.getPeli().getPisteet() + 10;
+        testaaAmmusLisaaPisteet(ammus, pelikentanOletetutPisteet);
+
+        pomoLiikutetaanKentalle();
+        ammus = new Ammus(pelikentta.getPomo().getX(), pelikentta.getPomo().getY(), Suunta.YLOS);
+        pelikentanOletetutPisteet = pelikentta.getPeli().getPisteet() + 20;
+        testaaAmmusLisaaPisteet(ammus, pelikentanOletetutPisteet);
+        assertTrue(pelikentta.getPomo() == null);
+    }
+
+    private void testaaAmmusLisaaPisteet(Ammus ammus, int pelikentanOletetutPisteet) {
         assertTrue("Ammus ei osu viholliseen vaikka pitäisi", pelikentta.osuukoAmmus(ammus));
-        assertEquals("Pisteet eivät kasva vaikka tuhoaa vihollisen", 10, pelikentta.getPeli().getPisteet());
+        assertEquals("Pisteet eivät kasva vaikka tuhoaa vihollisen", pelikentanOletetutPisteet, pelikentta.getPeli().getPisteet());
     }
 
     @Test
@@ -162,10 +199,41 @@ public class PelikenttaTest {
 
     @Test
     public void omaAlusLiikkuuVihollistaPain() {
-        Vihollisolio olio = new Vihollisolio(pelikentta.getOmaAlus().getX(), pelikentta.getOmaAlus().getY() + pelikentta.getOmaAlus().getKoko(), pelikentta.getOmaAlus().getKoko());
+        Vihollisolio olio = new Vihollisolio(pelikentta.getOmaAlus().getX(), pelikentta.getOmaAlus().getY() - pelikentta.getOmaAlus().getKoko(), pelikentta.getOmaAlus().getKoko());
         pelikentta.getViholliset().add(olio);
         pelikentta.omaAlusLiiku(Suunta.YLOS);
+        assertTrue(pelikentta.osuukoVihollisetOmaanAlukseen());
+        assertEquals(Pelitilanne.LOPPU, pelikentta.getPeli().getTilanne());
         assertTrue("Pelin tulisi loppua kun törmää vihollisalukseen", !pelikentta.getPeli().isRunning());
+    }
+    
+    @Test
+    public void vihollisetLiikkuuOmaaAlustaPain() {
+        Vihollisolio olio = new Vihollisolio(pelikentta.getOmaAlus().getX() - 1, pelikentta.getOmaAlus().getY(), pelikentta.getOmaAlus().getKoko());
+        pelikentta.getViholliset().add(olio);
+        pelikentta.vihollisetLiiku();
+        assertTrue(pelikentta.osuukoVihollisetOmaanAlukseen());
+        assertEquals(Pelitilanne.LOPPU, pelikentta.getPeli().getTilanne());
+        assertTrue("Pelin tulisi loppua kun törmää vihollisalukseen", !pelikentta.getPeli().isRunning());
+    }
+
+    @Test
+    public void omaAlusLiikkuuPomoaPain() {
+        pomoLiikutetaanKentalle();
+        
+        while (pelikentta.getOmaAlus().getY() >= pelikentta.getPomo().getY() + pelikentta.getPomo().getKoko()) {
+            pelikentta.omaAlusLiiku(Suunta.YLOS);
+        }
+        assertTrue(pelikentta.osuukoVihollisetOmaanAlukseen());
+        assertTrue("Pelin tulisi loppua kun törmää vihollisalukseen", !pelikentta.getPeli().isRunning());
+
+    }
+
+    private void pomoLiikutetaanKentalle() {
+        pelikentta.pomoVihollinenTuleeEsille();
+        while (pelikentta.getPomo().getY() < 0) {
+            pelikentta.getPomo().liiku(Suunta.ALAS);
+        }
     }
 
     @Test
@@ -178,8 +246,10 @@ public class PelikenttaTest {
             int vihollisiaKpl = pelikentta.getViholliset().size();
             // ammukset generoidaan alusten päälle
             pelikentta.getAmmukset().add(new Ammus(x, y + 1, Suunta.YLOS));
+            int ammuksiaKpl = pelikentta.getAmmukset().size();
             pelikentta.ammuksetLiiku();
             assertEquals("Vihollisalukset eivät tuhoudu", vihollisiaKpl - 1, pelikentta.getViholliset().size());
+            assertTrue(ammuksiaKpl - 1 == pelikentta.getAmmukset().size());
             int omaalusX = pelikentta.getOmaAlus().getX();
             int omaalusY = pelikentta.getOmaAlus().getY();
             pelikentta.getAmmukset().add(new Ammus(omaalusX, omaalusY - 1, Suunta.ALAS));
@@ -196,6 +266,32 @@ public class PelikenttaTest {
         for (int i = 0; i < pelikentta.getViholliset().size(); i++) {
             liikkuukoViholliset(i);
         }
+        
+        Vihollisolio vihu = pelikentta.getViholliset().get(0);
+        int vihollisia = pelikentta.getViholliset().size();
+        while(vihu.getY() <= pelikentta.getPelikentanKorkeus()) {
+            vihu.liiku(Suunta.ALAS);
+        }
+        pelikentta.vihollisetLiiku();
+        assertNotEquals(vihollisia, pelikentta.getViholliset().size());
+        
+        pelikentta.pomoVihollinenTuleeEsille();
+        for (int i = 0; i < 10; i++) {
+            testaaEttaPomoEiOlePaikoillaan();
+        }
+        
+        while (pelikentta.getPomo().getY() <= pelikentta.getPelikentanKorkeus()) {
+            pelikentta.getPomo().liiku(Suunta.ALAS);
+        }
+        pelikentta.vihollisetLiiku();
+        assertTrue(pelikentta.getPomo() == null);
+    }
+
+    private void testaaEttaPomoEiOlePaikoillaan() {
+        int x = pelikentta.getPomo().getX();
+        int y = pelikentta.getPomo().getY();
+        pelikentta.vihollisetLiiku();
+        assertTrue(x != pelikentta.getPomo().getX() || y != pelikentta.getPomo().getY());
     }
 
     @Test
@@ -211,12 +307,21 @@ public class PelikenttaTest {
     private void liikkuukoViholliset(int i) {
         Pala vanhaSijaintiViholliselle = new Pala(pelikentta.getViholliset().get(i).getX(), pelikentta.getViholliset().get(i).getY());
         pelikentta.vihollisetLiiku();
-        assertTrue(!pelikentta.getViholliset().get(i).sijainti().equals(vanhaSijaintiViholliselle));
+        assertFalse(pelikentta.getViholliset().get(i).sijainti().equals(vanhaSijaintiViholliselle));
     }
 
     @Test
     public void testaaPelikentanleveys() {
         assertEquals((int) (pelikentta.getPelikentanKorkeus() * 2 / 3), pelikentta.getPelikentanLeveys());
+    }
+
+    @Test
+    public void kaynnistaUudelleen() {
+        pelikentta.getAmmukset().add(new Ammus(1, 1, Suunta.ALAS));
+        pelikentta.getViholliset().add(new Vihollisolio(2, 1, 3));
+        pelikentta.kaynnistaUudelleen();
+        assertTrue(pelikentta.getViholliset().isEmpty());
+        assertTrue(pelikentta.getAmmukset().isEmpty());
     }
 
 }
