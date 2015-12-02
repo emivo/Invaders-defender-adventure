@@ -2,7 +2,7 @@ package invadersdefender.sovelluslogiikka;
 
 /**
  *
- * @author Emil
+ * @author emivo
  */
 public interface Liikkuva {
     public void liiku(Suunta suunta);

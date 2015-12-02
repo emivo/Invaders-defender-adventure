@@ -64,6 +64,10 @@ public class OmaAlus extends Alus {
         return aseistus;
     }
 
+    /**
+     * Metodilla voi korjata omaa alusta niin, että sen elämän pisteet lisääntyvät
+     * @param kuinkaPaljon kuinka monta elämäpistettä alukselle lisätään
+     */
     public void korjaaSuojausta(int kuinkaPaljon) {
         setElamapisteet(getElamapisteet() + kuinkaPaljon);
     }

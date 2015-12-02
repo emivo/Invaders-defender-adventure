@@ -39,7 +39,7 @@ public class PomoVihollinenTest {
 
     @Test
     public void testaaPomonAmpuminen() {
-        PomoVihollinen pomo = new PomoVihollinen(1, 1, 6, 1);
+        PomoVihollinen pomo = new PomoVihollinen(3, 3, 6, 1);
         Ammus ammus = pomo.ammu();
         boolean xKoordinaattiOikein = ammus.getX() == pomo.getX() + pomo.getKoko() / 4 || ammus.getX() == pomo.getX() + pomo.getKoko() * 3 / 4;
         boolean yKoordinaattiOikein = ammus.getY() == pomo.getY() + pomo.getKoko() + 1;

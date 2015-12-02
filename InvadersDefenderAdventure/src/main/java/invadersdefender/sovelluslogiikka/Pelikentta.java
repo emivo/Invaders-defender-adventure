@@ -77,7 +77,7 @@ public class Pelikentta {
      */
     public void alusAmmu(Alus alus) {
         ammukset.add(alus.ammu());
-        
+
         if (alus.getClass() == OmaAlus.class && omaAlus.getAseistus() != Aseistus.NORMAALI) {
             ammukset.addAll(omaAlus.ammuEnemman());
         }
@@ -356,10 +356,16 @@ public class Pelikentta {
 
         this.viholliset.clear();
         this.ammukset.clear();
+        this.vihollistenKestavyys = 1;
+        
         tuhoaPomo();
 
     }
 
+    /**
+     * Vihollisten ammusten kestävyys paranee yhdellä metodia kutsuttaessa.
+     * Vihollisten kestävyyden maksimi on 10
+     */
     public void parannaVihollistenKestavyytta() {
         if (vihollistenKestavyys < 10) {
             this.vihollistenKestavyys++;

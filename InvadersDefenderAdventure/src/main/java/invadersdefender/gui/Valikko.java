@@ -97,7 +97,7 @@ public class Valikko implements ActionListener {
                 peli.paivitaPelinpiirto();
                 break;
             case "Repair spaceship       10 points":
-                peli.korjaaOmaaAlusta(1);
+                peli.korjaaOmaaAlusta();
                 peli.paivitaPelinpiirto();
                 break;
         }

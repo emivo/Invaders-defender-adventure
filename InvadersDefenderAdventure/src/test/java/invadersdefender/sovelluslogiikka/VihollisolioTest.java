@@ -71,4 +71,11 @@ public class VihollisolioTest {
         ammus.liiku();
         assertEquals(oikeaSijainti, ammus);
     }
+    
+    @Test
+    public void vihollisenElamapisteitaEiVoiMuuttaa() {
+        int elamapisteetVanha = vihollinen.getElamapisteet();
+        vihollinen.setElamapisteet(10);
+        assertEquals(elamapisteetVanha, vihollinen.getElamapisteet());
+    }
 }

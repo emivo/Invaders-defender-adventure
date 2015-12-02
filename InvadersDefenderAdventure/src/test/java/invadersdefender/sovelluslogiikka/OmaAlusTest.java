@@ -1,5 +1,6 @@
 package invadersdefender.sovelluslogiikka;
 
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,7 +14,7 @@ import static org.junit.Assert.*;
  */
 public class OmaAlusTest {
 
-    Alus alus;
+    OmaAlus alus;
 
     public OmaAlusTest() {
     }
@@ -36,77 +37,51 @@ public class OmaAlusTest {
         alus = null;
     }
 
-    private boolean alusLiikkuuSuuntaan(Suunta suunta) {
-        alus.liiku(suunta);
-        Pala oikeaSijantipalalle;
-        if (suunta == Suunta.OIKEA) {
-            oikeaSijantipalalle = new Pala(2, 1);
-        } else if (suunta == Suunta.VASEN) {
-            oikeaSijantipalalle = new Pala(0, 1);
-        } else if (suunta == Suunta.ALAS) {
-            oikeaSijantipalalle = new Pala(1, 2);
-        } else {
-            oikeaSijantipalalle = new Pala(1, 0);
-        }
-        return alus.sijainti().equals(oikeaSijantipalalle);
-    }
-
-    // Testit
-    @Test
-    public void alusPysyyPaikkoillaan() {
-        assertEquals("Alus liikkuu, vaikkei pitäisi", new Pala(1, 1), alus.sijainti());
-    }
-
-    @Test
-    public void alusLiikkuuOikealle() {
-        assertTrue("Alus ei liiku oikealle", alusLiikkuuSuuntaan(Suunta.OIKEA));
-    }
-
-    @Test
-    public void alusLiikkuuVasemalle() {
-        assertTrue("Alus ei liiku vasemmalle", alusLiikkuuSuuntaan(Suunta.VASEN));
-    }
-
-    @Test
-    public void alusLiikkuuYlos() {
-        assertTrue("Alus ei liiku ylös", alusLiikkuuSuuntaan(Suunta.YLOS));
-    }
-
-    @Test
-    public void alusLiikkuuAlas() {
-        assertTrue("Alus ei liiku alas", alusLiikkuuSuuntaan(Suunta.ALAS));
-    }
-
     @Test
     public void alusAmpuu() {
         Ammus ammus = alus.ammu();
         assertTrue("Alus ei ammu ammuksia", (ammus != null));
         if (ammus != null) {
-            Ammus oletettu = new Ammus(alus.getX() + alus.getKoko() / 2, alus.getY() - 1, Suunta.OIKEA);
+            Ammus oletettu = new Ammus(alus.getX() + alus.getKoko() / 2, alus.getY() - 1, Suunta.YLOS);
             assertEquals(oletettu, ammus);
         }
     }
 
     @Test
-    public void osuuLiikkuvaanToimii() {
-        Ammus ammus = new Ammus(1, 1, Suunta.ALAS);
-        assertTrue("Ammus osuu alukseen", alus.osuukoAlukseen(ammus));
-        Alus toinenAlus = new OmaAlus(alus.getX(), alus.getY(), alus.getKoko());
-        // samassa kohdassa
-        assertTrue(alus.osuukoAlukseen(toinenAlus));
+    public void aseistuksenParannusSekaAmpuuEriTavalla() {
+        assertEquals(Aseistus.NORMAALI, alus.getAseistus());
         
-        // Kulmat kohtaa
-        int koordinaattiMuutos = (alus.getKoko() - 1);
-        
-        osuukoToiseenAlukseen(koordinaattiMuutos, -1*koordinaattiMuutos);
-        osuukoToiseenAlukseen(-1*koordinaattiMuutos, koordinaattiMuutos);
-        osuukoToiseenAlukseen(-1*koordinaattiMuutos, -1*koordinaattiMuutos);
-        osuukoToiseenAlukseen(koordinaattiMuutos, koordinaattiMuutos);
+        alus.parannaAseistusta(Aseistus.TUPLA);
+        assertEquals(Aseistus.TUPLA, alus.getAseistus());
+        Ammus ammus = alus.ammu();
+
+        Ammus oletettu = new Ammus(alus.getX(), alus.getY() - 1, Suunta.YLOS);
+        assertEquals(oletettu, ammus);
+
+        List<Ammus> lisaAmmukset = alus.ammuEnemman();
+        ammus = lisaAmmukset.get(0);
+        oletettu = new Ammus(alus.getX() + alus.getKoko() - 1, alus.getY() - 1, Suunta.YLOS);
+        assertEquals(ammus, oletettu);
+
+        alus.parannaAseistusta(Aseistus.TRIPLA);
+        assertEquals(Aseistus.TRIPLA, alus.getAseistus());
+        alusAmpuu();
+
+        lisaAmmukset = alus.ammuEnemman();
+
+        int i = 1;
+        for (Ammus panos : lisaAmmukset) {
+            oletettu = new Ammus(alus.getX() + alus.getKoko() - i, alus.getY() - 1, Suunta.YLOS);
+            assertEquals(panos, oletettu);
+            i += alus.getKoko() - 1;
+        }
     }
 
-    private void osuukoToiseenAlukseen(int x, int y) {
-        Alus toinenAlus;
-        toinenAlus = new OmaAlus(alus.getX() + x, alus.getY() + y, alus.getKoko());
-        assertTrue(alus.osuukoAlukseen(toinenAlus));
+    @Test
+    public void korjaaAlustaLisaaElamapisteita() {
+        int elamapisteetEnsin = alus.getElamapisteet();
+        alus.korjaaSuojausta(1);
+        assertEquals(elamapisteetEnsin + 1, alus.getElamapisteet());
     }
+
 }

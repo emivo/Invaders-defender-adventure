@@ -48,6 +48,18 @@ public class PelikenttaTest {
     public void omaAlusAmpuuAmmuksenKentalle() {
         pelikentta.alusAmmu(pelikentta.getOmaAlus());
         assertTrue("Yhtään ammusta ei ilmesty kentälle", !pelikentta.getAmmukset().isEmpty());
+
+        // tupla aseistus ampuu kaksi
+        pelikentta.getOmaAlus().parannaAseistusta(Aseistus.TUPLA);
+        int ammuksia = pelikentta.getAmmukset().size();
+        pelikentta.alusAmmu(pelikentta.getOmaAlus());
+        assertEquals(ammuksia + 2, pelikentta.getAmmukset().size());
+
+        // tripla ampuu kolme
+        pelikentta.getOmaAlus().parannaAseistusta(Aseistus.TRIPLA);
+        ammuksia = pelikentta.getAmmukset().size();
+        pelikentta.alusAmmu(pelikentta.getOmaAlus());
+        assertEquals(ammuksia + 3, pelikentta.getAmmukset().size());
     }
 
     @Test
@@ -100,6 +112,8 @@ public class PelikenttaTest {
 
     @Test
     public void pomoTuleeKentalle() {
+        assertTrue("Pomon tulisi olla kentällä vasta kun se kutsutaan", pelikentta.getPomo() == null);
+
         pelikentta.pomoVihollinenTuleeEsille();
         assertFalse(pelikentta.getPomo() == null);
     }
@@ -325,6 +339,44 @@ public class PelikenttaTest {
         pelikentta.kaynnistaUudelleen();
         assertTrue(pelikentta.getViholliset().isEmpty());
         assertTrue(pelikentta.getAmmukset().isEmpty());
+        assertTrue(pelikentta.getPomo() == null);
+    }
+
+    @Test
+    public void parannaVihollistenKestavyyttaVihollistenElamapisteetKasvaa() {
+        tarkistaVihollistenElamapisteet(1);
+
+        tarkistaPomonElamapisteet(2);
+
+        pelikentta.kaynnistaUudelleen();
+
+        pelikentta.parannaVihollistenKestavyytta();
+        tarkistaVihollistenElamapisteet(2);
+
+        tarkistaPomonElamapisteet(3);
+
+        pelikentta.kaynnistaUudelleen();
+
+        for (int i = 0; i < 15; i++) {
+            pelikentta.parannaVihollistenKestavyytta();
+        }
+        tarkistaVihollistenElamapisteet(10);
+        tarkistaPomonElamapisteet(11);
+        
+        pelikentta.kaynnistaUudelleen();
+        
+        tarkistaVihollistenElamapisteet(1);
+        tarkistaPomonElamapisteet(2);
+    }
+
+    private void tarkistaPomonElamapisteet(int oletetutElamapisteet) {
+        pelikentta.pomoVihollinenTuleeEsille();
+        assertEquals(oletetutElamapisteet, pelikentta.getPomo().getElamapisteet());
+    }
+
+    private void tarkistaVihollistenElamapisteet(int oletetutElamapisteet) {
+        pelikentta.vihollisetTulevatEsille(1);
+        assertEquals(oletetutElamapisteet, pelikentta.getViholliset().get(0).getElamapisteet());
     }
 
 }

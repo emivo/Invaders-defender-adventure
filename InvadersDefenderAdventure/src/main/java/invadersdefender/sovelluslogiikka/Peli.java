@@ -275,12 +275,11 @@ public class Peli extends Timer implements ActionListener {
     /**
      * Korjaa pelissä olevan omaan alukseen syntyneitä vahinkoja
      *
-     * @param kuinkaPaljon
      */
-    public void korjaaOmaaAlusta(int kuinkaPaljon) {
-        if (pisteet - kuinkaPaljon * 10 > 0 && pelikentta.getOmaAlus().getElamapisteet() < 10) {
-            pelikentta.getOmaAlus().korjaaSuojausta(kuinkaPaljon);
-            pisteet -= kuinkaPaljon * 10;
+    public void korjaaOmaaAlusta() {
+        if (pisteet - 10 > 0 && pelikentta.getOmaAlus().getElamapisteet() < 10) {
+            pelikentta.getOmaAlus().korjaaSuojausta(1);
+            pisteet -= 10;
         }
     }
 

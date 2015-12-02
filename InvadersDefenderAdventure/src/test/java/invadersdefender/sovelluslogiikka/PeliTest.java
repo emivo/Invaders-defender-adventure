@@ -67,6 +67,7 @@ public class PeliTest {
         assertTrue(peli.getPelikentta().getViholliset().isEmpty());
         assertTrue(peli.getPelikentta().getAmmukset().isEmpty());
         assertNotEquals(vanhaAlus, peli.getPelikentta().getOmaAlus());
+        assertEquals(100, peli.getDelay());
     }
 
     @Test
@@ -85,7 +86,7 @@ public class PeliTest {
         Ammus ammuksenSijaintitulisiolla = new Ammus(1, 2, Suunta.ALAS);
         peli.actionPerformed(new ActionEvent(this, 1, null));
         assertEquals(ammuksenSijaintitulisiolla, peli.getPelikentta().getAmmukset().get(0));
-        assertEquals(1, peli.getTaustanLeikkauskohta());
+        assertEquals(2, peli.getTaustanLeikkauskohta());
         assertFalse(peli.getPelikentta().getViholliset().isEmpty());
     }
 
@@ -119,11 +120,67 @@ public class PeliTest {
     @Test
     public void pomoTuleeKunPisteteitaOn500() {
         peli.start();
-        while (peli.getPisteet() < 500) {
+        lisaaPisteitaTarvittavaMaara(500);
+        peli.actionPerformed(null);
+
+        assertTrue(peli.getPelikentta().getPomo() != null);
+    }
+
+    @Test
+    public void parannaAlustaToimiiNiinKuinKuuluu() {
+
+        aseistusEiMuutu(Aseistus.TUPLA, Aseistus.NORMAALI);
+        aseistusEiMuutu(Aseistus.TRIPLA, Aseistus.NORMAALI);
+        lisaaPisteitaTarvittavaMaara(1000);
+        aseistusMuuttuu(Aseistus.TUPLA);
+        assertEquals(0, peli.getPisteet());
+        aseistusEiMuutu(Aseistus.NORMAALI, Aseistus.TUPLA);
+
+        lisaaPisteitaTarvittavaMaara(1500);
+        aseistusMuuttuu(Aseistus.TRIPLA);
+        assertEquals(0, peli.getPisteet());
+        aseistusEiMuutu(Aseistus.NORMAALI, Aseistus.TRIPLA);
+        aseistusEiMuutu(Aseistus.TUPLA, Aseistus.TRIPLA);
+
+    }
+
+    @Test
+    public void omaaAlustaVoiKorjataJaMutteiLiikaa() {
+        peli.getPelikentta().getOmaAlus().setElamapisteet(1);
+        int pisteet = peli.getPisteet();
+        peli.korjaaOmaaAlusta();
+        assertEquals(pisteet, peli.getPisteet());
+        assertEquals(1, peli.getPelikentta().getOmaAlus().getElamapisteet());
+
+        lisaaPisteitaTarvittavaMaara(1000);
+
+        peli.getPelikentta().getOmaAlus().setElamapisteet(1);
+        pisteet = peli.getPisteet() - 10;
+        peli.korjaaOmaaAlusta();
+        assertEquals(pisteet, peli.getPisteet());
+        assertEquals(2, peli.getPelikentta().getOmaAlus().getElamapisteet());
+        pisteet = peli.getPisteet() - 80;
+        for (int i = 0; i < 10; i++) {
+            peli.korjaaOmaaAlusta();
+        }
+        assertEquals(pisteet, peli.getPisteet());
+        assertEquals(10, peli.getPelikentta().getOmaAlus().getElamapisteet());
+    }
+
+    private void lisaaPisteitaTarvittavaMaara(int tarvittavatPisteet) {
+        peli.setTilanne(Pelitilanne.KAYNNISSA);
+        while (peli.getPisteet() < tarvittavatPisteet) {
             peli.lisaaPisteita();
         }
-        peli.actionPerformed(null);
-        
-        assertTrue(peli.getPelikentta().getPomo() != null);
+    }
+
+    private void aseistusMuuttuu(Aseistus uusiAseistus) {
+        peli.parannaAluksenAseistusta(uusiAseistus);
+        assertEquals(uusiAseistus, peli.getPelikentta().getOmaAlus().getAseistus());
+    }
+
+    private void aseistusEiMuutu(Aseistus uusiAseistus, Aseistus vanhaAseistus) {
+        peli.parannaAluksenAseistusta(uusiAseistus);
+        assertEquals(vanhaAseistus, peli.getPelikentta().getOmaAlus().getAseistus());
     }
 }

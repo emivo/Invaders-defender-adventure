@@ -17,5 +17,6 @@
 |26.11.|Toinen sekvenssikaavio ja pomo vihollinen lisätty| 2 tuntia|
 |27.11|Testit päivitetty| 1,5 tuntia|
 |30.11.| Päivityksiä peliin| muutama tunti|
+|2.12.| Testit päivitetty| n. 3 tuntia|
 
 
