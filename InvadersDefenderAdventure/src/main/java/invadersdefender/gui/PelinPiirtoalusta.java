@@ -299,7 +299,7 @@ public class PelinPiirtoalusta extends JPanel {
         Iterator<Pala> iteraattori = rajahdykset.iterator();
         while (iteraattori.hasNext()) {
             Pala sijainti = iteraattori.next();
-            piirraKuva(graphics, sijainti.getX() * palojenKoko, sijainti.getY() * palojenKoko, palojenKoko, kuvat.get("rajahdys"));
+            piirraKuva(graphics, sijainti.getX() * palojenKoko, sijainti.getY() * palojenKoko, palojenKoko * sijainti.getKoko(), kuvat.get("rajahdys"));
             iteraattori.remove();
         }
     }

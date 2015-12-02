@@ -22,13 +22,14 @@ public class Pelikentta {
     private final int pelikentanLeveys;
     private final int pelikentanKorkeus;
     private static final int ALUKSIENKOKO = 3;
-    private int vihollistenKestavyys = 1;
+    private int vihollistenKestavyys;
 
     public Pelikentta(int pelikentanKorkeus, Peli peli) {
         this.peli = peli;
         this.pelikentanKorkeus = pelikentanKorkeus * ALUKSIENKOKO;
         this.pelikentanLeveys = (int) (this.pelikentanKorkeus * 2 / 3);
         this.omaAlus = luoOmaAlus();
+        vihollistenKestavyys = 10;
 
         this.viholliset = new ArrayList<>();
         this.ammukset = new ArrayList<>();
@@ -76,10 +77,32 @@ public class Pelikentta {
      * sijaintinsa ja suuntansa
      */
     public void alusAmmu(Alus alus) {
-        ammukset.add(alus.ammu());
+        if (alus.getClass() != OmaAlus.class) {
+            ammukset.add(alus.ammu());
+        } else {
 
-        if (alus.getClass() == OmaAlus.class && omaAlus.getAseistus() != Aseistus.NORMAALI) {
-            ammukset.addAll(omaAlus.ammuEnemman());
+            int omiaAmmuksiaKentalla = 0;
+            int sallitutAmmuksetKentalla = 7;
+            if (omaAlus.getAseistus() == Aseistus.TUPLA) {
+                sallitutAmmuksetKentalla++;
+                sallitutAmmuksetKentalla *= 2;
+            } else if (omaAlus.getAseistus() == Aseistus.TRIPLA) {
+                sallitutAmmuksetKentalla += 2;
+                sallitutAmmuksetKentalla *= 3;
+            }
+
+            for (Ammus ammus : ammukset) {
+                if (ammus.getSuunta() == Suunta.YLOS) {
+                    omiaAmmuksiaKentalla++;
+                }
+            }
+
+            if (omiaAmmuksiaKentalla < sallitutAmmuksetKentalla) {
+                ammukset.add(alus.ammu());
+                if (omaAlus.getAseistus() != Aseistus.NORMAALI) {
+                    ammukset.addAll(omaAlus.ammuEnemman());
+                }
+            }
         }
     }
 
@@ -112,6 +135,7 @@ public class Pelikentta {
                 vihollinen.vahennaElamapisteita();
 
                 if (vihollinen.getElamapisteet() == 0) {
+                    lisaaRajahdys(vihollinen);
                     iterator.remove();
                     peli.lisaaPisteita();
                 }
@@ -127,6 +151,7 @@ public class Pelikentta {
                 if (pomo.getElamapisteet() == 0) {
                     peli.lisaaPisteita();
                     peli.lisaaPisteita();
+                    lisaaRajahdys(pomo);
                     tuhoaPomo();
                 }
                 return true;
@@ -164,7 +189,7 @@ public class Pelikentta {
      * kuin tavallisten vihollisten ja sen kestävyys on myös hieman parempi
      */
     public void pomoVihollinenTuleeEsille() {
-        pomo = new PomoVihollinen(pelikentanLeveys / 2, -1 * ALUKSIENKOKO * 2, 2 * ALUKSIENKOKO, vihollistenKestavyys + 1);
+        pomo = new PomoVihollinen(pelikentanLeveys / 2, -1 * ALUKSIENKOKO * 2, 2 * ALUKSIENKOKO, vihollistenKestavyys + 10);
     }
 
     /**
@@ -186,8 +211,8 @@ public class Pelikentta {
         }
     }
 
-    private void lisaaRajahdys(Ammus ammus) {
-        peli.lisaaRajahdysPiirrettavaksiKohtaan(new Pala(ammus.getX(), ammus.getY()));
+    private void lisaaRajahdys(Liikkuva liikkuva ){
+        peli.lisaaRajahdysPiirrettavaksiKohtaan(new Pala(liikkuva.getX(), liikkuva.getY(), liikkuva.getKoko()));
     }
 
     private void osuukoAmmukset() {
@@ -356,19 +381,19 @@ public class Pelikentta {
 
         this.viholliset.clear();
         this.ammukset.clear();
-        this.vihollistenKestavyys = 1;
-        
+        this.vihollistenKestavyys = 10;
+
         tuhoaPomo();
 
     }
 
     /**
      * Vihollisten ammusten kestävyys paranee yhdellä metodia kutsuttaessa.
-     * Vihollisten kestävyyden maksimi on 10
+     * Vihollisten kestävyyden maksimi on 100
      */
     public void parannaVihollistenKestavyytta() {
-        if (vihollistenKestavyys < 10) {
-            this.vihollistenKestavyys++;
+        if (vihollistenKestavyys < 100) {
+            this.vihollistenKestavyys += 10;
         }
     }
 

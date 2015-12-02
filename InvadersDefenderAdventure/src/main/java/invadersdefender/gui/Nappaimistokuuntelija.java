@@ -43,6 +43,9 @@ public class Nappaimistokuuntelija implements KeyListener {
             case KeyEvent.VK_RIGHT:
                 liiku(Suunta.OIKEA);
                 break;
+            case KeyEvent.VK_SPACE:
+                ammu();
+                break;
             case KeyEvent.VK_P:
                 pause();
                 break;
@@ -85,17 +88,12 @@ public class Nappaimistokuuntelija implements KeyListener {
     }
 
     private void tyhjennaHuipputulokset() {
-       peli.tyhjennaHuipputulokset();
-       peli.paivitaPelinpiirto();
+        peli.tyhjennaHuipputulokset();
+        peli.paivitaPelinpiirto();
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_SPACE:
-                ammu();
-                break;
-        }
     }
 
 }

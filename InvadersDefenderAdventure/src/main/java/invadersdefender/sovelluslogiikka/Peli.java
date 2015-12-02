@@ -163,6 +163,7 @@ public class Peli extends Timer implements ActionListener {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
         }
         // kun saavutetaan tuhat pistettä laitetaan vihollisia tulemaan tolkuton määrä siis jatkuvalla syötöllä
+        // TODOO KUN PISTEET VÄHENEEKIN MUTTA VAIKEUSASTETULISI SÄILYTTÄÄ
         if (pisteet > 600 && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > 1) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
         }
@@ -277,8 +278,8 @@ public class Peli extends Timer implements ActionListener {
      *
      */
     public void korjaaOmaaAlusta() {
-        if (pisteet - 10 > 0 && pelikentta.getOmaAlus().getElamapisteet() < 10) {
-            pelikentta.getOmaAlus().korjaaSuojausta(1);
+        if (pisteet - 10 > 0 && pelikentta.getOmaAlus().getElamapisteet() < 100) {
+            pelikentta.getOmaAlus().korjaaSuojausta(10);
             pisteet -= 10;
         }
     }

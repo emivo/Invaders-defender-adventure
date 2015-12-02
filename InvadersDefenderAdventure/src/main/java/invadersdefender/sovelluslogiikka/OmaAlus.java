@@ -15,7 +15,7 @@ public class OmaAlus extends Alus {
     private Aseistus aseistus;
 
     public OmaAlus(int alkuX, int alkuY, int koko) {
-        super(alkuX, alkuY, koko, 10);
+        super(alkuX, alkuY, koko, 100);
         aseistus = Aseistus.NORMAALI;
     }
 

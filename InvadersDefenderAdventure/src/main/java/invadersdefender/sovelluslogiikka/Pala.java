@@ -7,10 +7,16 @@ public class Pala implements Liikkuva {
     
     private int x;
     private int y;
+    private int koko;
 
     public Pala(int x, int y) {
+        this(x,y,1);
+    }
+    
+    public Pala(int x, int y, int koko) {
         this.x = x;
         this.y = y;
+        this.koko = koko;
     }
 
     @Override
@@ -65,6 +71,6 @@ public class Pala implements Liikkuva {
 
     @Override
     public int getKoko() {
-        return 1;
+        return koko;
     }
 }

@@ -114,6 +114,6 @@ public abstract class Alus implements Liikkuva {
      * Kun alus saa osumaa sen elämäpisteet vähenevät
      */
     public void vahennaElamapisteita() {
-        this.elamapisteet--;
+        this.elamapisteet -= 10;
     }
 }
