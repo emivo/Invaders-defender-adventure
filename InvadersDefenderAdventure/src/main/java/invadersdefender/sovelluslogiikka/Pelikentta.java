@@ -15,13 +15,14 @@ public class Pelikentta {
 
     private Peli peli;
 
-    private Alus omaAlus;
+    private OmaAlus omaAlus;
     private final List<Vihollisolio> viholliset;
     private Vihollisolio pomo;
     private final List<Ammus> ammukset;
     private final int pelikentanLeveys;
     private final int pelikentanKorkeus;
     private static final int ALUKSIENKOKO = 3;
+    private int vihollistenKestavyys = 1;
 
     public Pelikentta(int pelikentanKorkeus, Peli peli) {
         this.peli = peli;
@@ -33,13 +34,14 @@ public class Pelikentta {
         this.ammukset = new ArrayList<>();
         tuhoaPomo();
     }
-    
+
     /**
      * Luo oman aluksen kentän alareunaan keskelle
+     *
      * @return Alus, joka toimii pelaajan aluksena
      */
-    private Alus luoOmaAlus() {
-        return new Alus(this.pelikentanLeveys / 2, this.pelikentanKorkeus - (ALUKSIENKOKO + 1), ALUKSIENKOKO);
+    private OmaAlus luoOmaAlus() {
+        return new OmaAlus(this.pelikentanLeveys / 2, this.pelikentanKorkeus - (ALUKSIENKOKO + 1), ALUKSIENKOKO);
     }
 
     public List<Ammus> getAmmukset() {
@@ -58,7 +60,7 @@ public class Pelikentta {
         return pelikentanKorkeus;
     }
 
-    public Alus getOmaAlus() {
+    public OmaAlus getOmaAlus() {
         return omaAlus;
     }
 
@@ -67,14 +69,18 @@ public class Pelikentta {
     }
 
     /**
-     * Metodi käskee parametrinä saatavaa alusta ampumaan ja asettaa tämän
-     * ampuman ammuksen ammukset listaan
+     * Metodi käskee parametrinä annetua alusta ampumaan ja asettaa tämän
+     * ampuman ammuksen, joka lisätään ammukset listaan
      *
      * @param alus olio, jonka koordinaatien perusteella {@code Ammus} saa
      * sijaintinsa ja suuntansa
      */
     public void alusAmmu(Alus alus) {
         ammukset.add(alus.ammu());
+        
+        if (alus.getClass() == OmaAlus.class && omaAlus.getAseistus() != Aseistus.NORMAALI) {
+            ammukset.addAll(omaAlus.ammuEnemman());
+        }
     }
 
     public Peli getPeli() {
@@ -91,7 +97,10 @@ public class Pelikentta {
     public boolean osuukoAmmus(Ammus ammus) {
         if (omaAlus.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.ALAS)) {
             // lopeta peli
-            peli.peliLoppuu();
+            omaAlus.vahennaElamapisteita();
+            if (omaAlus.getElamapisteet() == 0) {
+                peli.peliLoppuu();
+            }
             return true;
         }
 
@@ -99,17 +108,27 @@ public class Pelikentta {
         while (iterator.hasNext()) {
             Vihollisolio vihollinen = iterator.next();
             if (vihollinen.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
-                iterator.remove();
-                peli.lisaaPisteita();
+
+                vihollinen.vahennaElamapisteita();
+
+                if (vihollinen.getElamapisteet() == 0) {
+                    iterator.remove();
+                    peli.lisaaPisteita();
+                }
                 return true;
             }
         }
 
         if (pomo != null) {
             if (pomo.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
-                peli.lisaaPisteita();
-                peli.lisaaPisteita();
-                tuhoaPomo();
+
+                pomo.vahennaElamapisteita();
+
+                if (pomo.getElamapisteet() == 0) {
+                    peli.lisaaPisteita();
+                    peli.lisaaPisteita();
+                    tuhoaPomo();
+                }
                 return true;
             }
         }
@@ -134,17 +153,18 @@ public class Pelikentta {
             int x = ensimmaisenAluksenX + (ALUKSIENKOKO * 2 * i);
 
             int y = -1 * (montako * aluksienYSuuntainenValitys) + i * aluksienYSuuntainenValitys;
-            Vihollisolio vihollinen = new Vihollisolio(x, y, ALUKSIENKOKO);
+            Vihollisolio vihollinen = new Vihollisolio(x, y, ALUKSIENKOKO, vihollistenKestavyys);
 
             viholliset.add(vihollinen);
         }
     }
 
     /**
-     * Pomo vihollinen saapuu peliin
+     * Pomo vihollinen saapuu peliin. Pomo vihollisen koko on tuplasti suurempi
+     * kuin tavallisten vihollisten ja sen kestävyys on myös hieman parempi
      */
     public void pomoVihollinenTuleeEsille() {
-        pomo = new PomoVihollinen(pelikentanLeveys / 2, -1 * ALUKSIENKOKO * 2, 2 * ALUKSIENKOKO);
+        pomo = new PomoVihollinen(pelikentanLeveys / 2, -1 * ALUKSIENKOKO * 2, 2 * ALUKSIENKOKO, vihollistenKestavyys + 1);
     }
 
     /**
@@ -160,9 +180,14 @@ public class Pelikentta {
             if (ammus.getY() < 0 || ammus.getY() > pelikentanKorkeus) {
                 iterator.remove();
             } else if (osuukoAmmus(ammus)) {
+                lisaaRajahdys(ammus);
                 iterator.remove();
             }
         }
+    }
+
+    private void lisaaRajahdys(Ammus ammus) {
+        peli.lisaaRajahdysPiirrettavaksiKohtaan(new Pala(ammus.getX(), ammus.getY()));
     }
 
     private void osuukoAmmukset() {
@@ -170,6 +195,7 @@ public class Pelikentta {
         while (iterator.hasNext()) {
             Ammus ammus = iterator.next();
             if (osuukoAmmus(ammus)) {
+                lisaaRajahdys(ammus);
                 iterator.remove();
             }
         }
@@ -228,7 +254,7 @@ public class Pelikentta {
                 } else {
                     pomo.liiku(Suunta.ALAS);
                 }
-                
+
                 if (pomo.getY() > pelikentanKorkeus) {
                     tuhoaPomo();
                 }
@@ -325,13 +351,19 @@ public class Pelikentta {
      * Nollaa pelikentän alkuasentoon, ei ammuksia ei vihollisia ja oma alus
      * alkupaikalla
      */
-    void kaynnistaUudelleen() {
+    public void kaynnistaUudelleen() {
         this.omaAlus = luoOmaAlus();
 
         this.viholliset.clear();
         this.ammukset.clear();
         tuhoaPomo();
 
+    }
+
+    public void parannaVihollistenKestavyytta() {
+        if (vihollistenKestavyys < 10) {
+            this.vihollistenKestavyys++;
+        }
     }
 
 }

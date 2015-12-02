@@ -6,31 +6,29 @@ package invadersdefender.sovelluslogiikka;
  * 
  * @author emivo
  */
-public class Alus implements Liikkuva {
+public abstract class Alus implements Liikkuva {
 
     private final int koko; // aluksen sivunpituus
     private final Pala sijainti;
+    private int elamapisteet; // lisataan kohta
 
-    public Alus(int alkuX, int alkuY, int koko) {
+    public Alus(int alkuX, int alkuY, int koko, int elamapisteet) {
         this.koko = koko;
 
         this.sijainti = new Pala(alkuX, alkuY);
+        this.elamapisteet = elamapisteet;
     }
 
     @Override
     public int getKoko() {
         return koko;
     }
-
     /**
-     * Luo {@link Ammus} -luokan olion aluksen yläreunan yläpuolelle ja leveyssuunnassa aluksen keskelle
-     * 
-     * @return {@link Ammus} -luokan olio
+     * Jokaisella luotavalla aluksella on mahdollisuus ampua
+     * @return palauttaa ammutun Ammuksen 
      */
-    public Ammus ammu() {
-        return new Ammus(getX() + koko / 2, getY() - 1, Suunta.YLOS);
-    }
-
+    abstract Ammus ammu();
+    
     /**
      * Palauttaa totuus arvon osuuko alukseen jokin toinen liikkuva.
      * Kaikki liikkuvat ovat neliön muotoisia, joten metodi tutkii osuuko jokin kulma 
@@ -78,6 +76,22 @@ public class Alus implements Liikkuva {
     }
 
     /**
+     * Metodi antaa aluksen elämäpisteet
+     * @return 
+     */
+    public int getElamapisteet() {
+        return elamapisteet;
+    }
+    
+    /**
+     * Metodilla voidaan asettaa uudet elamapisteet alukselle
+     * @param elamapisteet Pistemäärä, joka halutaan asettaa aluksen elämäpisteiksi
+     */
+    public void setElamapisteet(int elamapisteet) {
+        this.elamapisteet = elamapisteet;
+    }
+
+    /**
      * metodilla saadaan aluksen vasemman yläreunan palan. Muiden palojen paikat
      * voidaan laskea tämän avulla 
      *
@@ -94,5 +108,12 @@ public class Alus implements Liikkuva {
     @Override
     public void liiku(Suunta suunta) {
         this.sijainti.liiku(suunta);
+    }
+    
+    /**
+     * Kun alus saa osumaa sen elämäpisteet vähenevät
+     */
+    public void vahennaElamapisteita() {
+        this.elamapisteet--;
     }
 }

@@ -10,14 +10,23 @@ public class Vihollisolio extends Alus {
 
     private Suunta suunta;
 
-    public Vihollisolio(int alkuX, int alkuY, int koko) {
-        super(alkuX, alkuY, koko);
+    public Vihollisolio(int alkuX, int alkuY, int koko, int hp) {
+        super(alkuX, alkuY, koko, hp);
         this.suunta = Suunta.OIKEA;
     }
 
     @Override
     public Ammus ammu() {
         return new Ammus(getX() + getKoko() / 2, getY() + getKoko() + 1, Suunta.ALAS);
+    }
+    
+    /**
+     * Vihollisolion elämäpisteitä ei saa muutta setMetodilla, joten tämä metodi ei tee mitään
+     * @param elamapisteet 
+     */
+    @Override
+    public void setElamapisteet(int elamapisteet) {
+        // älä tee mitään
     }
 
     /**

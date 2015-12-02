@@ -9,7 +9,7 @@ import java.awt.event.KeyListener;
 
 /**
  * Luokka kuuntelee näppäimistötapahtumia ja antaa sen perusteella pelille
- * käskyjä, mitä tulee tehdä
+ * käskyjä, mitä tulee tehdä. Ammu käsky annetaan vasta onrelease
  *
  * @author emivo
  */
@@ -42,9 +42,6 @@ public class Nappaimistokuuntelija implements KeyListener {
                 break;
             case KeyEvent.VK_RIGHT:
                 liiku(Suunta.OIKEA);
-                break;
-            case KeyEvent.VK_SPACE:
-                ammu();
                 break;
             case KeyEvent.VK_P:
                 pause();
@@ -94,7 +91,11 @@ public class Nappaimistokuuntelija implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // ei mitään tänne
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SPACE:
+                ammu();
+                break;
+        }
     }
 
 }

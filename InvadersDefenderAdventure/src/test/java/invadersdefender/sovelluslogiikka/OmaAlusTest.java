@@ -11,11 +11,11 @@ import static org.junit.Assert.*;
  *
  * @author emivo
  */
-public class AlusTest {
+public class OmaAlusTest {
 
     Alus alus;
 
-    public AlusTest() {
+    public OmaAlusTest() {
     }
 
     @BeforeClass
@@ -28,7 +28,7 @@ public class AlusTest {
 
     @Before
     public void setUp() {
-        alus = new Alus(1, 1, 3);
+        alus = new OmaAlus(1, 1, 3);
     }
 
     @After
@@ -91,7 +91,7 @@ public class AlusTest {
     public void osuuLiikkuvaanToimii() {
         Ammus ammus = new Ammus(1, 1, Suunta.ALAS);
         assertTrue("Ammus osuu alukseen", alus.osuukoAlukseen(ammus));
-        Alus toinenAlus = new Alus(alus.getX(), alus.getY(), alus.getKoko());
+        Alus toinenAlus = new OmaAlus(alus.getX(), alus.getY(), alus.getKoko());
         // samassa kohdassa
         assertTrue(alus.osuukoAlukseen(toinenAlus));
         
@@ -106,7 +106,7 @@ public class AlusTest {
 
     private void osuukoToiseenAlukseen(int x, int y) {
         Alus toinenAlus;
-        toinenAlus = new Alus(alus.getX() + x, alus.getY() + y, alus.getKoko());
+        toinenAlus = new OmaAlus(alus.getX() + x, alus.getY() + y, alus.getKoko());
         assertTrue(alus.osuukoAlukseen(toinenAlus));
     }
 }

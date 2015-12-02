@@ -48,6 +48,8 @@ public class Peli extends Timer implements ActionListener {
 
         setInitialDelay(200);
         lisaaKuuntelija();
+        
+        
     }
 
     /**
@@ -125,6 +127,7 @@ public class Peli extends Timer implements ActionListener {
      */
     public void kaynnistaPeliUuudelleen() {
         pelikentta.kaynnistaUudelleen();
+        setDelay(100);
 
         this.pisteet = 0;
         this.vihollistenMaara = 2;
@@ -141,6 +144,18 @@ public class Peli extends Timer implements ActionListener {
         }
     }
 
+    /**
+     * Metodi antaa piirtoalustalle piirretäväksi räjähdyksen sijainnin Pala
+     * oliona
+     *
+     * @param sijainti Paikka pelikentällä, johon räjähdys halutaan piirtää
+     */
+    public void lisaaRajahdysPiirrettavaksiKohtaan(Pala sijainti) {
+        if (piirtoalusta != null) {
+            piirtoalusta.piirraRajahdys(sijainti);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -151,7 +166,7 @@ public class Peli extends Timer implements ActionListener {
         if (pisteet > 600 && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > 1) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
         }
-        
+
         if (pelikentta.getPomo() == null && pisteet != 0 && pisteet % 500 == 0) {
             pelikentta.pomoVihollinenTuleeEsille();
         }
@@ -159,7 +174,7 @@ public class Peli extends Timer implements ActionListener {
         vihollistenViiveAmmustenLiikkeeseen();
 
         paivitaPelinpiirto();
-        taustanLeikkauskohta++;
+        taustanLeikkauskohta += 2;
     }
 
     /**
@@ -192,22 +207,28 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * metodi kasvattaa käynnissä olevan pelin pistetilannetta
+     * metodi kasvattaa käynnissä olevan pelin pistetilannetta sekä lisää
+     * tarvittaessa esiin tulevien vihollisten määrää ja niiden kestävyyttyä
      */
     void lisaaPisteita() {
         if (tilanne == Pelitilanne.KAYNNISSA) {
             pisteet += 10;
-            if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 37) {
+            // pelinopeus
+            if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 33) {
                 setDelay(getDelay() - 1);
                 if (getDelay() % 5 == 0 && vihollistenMaara < 7) {
                     vihollistenMaara++;
                 }
             }
+            // vihollisten kestävyys
+            if (pisteet % 500 == 0) {
+                pelikentta.parannaVihollistenKestavyytta();
+            }
         }
     }
 
     /**
-     * Pelin huipputuloslista tallennetaan 
+     * Pelin huipputuloslista tallennetaan
      */
     public void tallennaTulokset() {
         huipputulokset.tallennaTulokset();
@@ -230,6 +251,37 @@ public class Peli extends Timer implements ActionListener {
      */
     public void tyhjennaHuipputulokset() {
         huipputulokset.tyhjennaHuipputulokset();
+    }
+
+    /**
+     * Parantaa pelissä olevan aluksen aseistus
+     *
+     * @param aseistus uusi aseistus
+     */
+    public void parannaAluksenAseistusta(Aseistus aseistus) {
+        int kuinkaPaljonPisteitaMaksaa = 0;
+        if (aseistus == Aseistus.TUPLA) {
+            kuinkaPaljonPisteitaMaksaa = 1000;
+        } else if (aseistus == Aseistus.TRIPLA) {
+            kuinkaPaljonPisteitaMaksaa = 1500;
+        }
+
+        if (pisteet - kuinkaPaljonPisteitaMaksaa >= 0 && pelikentta.getOmaAlus().getAseistus().compareTo(aseistus) < 0) {
+            pelikentta.getOmaAlus().parannaAseistusta(aseistus);
+            pisteet -= kuinkaPaljonPisteitaMaksaa;
+        }
+    }
+
+    /**
+     * Korjaa pelissä olevan omaan alukseen syntyneitä vahinkoja
+     *
+     * @param kuinkaPaljon
+     */
+    public void korjaaOmaaAlusta(int kuinkaPaljon) {
+        if (pisteet - kuinkaPaljon * 10 > 0 && pelikentta.getOmaAlus().getElamapisteet() < 10) {
+            pelikentta.getOmaAlus().korjaaSuojausta(kuinkaPaljon);
+            pisteet -= kuinkaPaljon * 10;
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package invadersdefender.gui;
 
 import invadersdefender.sovelluslogiikka.Ammus;
 import invadersdefender.sovelluslogiikka.Liikkuva;
+import invadersdefender.sovelluslogiikka.Pala;
 import invadersdefender.sovelluslogiikka.Peli;
 import invadersdefender.sovelluslogiikka.Pelikentta;
 import invadersdefender.sovelluslogiikka.Pelitilanne;
@@ -13,7 +14,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -32,12 +36,14 @@ public class PelinPiirtoalusta extends JPanel {
     private int palojenKoko;
     private Map<String, BufferedImage> kuvat;
     private JFrame ikkuna;
+    private List<Pala> rajahdykset;
 
     public PelinPiirtoalusta(Peli peli, int palojenKoko) {
         this.peli = peli;
         this.pelikentta = peli.getPelikentta();
         this.palojenKoko = palojenKoko;
         this.kuvat = new HashMap<>();
+        this.rajahdykset = new ArrayList<>();
 
         lataaKuvat();
     }
@@ -73,7 +79,12 @@ public class PelinPiirtoalusta extends JPanel {
         piirraPomo(graphics);
         piirraAmmukset(graphics);
 
+        if (!rajahdykset.isEmpty()) {
+            piirraRajahdykset(graphics);
+        }
+
         piirraPistetilanne(graphics);
+        piirraOmatElamapisteet(graphics);
 
     }
 
@@ -137,28 +148,26 @@ public class PelinPiirtoalusta extends JPanel {
 
     private void piirraPeliLoppu(Graphics graphics) {
 
-        graphics.setColor(Color.red);
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
-        graphics.drawString("Game Over", paikkaX, paikkaY);
+        piirraTeksti(graphics, "Game Over", paikkaX, paikkaY);
         String pisteet = "Your score: " + peli.getPisteet();
-        graphics.drawString(pisteet, paikkaX, paikkaY + palojenKoko + 3);
-        graphics.drawString("Press enter to start again", paikkaX, paikkaY + (palojenKoko + 3) * 2);
+        piirraTeksti(graphics, pisteet, paikkaX, paikkaY + palojenKoko + 3);
+        piirraTeksti(graphics, "Press enter to start again", paikkaX, paikkaY + (palojenKoko + 3) * 2);
     }
 
     private void piirraPause(Graphics graphics) {
         piirraPeli(graphics);
 
-        graphics.setColor(Color.red);
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
-        graphics.drawString("Pause. Press enter to continue", paikkaX, paikkaY);
+        piirraTeksti(graphics, "Pause. Press enter to continue", paikkaX, paikkaY);
     }
 
     private void piirraTausta(Graphics graphics) {
         try {
             BufferedImage tausta = kuvat.get("tausta");
-            if (peli.getTaustanLeikkauskohta() > tausta.getHeight()) {
+            if (peli.getTaustanLeikkauskohta() >= tausta.getHeight()) {
                 peli.setTaustanLeikkauskohta(0);
             }
             graphics.drawImage(tausta,
@@ -189,10 +198,10 @@ public class PelinPiirtoalusta extends JPanel {
         kuvat.put("omaalus", lueKuva(haeOsoite("/omaalus.png")));
         kuvat.put("vihollisolio", lueKuva(haeOsoite("/vihollisolio.png")));
         kuvat.put("pomo", lueKuva(haeOsoite("/pomo.png")));
+        kuvat.put("rajahdys", lueKuva(haeOsoite("/rajahdys.png")));
     }
 
     private void piirraHuipputulokset(Graphics graphics) {
-        graphics.setColor(Color.red);
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
         int huipputuloksia = peli.getHuipputulokset().getTulokset().size();
@@ -202,10 +211,10 @@ public class PelinPiirtoalusta extends JPanel {
             if (i < huipputuloksia) {
                 pelaaja = peli.getHuipputulokset().getTulokset().get(i);
             }
-            graphics.drawString(luoRivi(i + 1, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
+            piirraTeksti(graphics, luoRivi(i + 1, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
         }
 
-        graphics.drawString("Clear highscores press X", (int) (paikkaX * palojenKoko), paikkaY);
+        piirraTeksti(graphics, "Clear highscores press X", (int) (paikkaX * palojenKoko), paikkaY);
     }
 
     private String luoRivi(int i, Pelaaja pelaaja) {
@@ -234,14 +243,19 @@ public class PelinPiirtoalusta extends JPanel {
 
     private void piirraPelinAlkuruutu(Graphics graphics) {
 
-        graphics.setColor(Color.red);
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
-        graphics.drawString("Press enter to start a game", paikkaX, paikkaY);
+        String s = "Press enter to start a game";
+        piirraTeksti(graphics, s, paikkaX, paikkaY);
 
         piirraOmaAlus(graphics);
 
         piirraPistetilanne(graphics);
+    }
+
+    private void piirraTeksti(Graphics graphics, String merkkijono, int x, int y) {
+        graphics.setColor(Color.red);
+        graphics.drawString(merkkijono, x, y);
     }
 
     /**
@@ -268,6 +282,25 @@ public class PelinPiirtoalusta extends JPanel {
     private void piirraPomo(Graphics graphics) {
         if (pelikentta.getPomo() != null) {
             piirraLiikkuva(graphics, pelikentta.getPomo(), kuvat.get("pomo"));
+        }
+    }
+
+    public void piirraRajahdys(Pala sijainti) {
+        rajahdykset.add(sijainti);
+    }
+
+    private void piirraOmatElamapisteet(Graphics graphics) {
+        int x = pelikentta.getPelikentanLeveys() * palojenKoko * 3 / 4;
+        int y = (int) (palojenKoko * 1.5);
+        piirraTeksti(graphics, "HP: " + pelikentta.getOmaAlus().getElamapisteet(), x, y);
+    }
+
+    private void piirraRajahdykset(Graphics graphics) {
+        Iterator<Pala> iteraattori = rajahdykset.iterator();
+        while (iteraattori.hasNext()) {
+            Pala sijainti = iteraattori.next();
+            piirraKuva(graphics, sijainti.getX() * palojenKoko, sijainti.getY() * palojenKoko, palojenKoko, kuvat.get("rajahdys"));
+            iteraattori.remove();
         }
     }
 
