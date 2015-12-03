@@ -216,34 +216,57 @@ public class PelikenttaTest {
 
     @Test
     public void omaAlusLiikkuuVihollistaPain() {
+        int elamapisteet = liikutaOmaAlusVihollistaPain();
+        assertTrue(pelikentta.getViholliset().isEmpty());
+        assertEquals(elamapisteet - 20, pelikentta.getOmaAlus().getElamapisteet());
+        for (int i = 0; i < 4; i++) {
+            elamapisteet -= 20;
+            assertEquals(elamapisteet, liikutaOmaAlusVihollistaPain());
+        }
+        assertEquals(Pelitilanne.LOPPU, pelikentta.getPeli().getTilanne());
+        assertFalse(pelikentta.getPeli().isRunning());
+    }
+
+    private int liikutaOmaAlusVihollistaPain() {
         Vihollisolio olio = new Vihollisolio(pelikentta.getOmaAlus().getX(), pelikentta.getOmaAlus().getY() - pelikentta.getOmaAlus().getKoko(), pelikentta.getOmaAlus().getKoko(), 1);
         pelikentta.getViholliset().add(olio);
+        int elamapisteet = pelikentta.getOmaAlus().getElamapisteet();
         pelikentta.omaAlusLiiku(Suunta.YLOS);
-        assertTrue(pelikentta.osuukoVihollisetOmaanAlukseen());
-        assertEquals(Pelitilanne.LOPPU, pelikentta.getPeli().getTilanne());
-        assertTrue("Pelin tulisi loppua kun törmää vihollisalukseen", !pelikentta.getPeli().isRunning());
+        return elamapisteet;
     }
 
     @Test
     public void vihollisetLiikkuuOmaaAlustaPain() {
+        int elamapisteet = liikutaVihollinenOmaaAlustaPain();
+        assertTrue(pelikentta.getViholliset().isEmpty());
+        assertEquals(elamapisteet - 20, pelikentta.getOmaAlus().getElamapisteet());
+        for (int i = 0; i < 4; i++) {
+            elamapisteet -= 20;
+            assertEquals(elamapisteet, liikutaVihollinenOmaaAlustaPain());
+        }
+        assertEquals(Pelitilanne.LOPPU, pelikentta.getPeli().getTilanne());
+        assertFalse(pelikentta.getPeli().isRunning());
+    }
+
+    private int liikutaVihollinenOmaaAlustaPain() {
         Vihollisolio olio = new Vihollisolio(pelikentta.getOmaAlus().getX() - 1, pelikentta.getOmaAlus().getY(), pelikentta.getOmaAlus().getKoko(), 1);
         pelikentta.getViholliset().add(olio);
+        int elamapisteet = pelikentta.getOmaAlus().getElamapisteet();
         pelikentta.vihollisetLiiku();
-        assertTrue(pelikentta.osuukoVihollisetOmaanAlukseen());
-        assertEquals(Pelitilanne.LOPPU, pelikentta.getPeli().getTilanne());
-        assertTrue("Pelin tulisi loppua kun törmää vihollisalukseen", !pelikentta.getPeli().isRunning());
+        return elamapisteet;
     }
 
     @Test
     public void omaAlusLiikkuuPomoaPain() {
         pomoLiikutetaanKentalle();
-
+        int pomoElamapisteet = pelikentta.getPomo().getElamapisteet();
+        int elamapisteet = pelikentta.getOmaAlus().getElamapisteet();
         while (pelikentta.getOmaAlus().getY() >= pelikentta.getPomo().getY() + pelikentta.getPomo().getKoko()) {
             pelikentta.omaAlusLiiku(Suunta.YLOS);
         }
-        assertTrue(pelikentta.osuukoVihollisetOmaanAlukseen());
-        assertTrue("Pelin tulisi loppua kun törmää vihollisalukseen", !pelikentta.getPeli().isRunning());
 
+        assertEquals(pomoElamapisteet - 10, pelikentta.getPomo().getElamapisteet());
+        assertEquals(elamapisteet - 20, pelikentta.getOmaAlus().getElamapisteet());
     }
 
     private void pomoLiikutetaanKentalle() {
@@ -344,29 +367,29 @@ public class PelikenttaTest {
 
     @Test
     public void parannaVihollistenKestavyyttaVihollistenElamapisteetKasvaa() {
-        tarkistaVihollistenElamapisteet(1);
+        tarkistaVihollistenElamapisteet(10);
 
-        tarkistaPomonElamapisteet(2);
+        tarkistaPomonElamapisteet(20);
 
         pelikentta.kaynnistaUudelleen();
 
         pelikentta.parannaVihollistenKestavyytta();
-        tarkistaVihollistenElamapisteet(2);
+        tarkistaVihollistenElamapisteet(20);
 
-        tarkistaPomonElamapisteet(3);
+        tarkistaPomonElamapisteet(30);
 
         pelikentta.kaynnistaUudelleen();
 
         for (int i = 0; i < 15; i++) {
             pelikentta.parannaVihollistenKestavyytta();
         }
-        tarkistaVihollistenElamapisteet(10);
-        tarkistaPomonElamapisteet(11);
-        
+        tarkistaVihollistenElamapisteet(100);
+        tarkistaPomonElamapisteet(110);
+
         pelikentta.kaynnistaUudelleen();
-        
-        tarkistaVihollistenElamapisteet(1);
-        tarkistaPomonElamapisteet(2);
+
+        tarkistaVihollistenElamapisteet(10);
+        tarkistaPomonElamapisteet(20);
     }
 
     private void tarkistaPomonElamapisteet(int oletetutElamapisteet) {

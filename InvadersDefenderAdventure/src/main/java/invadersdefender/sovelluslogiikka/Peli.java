@@ -183,6 +183,7 @@ public class Peli extends Timer implements ActionListener {
      * huipputulos
      */
     public void peliLoppuu() {
+        paivitaPelinpiirto();
         stop();
         setTilanne(Pelitilanne.LOPPU);
         if (piirtoalusta != null) {

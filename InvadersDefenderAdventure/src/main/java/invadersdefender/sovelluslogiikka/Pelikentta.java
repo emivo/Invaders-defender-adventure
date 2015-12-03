@@ -80,28 +80,31 @@ public class Pelikentta {
         if (alus.getClass() != OmaAlus.class) {
             ammukset.add(alus.ammu());
         } else {
+            omaAlusAmmu();
+        }
+    }
 
-            int omiaAmmuksiaKentalla = 0;
-            int sallitutAmmuksetKentalla = 7;
-            if (omaAlus.getAseistus() == Aseistus.TUPLA) {
-                sallitutAmmuksetKentalla++;
-                sallitutAmmuksetKentalla *= 2;
-            } else if (omaAlus.getAseistus() == Aseistus.TRIPLA) {
-                sallitutAmmuksetKentalla += 2;
-                sallitutAmmuksetKentalla *= 3;
+    private void omaAlusAmmu() {
+        int omiaAmmuksiaKentalla = 0;
+        int sallitutAmmuksetKentalla = 7;
+        if (omaAlus.getAseistus() == Aseistus.TUPLA) {
+            sallitutAmmuksetKentalla++;
+            sallitutAmmuksetKentalla *= 2;
+        } else if (omaAlus.getAseistus() == Aseistus.TRIPLA) {
+            sallitutAmmuksetKentalla += 2;
+            sallitutAmmuksetKentalla *= 3;
+        }
+
+        for (Ammus ammus : ammukset) {
+            if (ammus.getSuunta() == Suunta.YLOS) {
+                omiaAmmuksiaKentalla++;
             }
+        }
 
-            for (Ammus ammus : ammukset) {
-                if (ammus.getSuunta() == Suunta.YLOS) {
-                    omiaAmmuksiaKentalla++;
-                }
-            }
-
-            if (omiaAmmuksiaKentalla < sallitutAmmuksetKentalla) {
-                ammukset.add(alus.ammu());
-                if (omaAlus.getAseistus() != Aseistus.NORMAALI) {
-                    ammukset.addAll(omaAlus.ammuEnemman());
-                }
+        if (omiaAmmuksiaKentalla < sallitutAmmuksetKentalla) {
+            ammukset.add(omaAlus.ammu());
+            if (omaAlus.getAseistus() != Aseistus.NORMAALI) {
+                ammukset.addAll(omaAlus.ammuEnemman());
             }
         }
     }
@@ -119,40 +122,56 @@ public class Pelikentta {
      */
     public boolean osuukoAmmus(Ammus ammus) {
         if (omaAlus.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.ALAS)) {
-            // lopeta peli
-            omaAlus.vahennaElamapisteita();
-            if (omaAlus.getElamapisteet() == 0) {
-                peli.peliLoppuu();
-            }
+
+            vahennaOmanAluksenElamapisteita();
             return true;
         }
 
+        if (osuukoAmmusKasitteleVihollisetListassa(ammus)) {
+            return true;
+        }
+
+        return osuukoAmmusPomoon(ammus);
+    }
+
+    private void vahennaOmanAluksenElamapisteita() {
+        omaAlus.vahennaElamapisteita();
+        if (omaAlus.getElamapisteet() <= 0) {
+            lisaaRajahdys(omaAlus);
+            peli.peliLoppuu();
+        }
+    }
+
+    private boolean osuukoAmmusPomoon(Ammus ammus) {
+        if (pomo != null) {
+            if (pomo.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
+                pomoVahennaElamapisteita();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void pomoVahennaElamapisteita() {
+        pomo.vahennaElamapisteita();
+        if (pomo.getElamapisteet() <= 0) {
+            peli.lisaaPisteita();
+            peli.lisaaPisteita();
+            lisaaRajahdys(pomo);
+            tuhoaPomo();
+        }
+    }
+
+    private boolean osuukoAmmusKasitteleVihollisetListassa(Ammus ammus) {
         Iterator<Vihollisolio> iterator = viholliset.iterator();
         while (iterator.hasNext()) {
             Vihollisolio vihollinen = iterator.next();
             if (vihollinen.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
-
                 vihollinen.vahennaElamapisteita();
-
-                if (vihollinen.getElamapisteet() == 0) {
+                if (vihollinen.getElamapisteet() <= 0) {
                     lisaaRajahdys(vihollinen);
                     iterator.remove();
                     peli.lisaaPisteita();
-                }
-                return true;
-            }
-        }
-
-        if (pomo != null) {
-            if (pomo.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
-
-                pomo.vahennaElamapisteita();
-
-                if (pomo.getElamapisteet() == 0) {
-                    peli.lisaaPisteita();
-                    peli.lisaaPisteita();
-                    lisaaRajahdys(pomo);
-                    tuhoaPomo();
                 }
                 return true;
             }
@@ -167,7 +186,7 @@ public class Pelikentta {
      * @param montako Kuinka monta vihollista tulee esille
      */
     public void vihollisetTulevatEsille(int montako) {
-        // KESKEN
+
         // asetetaan viholliset pelikentältä liian ylös peli kentästä mistä ne voivat sitten "ryömiä esiin"
         // voivat mennä reunoilta yli ja ryömiä esiin sivusta lisäksi
         Random satunaismuuttuja = new Random();
@@ -211,7 +230,7 @@ public class Pelikentta {
         }
     }
 
-    private void lisaaRajahdys(Liikkuva liikkuva ){
+    private void lisaaRajahdys(Liikkuva liikkuva) {
         peli.lisaaRajahdysPiirrettavaksiKohtaan(new Pala(liikkuva.getX(), liikkuva.getY(), liikkuva.getKoko()));
     }
 
@@ -232,13 +251,35 @@ public class Pelikentta {
      * @param suunta Suunta, johon alusta halutaan liikuttaa
      */
     public void omaAlusLiiku(Suunta suunta) {
-        if (voikoLiikkua(omaAlus, suunta)) {
+        if (voikoOmaAlusLiikkua(suunta)) {
             omaAlus.liiku(suunta);
         }
-        if (osuukoVihollisetOmaanAlukseen()) {
-            peli.peliLoppuu();
-        }
+        osuvatkoVihollisetOmaanAlukseen();
         osuukoAmmukset();
+    }
+
+    /**
+     * Metodi tarkistaa osuuko jokin vihollisista omaan alukseen
+     *
+     */
+    public void osuvatkoVihollisetOmaanAlukseen() {
+        Iterator<Vihollisolio> iteraattori = viholliset.iterator();
+        while (iteraattori.hasNext()) {
+            Vihollisolio vihollinen = iteraattori.next();
+            if (omaAlus.osuukoAlukseen(vihollinen)) {
+                lisaaRajahdys(vihollinen);
+                iteraattori.remove();
+                peli.lisaaPisteita();
+                omaAlus.vahennaElamapisteita();
+                vahennaOmanAluksenElamapisteita();
+
+            }
+        }
+        if (pomo != null && omaAlus.osuukoAlukseen(pomo)) {
+            pomoVahennaElamapisteita();
+            omaAlus.vahennaElamapisteita();
+            vahennaOmanAluksenElamapisteita();
+        }
     }
 
     /**
@@ -260,42 +301,38 @@ public class Pelikentta {
                 }
             }
 
-            if (pomo != null) {
-                if (pomo.getY() - pomo.getKoko() > 0) {
-                    boolean satunnainenAlasMeno = new Random().nextBoolean();
-                    if (satunnainenAlasMeno) {
-                        pomo.liiku(Suunta.ALAS);
-                    } else {
-                        valitseVihollistenSuunta(pomo);
-                    }
-                    boolean satunnainenSuunnanVaihto = new Random().nextBoolean();
-                    if (satunnainenSuunnanVaihto) {
-                        if (pomo.getSuunta() == Suunta.VASEN) {
-                            pomo.setSuunta(Suunta.OIKEA);
-                        } else {
-                            pomo.setSuunta(Suunta.VASEN);
-                        }
-                    }
-                } else {
-                    pomo.liiku(Suunta.ALAS);
-                }
-
-                if (pomo.getY() > pelikentanKorkeus) {
-                    tuhoaPomo();
-                }
-            }
+            pomoLiiku();
 
             osuukoAmmukset();
-            if (osuukoVihollisetOmaanAlukseen()) {
-                peli.peliLoppuu();
-            }
-            if (!viholliset.isEmpty()) {
-                if (viholliset.get(viholliset.size() - 1).getY() > pelikentanKorkeus) {
-                    viholliset.remove(viholliset.size() - 1);
+            osuvatkoVihollisetOmaanAlukseen();
+        }
+    }
+
+    private void pomoLiiku() {
+        if (pomo != null) {
+            if (pomo.getY() - pomo.getKoko() > 0) {
+                boolean satunnainenAlasMeno = new Random().nextBoolean();
+                if (satunnainenAlasMeno) {
+                    pomo.liiku(Suunta.ALAS);
+                } else {
+                    valitseVihollistenSuunta(pomo);
                 }
+                boolean satunnainenSuunnanVaihto = new Random().nextBoolean();
+                if (satunnainenSuunnanVaihto) {
+                    if (pomo.getSuunta() == Suunta.VASEN) {
+                        pomo.setSuunta(Suunta.OIKEA);
+                    } else {
+                        pomo.setSuunta(Suunta.VASEN);
+                    }
+                }
+            } else {
+                pomo.liiku(Suunta.ALAS);
+            }
+
+            if (pomo.getY() > pelikentanKorkeus) {
+                tuhoaPomo();
             }
         }
-
     }
 
     private void tuhoaPomo() {
@@ -336,19 +373,6 @@ public class Pelikentta {
         }
     }
 
-    /**
-     * Metodi tarkistaa osuuko jokin vihollisista omaan alukseen
-     *
-     * @return palauttaa {@code true}, jos jokin vihollinen osuu omaan alukseen
-     */
-    public boolean osuukoVihollisetOmaanAlukseen() {
-        for (Vihollisolio olio : viholliset) {
-            if (omaAlus.osuukoAlukseen(olio)) {
-                return true;
-            }
-        }
-        return pomo != null && omaAlus.osuukoAlukseen(pomo);
-    }
 
     /**
      * Satunnainen kentällä oleva vihollinen ampuu {@code Ammus} olion
@@ -365,11 +389,11 @@ public class Pelikentta {
         }
     }
 
-    private boolean voikoLiikkua(Alus alus, Suunta suunta) {
-        Pala uusiSijainti = new Pala(alus.getX(), alus.getY());
+    private boolean voikoOmaAlusLiikkua(Suunta suunta) {
+        Pala uusiSijainti = new Pala(omaAlus.getX(), omaAlus.getY());
         uusiSijainti.liiku(suunta);
-        return !(uusiSijainti.getX() < 0 || uusiSijainti.getX() + alus.getKoko() > pelikentanLeveys
-                || uusiSijainti.getY() < 0 || uusiSijainti.getY() + alus.getKoko() > pelikentanKorkeus);
+        return !(uusiSijainti.getX() < 0 || uusiSijainti.getX() + omaAlus.getKoko() > pelikentanLeveys
+                || uusiSijainti.getY() < 0 || uusiSijainti.getY() + omaAlus.getKoko() > pelikentanKorkeus);
     }
 
     /**

@@ -146,25 +146,25 @@ public class PeliTest {
 
     @Test
     public void omaaAlustaVoiKorjataJaMutteiLiikaa() {
-        peli.getPelikentta().getOmaAlus().setElamapisteet(1);
+        peli.getPelikentta().getOmaAlus().setElamapisteet(10);
         int pisteet = peli.getPisteet();
         peli.korjaaOmaaAlusta();
         assertEquals(pisteet, peli.getPisteet());
-        assertEquals(1, peli.getPelikentta().getOmaAlus().getElamapisteet());
+        assertEquals(10, peli.getPelikentta().getOmaAlus().getElamapisteet());
 
         lisaaPisteitaTarvittavaMaara(1000);
 
-        peli.getPelikentta().getOmaAlus().setElamapisteet(1);
+        peli.getPelikentta().getOmaAlus().setElamapisteet(10);
         pisteet = peli.getPisteet() - 10;
         peli.korjaaOmaaAlusta();
         assertEquals(pisteet, peli.getPisteet());
-        assertEquals(2, peli.getPelikentta().getOmaAlus().getElamapisteet());
+        assertEquals(20, peli.getPelikentta().getOmaAlus().getElamapisteet());
         pisteet = peli.getPisteet() - 80;
         for (int i = 0; i < 10; i++) {
             peli.korjaaOmaaAlusta();
         }
         assertEquals(pisteet, peli.getPisteet());
-        assertEquals(10, peli.getPelikentta().getOmaAlus().getElamapisteet());
+        assertEquals(100, peli.getPelikentta().getOmaAlus().getElamapisteet());
     }
 
     private void lisaaPisteitaTarvittavaMaara(int tarvittavatPisteet) {

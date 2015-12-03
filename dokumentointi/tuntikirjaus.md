@@ -18,5 +18,6 @@
 |27.11|Testit päivitetty| 1,5 tuntia|
 |30.11.| Päivityksiä peliin| muutama tunti|
 |2.12.| Testit päivitetty| n. 3 tuntia|
+|3.12.| Sekvenssikaavioita ja koodin siivoamista| 2,5 tuntia|
 
 
