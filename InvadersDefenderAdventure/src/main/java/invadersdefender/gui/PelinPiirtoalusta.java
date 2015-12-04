@@ -32,11 +32,11 @@ import javax.swing.JPanel;
 public class PelinPiirtoalusta extends JPanel {
 
     private final Peli peli;
-    private Pelikentta pelikentta;
-    private int palojenKoko;
-    private Map<String, BufferedImage> kuvat;
+    private final Pelikentta pelikentta;
+    private final int palojenKoko;
+    private final Map<String, BufferedImage> kuvat;
     private JFrame ikkuna;
-    private List<Pala> rajahdykset;
+    private final List<Pala> rajahdykset;
 
     public PelinPiirtoalusta(Peli peli, int palojenKoko) {
         this.peli = peli;
@@ -129,7 +129,8 @@ public class PelinPiirtoalusta extends JPanel {
 
     private void piirraKuva(Graphics graphics, int x, int y, int koko, Image kuva) {
         if (kuva != null) {
-            graphics.drawImage(kuva, x, y, koko, koko, this);
+            koko *= palojenKoko;
+            graphics.drawImage(kuva, x * palojenKoko, y * palojenKoko, koko, koko, this);
         } else {
             virhe();
         }
@@ -188,7 +189,7 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva, Image kuva) {
-        piirraKuva(graphics, liikkuva.getX() * palojenKoko, liikkuva.getY() * palojenKoko, liikkuva.getKoko() * palojenKoko, kuva);
+        piirraKuva(graphics, liikkuva.getX(), liikkuva.getY(), liikkuva.getKoko(), kuva);
     }
 
     private void lataaKuvat() {
@@ -299,8 +300,26 @@ public class PelinPiirtoalusta extends JPanel {
         Iterator<Pala> iteraattori = rajahdykset.iterator();
         while (iteraattori.hasNext()) {
             Pala sijainti = iteraattori.next();
-            piirraKuva(graphics, sijainti.getX() * palojenKoko, sijainti.getY() * palojenKoko, palojenKoko * sijainti.getKoko(), kuvat.get("rajahdys"));
+            if (sijainti.getX() >= 0 && sijainti.getY() >= 0) {
+                piirraKuva(graphics, sijainti.getX(), sijainti.getY(),sijainti.getKoko(), kuvat.get("rajahdys"));
+            } else {
+                piirraRajahdysJonkaYTaiXOnKentanUlkopuolella(sijainti, graphics);
+            }
             iteraattori.remove();
+        }
+    }
+
+    private void piirraRajahdysJonkaYTaiXOnKentanUlkopuolella(Pala sijainti, Graphics graphics) {
+        if (kuvat.get("rajahdys") != null) {
+            int x = sijainti.getX();
+            int y = sijainti.getY();
+            if (x < 0) {
+                graphics.drawImage(kuvat.get("rajahdys"), 0, y * palojenKoko, sijainti.getKoko() * palojenKoko + x * palojenKoko, sijainti.getKoko() * palojenKoko, this);
+            } else if (y < 0) {
+                graphics.drawImage(kuvat.get("rajahdys"), x * palojenKoko, 0, sijainti.getKoko() * palojenKoko, sijainti.getKoko() * palojenKoko + y * palojenKoko, this);
+            }
+        } else {
+            virhe();
         }
     }
 

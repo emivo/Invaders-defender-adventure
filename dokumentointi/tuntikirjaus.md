@@ -19,5 +19,6 @@
 |30.11.| Päivityksiä peliin| muutama tunti|
 |2.12.| Testit päivitetty| n. 3 tuntia|
 |3.12.| Sekvenssikaavioita ja koodin siivoamista| 2,5 tuntia|
+|4.12.|Vihollisten liikettä parannettu| 1,5tuntia|
 
 

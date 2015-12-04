@@ -94,6 +94,7 @@ public class Nappaimistokuuntelija implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        // ei tee mitään
     }
 
 }

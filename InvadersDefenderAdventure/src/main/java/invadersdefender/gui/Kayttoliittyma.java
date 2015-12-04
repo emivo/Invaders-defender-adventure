@@ -27,7 +27,6 @@ public class Kayttoliittyma implements Runnable {
         ikkuna = new JFrame("Invaders defender adventures");
         int ikkunanLeveys = peli.getPelikentta().getPelikentanLeveys()* palojenKoko + 5;
         int ikkunanKorkeus = peli.getPelikentta().getPelikentanKorkeus() * palojenKoko + 40;
-        peli.setIkkuna(ikkuna);
         piirtoalusta.setIkkuna(ikkuna);
         
         ikkuna.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

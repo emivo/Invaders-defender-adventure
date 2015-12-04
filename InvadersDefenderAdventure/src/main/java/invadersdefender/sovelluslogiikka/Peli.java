@@ -4,7 +4,6 @@ import invadersdefender.sovelluslogiikka.huipputulokset.Huipputulokset;
 import invadersdefender.gui.PelinPiirtoalusta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
 import javax.swing.Timer;
 
 /**
@@ -15,10 +14,8 @@ import javax.swing.Timer;
  * @author emivo
  */
 public class Peli extends Timer implements ActionListener {
-    /* peli jatkuu kunnes oma alus tuhoutuu */
 
     private final Pelikentta pelikentta;
-    private JFrame ikkuna;
     private Huipputulokset huipputulokset;
     private PelinPiirtoalusta piirtoalusta;
     private int vihollisetLiikkuViiveLaskuri;
@@ -48,8 +45,7 @@ public class Peli extends Timer implements ActionListener {
 
         setInitialDelay(200);
         lisaaKuuntelija();
-        
-        
+
     }
 
     /**
@@ -82,10 +78,6 @@ public class Peli extends Timer implements ActionListener {
 
     public Huipputulokset getHuipputulokset() {
         return huipputulokset;
-    }
-
-    public void setIkkuna(JFrame ikkuna) {
-        this.ikkuna = ikkuna;
     }
 
     public Pelitilanne getTilanne() {
@@ -161,11 +153,9 @@ public class Peli extends Timer implements ActionListener {
 
         if (pelikentta.getViholliset().isEmpty()) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
-        }
-        // kun saavutetaan tuhat pistettä laitetaan vihollisia tulemaan tolkuton määrä siis jatkuvalla syötöllä
-        // TODOO KUN PISTEET VÄHENEEKIN MUTTA VAIKEUSASTETULISI SÄILYTTÄÄ
-        if (pisteet > 600 && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > 1) {
-            pelikentta.vihollisetTulevatEsille(vihollistenMaara);
+        } else if (getDelay() < 80
+                && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getKoko()) {
+            pelikentta.vihollisetTulevatEsille(vihollistenMaara / 2);
         }
 
         if (pelikentta.getPomo() == null && pisteet != 0 && pisteet % 500 == 0) {
@@ -212,12 +202,12 @@ public class Peli extends Timer implements ActionListener {
      * metodi kasvattaa käynnissä olevan pelin pistetilannetta sekä lisää
      * tarvittaessa esiin tulevien vihollisten määrää ja niiden kestävyyttyä
      */
-    void lisaaPisteita() {
+    public void lisaaPisteita() {
         if (tilanne == Pelitilanne.KAYNNISSA) {
             pisteet += 10;
             // pelinopeus
             if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 33) {
-                setDelay(getDelay() - 1);
+                setDelay(getDelay() - 2);
                 if (getDelay() % 5 == 0 && vihollistenMaara < 7) {
                     vihollistenMaara++;
                 }

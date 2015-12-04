@@ -114,7 +114,7 @@ public class Pelikentta {
     }
 
     /**
-     * Metodi tarkastaa osuuko parametrinÃ¤ annettu ammus johonkin pelissÃ¤
+     * Metodi tarkastaa osuuko parametrinä annettu ammus johonkin pelissä
      * olevaan alukseen
      *
      * @param ammus tarkasteltava ammus
@@ -186,9 +186,6 @@ public class Pelikentta {
      * @param montako Kuinka monta vihollista tulee esille
      */
     public void vihollisetTulevatEsille(int montako) {
-
-        // asetetaan viholliset pelikentältä liian ylös peli kentästä mistä ne voivat sitten "ryömiä esiin"
-        // voivat mennä reunoilta yli ja ryömiä esiin sivusta lisäksi
         Random satunaismuuttuja = new Random();
         int alusRykelmanLeveys = montako * ALUKSIENKOKO * 2;
         int ensimmaisenAluksenX = satunaismuuttuja.nextInt(pelikentanLeveys + alusRykelmanLeveys - 1) - alusRykelmanLeveys;
@@ -196,7 +193,8 @@ public class Pelikentta {
         for (int i = 0; i < montako; i++) {
             int x = ensimmaisenAluksenX + (ALUKSIENKOKO * 2 * i);
 
-            int y = -1 * (montako * aluksienYSuuntainenValitys) + i * aluksienYSuuntainenValitys;
+            int y = -1 * ALUKSIENKOKO - i * aluksienYSuuntainenValitys;
+
             Vihollisolio vihollinen = new Vihollisolio(x, y, ALUKSIENKOKO, vihollistenKestavyys);
 
             viholliset.add(vihollinen);
@@ -220,7 +218,6 @@ public class Pelikentta {
         while (iterator.hasNext()) {
             Ammus ammus = iterator.next();
             ammus.liiku();
-            // ammukset eivät voi poistua kentänreunalta
             if (ammus.getY() < 0 || ammus.getY() > pelikentanKorkeus) {
                 iterator.remove();
             } else if (osuukoAmmus(ammus)) {
@@ -230,6 +227,13 @@ public class Pelikentta {
         }
     }
 
+    /**
+     * Metodi ilmoittaa pelille tapahtuneesta törmäyksestä, johon voidaan
+     * piirtää räjähdyskuva
+     *
+     * @param liikkuva Parametrinä annetaan liikkuva, jonka johdosta räjähdys
+     * tapahtuu
+     */
     private void lisaaRajahdys(Liikkuva liikkuva) {
         peli.lisaaRajahdysPiirrettavaksiKohtaan(new Pala(liikkuva.getX(), liikkuva.getY(), liikkuva.getKoko()));
     }
@@ -287,17 +291,23 @@ public class Pelikentta {
      */
     public void vihollisetLiiku() {
         if (!viholliset.isEmpty()) {
-            boolean onkoViimeinenVihollinenKentalla = viholliset.get(0).getY() >= 0;
+            boolean onkoViimeinenVihollinenKentalla = viholliset.get(viholliset.size() - 1).getY() >= -1 * ALUKSIENKOKO + 1;
             Iterator<Vihollisolio> iteraattori = viholliset.iterator();
+            int edellinenY = pelikentanKorkeus;
             while (iteraattori.hasNext()) {
                 Vihollisolio vihollinen = iteraattori.next();
                 if (onkoViimeinenVihollinenKentalla) {
-                    valitseVihollistenSuunta(vihollinen);
-                    if (vihollinen.getY() > pelikentanKorkeus) {
-                        iteraattori.remove();
+                    if (edellinenY < pelikentanKorkeus && edellinenY - vihollinen.getY() > ALUKSIENKOKO + 1) {
+                        vihollinen.liiku(Suunta.ALAS);
+                    } else {
+                        valitseVihollistenSuunta(vihollinen);
                     }
                 } else {
                     vihollinen.liiku(Suunta.ALAS);
+                }
+                edellinenY = vihollinen.getY();
+                if (vihollinen.getY() > pelikentanKorkeus) {
+                    iteraattori.remove();
                 }
             }
 
@@ -372,7 +382,6 @@ public class Pelikentta {
             vihollinen.liiku();
         }
     }
-
 
     /**
      * Satunnainen kentällä oleva vihollinen ampuu {@code Ammus} olion
