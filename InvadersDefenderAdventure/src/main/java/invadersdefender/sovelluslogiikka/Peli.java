@@ -22,7 +22,7 @@ import javax.swing.Timer;
  * @see Pelitilanne
  * @see Pelikentta
  * @see Huipputulokset
- * 
+ *
  * @author emivo
  */
 public class Peli extends Timer implements ActionListener {
@@ -150,7 +150,8 @@ public class Peli extends Timer implements ActionListener {
 
     /**
      * Metodi antaa piirtoalustalle piirretäväksi räjähdyksen sijainnin Pala
-     * oliona, jolloin piirtoalusta saa helposti koordinaatit sekä räjähdyksen koon
+     * oliona, jolloin piirtoalusta saa helposti koordinaatit sekä räjähdyksen
+     * koon
      *
      * @param sijainti Paikka pelikentällä, johon räjähdys halutaan piirtää
      */
@@ -163,21 +164,31 @@ public class Peli extends Timer implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        lisataankoVihollisiaKentalle();
+
+        lisataankoPomoKentalle();
+
+        pelikentta.ammuksetLiiku();
+        vihollistenViiveAmmustenLiikkeeseen();
+        
+        taustanLeikkauskohta += 2;
+        paivitaPelinpiirto();
+
+    }
+
+    private void lisataankoPomoKentalle() {
+        if (pelikentta.getPomo() == null && pisteet != 0 && pisteet % 500 == 0) {
+            pelikentta.pomoVihollinenTuleeEsille();
+        }
+    }
+
+    private void lisataankoVihollisiaKentalle() {
         if (pelikentta.getViholliset().isEmpty()) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
         } else if (getDelay() < 80
                 && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getKoko()) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara / 2);
         }
-
-        if (pelikentta.getPomo() == null && pisteet != 0 && pisteet % 500 == 0) {
-            pelikentta.pomoVihollinenTuleeEsille();
-        }
-        pelikentta.ammuksetLiiku();
-        vihollistenViiveAmmustenLiikkeeseen();
-
-        paivitaPelinpiirto();
-        taustanLeikkauskohta += 2;
     }
 
     /**

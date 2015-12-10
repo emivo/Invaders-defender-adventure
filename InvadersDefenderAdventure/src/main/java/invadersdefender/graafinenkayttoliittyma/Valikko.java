@@ -18,8 +18,8 @@ import javax.swing.JMenuItem;
  */
 public class Valikko implements ActionListener {
     
-    private Peli peli;
-    private JFrame ikkuna;
+    private final Peli peli;
+    private final JFrame ikkuna;
     
     public Valikko(Peli peli, JFrame ikkuna) {
         this.peli = peli;

@@ -22,6 +22,12 @@ public class Huipputulokset {
         tulokset = new ArrayList<>();
     }
 
+    /**
+     * Metodi hakee tietokoneen paikallisesta tallennustilasta, onko edellisten
+     * pelikertojen tuloksia on tallennettu.
+     *
+     * @return {@code true} jos huipputuloslista löytyy
+     */
     public boolean lataaTulokset() {
         try {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("huipputulokset.data"))) {
@@ -33,6 +39,11 @@ public class Huipputulokset {
         }
     }
 
+    /**
+     * Metodi hakee listan viimeisen pelaajan.
+     *
+     * @return Pelaaja, joka on huipputuloslistan viimeinen
+     */
     public Pelaaja getViimeinen() {
         if (tulokset.isEmpty()) {
             return null;
@@ -41,6 +52,12 @@ public class Huipputulokset {
         }
     }
 
+    /**
+     * Metodi lisää pelaajan tuloksen listaan.
+     *
+     * @param nimi Tallennettava nimi
+     * @param tulos pistemäärä, jonka pelaaja on saanut
+     */
     public void lisaaTulos(String nimi, int tulos) {
         Pelaaja pelaaja = new Pelaaja(tulos, nimi);
         tulokset.add(pelaaja);
@@ -65,6 +82,9 @@ public class Huipputulokset {
         return tulokset;
     }
 
+    /**
+     * Metodi tallentaa lista olion tietokoneen paikalliseen muistiin.
+     */
     public void tallennaTulokset() {
         try {
             try (FileOutputStream fos = new FileOutputStream("huipputulokset.data"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
@@ -76,7 +96,10 @@ public class Huipputulokset {
             // tänne ei pitäisi voida päätyä
         }
     }
-    
+
+    /**
+     * Poistaa kaikki pelaajat listasta, jonka jälkeen tallentaa listan.
+     */
     public void tyhjennaHuipputulokset() {
         tulokset.clear();
         tallennaTulokset();

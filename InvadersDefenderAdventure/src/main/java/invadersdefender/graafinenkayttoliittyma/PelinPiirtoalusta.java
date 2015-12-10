@@ -164,26 +164,25 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraTausta(Graphics graphics) {
-        try {
-            BufferedImage tausta = kuvat.get("tausta");
-            if (peli.getTaustanLeikkauskohta() >= ikkuna.getHeight() - palojenKoko / 2 - 1) {
-                peli.setTaustanLeikkauskohta(0);
-            }
-            graphics.drawImage(tausta,
-                    0, 0,
-                    pelikentta.getPelikentanLeveys() * palojenKoko, peli.getTaustanLeikkauskohta(),
-                    0, tausta.getHeight() - peli.getTaustanLeikkauskohta(),
-                    tausta.getWidth(), tausta.getHeight(),
-                    this);
-            graphics.drawImage(tausta,
-                    0, peli.getTaustanLeikkauskohta(),
-                    pelikentta.getPelikentanLeveys() * palojenKoko, pelikentta.getPelikentanKorkeus() * palojenKoko,
-                    0, 0,
-                    tausta.getWidth(), tausta.getHeight() - peli.getTaustanLeikkauskohta(),
-                    this);
-        } catch (Exception e) {
-            virhe();
+
+        BufferedImage tausta = kuvat.get("tausta");
+        if (peli.getTaustanLeikkauskohta() >= ikkuna.getHeight() - palojenKoko / 2 - 1) {
+            peli.setTaustanLeikkauskohta(0);
         }
+
+        graphics.drawImage(tausta,
+                0, 0,
+                pelikentta.getPelikentanLeveys() * palojenKoko, peli.getTaustanLeikkauskohta(),
+                0, tausta.getHeight() - peli.getTaustanLeikkauskohta(),
+                tausta.getWidth(), tausta.getHeight(),
+                this);
+
+        graphics.drawImage(tausta,
+                0, peli.getTaustanLeikkauskohta(),
+                pelikentta.getPelikentanLeveys() * palojenKoko, pelikentta.getPelikentanKorkeus() * palojenKoko,
+                0, 0,
+                tausta.getWidth(), tausta.getHeight() - peli.getTaustanLeikkauskohta(),
+                this);
     }
 
     private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva, Image kuva) {
@@ -247,12 +246,15 @@ public class PelinPiirtoalusta extends JPanel {
         String alkuteksti = "Press enter to start a game";
         piirraTeksti(graphics, alkuteksti, paikkaX, paikkaY);
 
-        int korkeus = palojenKoko * 14;
-        graphics.drawImage(kuvat.get("nappaimet"), paikkaX + palojenKoko * 2, paikkaY + palojenKoko * 3, (int) (2.44 * korkeus), korkeus, this);
+        piirraKontrolliohjeet(graphics, paikkaX, paikkaY, palojenKoko * 14);
 
         piirraOmaAlus(graphics);
 
         piirraPistetilanne(graphics);
+    }
+
+    private void piirraKontrolliohjeet(Graphics graphics, int paikkaX, int paikkaY, int korkeus) {
+        graphics.drawImage(kuvat.get("nappaimet"), paikkaX + palojenKoko * 2, paikkaY + palojenKoko * 3, (int) (2.44 * korkeus), korkeus, this);
     }
 
     private void piirraTeksti(Graphics graphics, String merkkijono, int x, int y) {
@@ -287,6 +289,12 @@ public class PelinPiirtoalusta extends JPanel {
         }
     }
 
+    /**
+     * Metodi asettaa uuden räjähdyksen piirrettäväksi seuraavalla
+     * piirtokerralla
+     *
+     * @param sijainti Paikka, johon räjähdys halutaan piirrettävän
+     */
     public void piirraRajahdys(Pala sijainti) {
         rajahdykset.add(sijainti);
     }
@@ -311,16 +319,12 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     private void piirraRajahdysJonkaYTaiXOnKentanUlkopuolella(Pala sijainti, Graphics graphics) {
-        if (kuvat.get("rajahdys") != null) {
-            int x = sijainti.getX();
-            int y = sijainti.getY();
-            if (x < 0) {
-                graphics.drawImage(kuvat.get("rajahdys"), 0, y * palojenKoko, sijainti.getKoko() * palojenKoko + x * palojenKoko, sijainti.getKoko() * palojenKoko, this);
-            } else if (y < 0) {
-                graphics.drawImage(kuvat.get("rajahdys"), x * palojenKoko, 0, sijainti.getKoko() * palojenKoko, sijainti.getKoko() * palojenKoko + y * palojenKoko, this);
-            }
-        } else {
-            virhe();
+        int x = sijainti.getX();
+        int y = sijainti.getY();
+        if (x < 0) {
+            graphics.drawImage(kuvat.get("rajahdys"), 0, y * palojenKoko, sijainti.getKoko() * palojenKoko + x * palojenKoko, sijainti.getKoko() * palojenKoko, this);
+        } else if (y < 0) {
+            graphics.drawImage(kuvat.get("rajahdys"), x * palojenKoko, 0, sijainti.getKoko() * palojenKoko, sijainti.getKoko() * palojenKoko + y * palojenKoko, this);
         }
     }
 

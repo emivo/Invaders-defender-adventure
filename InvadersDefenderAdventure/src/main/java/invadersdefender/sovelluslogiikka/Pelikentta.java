@@ -1,4 +1,4 @@
- package invadersdefender.sovelluslogiikka;
+package invadersdefender.sovelluslogiikka;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -88,6 +88,32 @@ public class Pelikentta {
 
     private void omaAlusAmmu() {
         int omiaAmmuksiaKentalla = 0;
+        int sallitutAmmuksetKentalla = kuinkaMontaOmaaAmmustaVoiKentallaOlla();
+
+        omiaAmmuksiaKentalla = kuinkaMontaOmaaAmmustaKentallaOn(omiaAmmuksiaKentalla);
+
+        omaAlusAmmuJosSallittua(omiaAmmuksiaKentalla, sallitutAmmuksetKentalla);
+    }
+
+    private void omaAlusAmmuJosSallittua(int omiaAmmuksiaKentalla, int sallitutAmmuksetKentalla) {
+        if (omiaAmmuksiaKentalla < sallitutAmmuksetKentalla) {
+            ammukset.add(omaAlus.ammu());
+            if (omaAlus.getAseistus() != Aseistus.NORMAALI) {
+                ammukset.addAll(omaAlus.ammuEnemman());
+            }
+        }
+    }
+
+    private int kuinkaMontaOmaaAmmustaKentallaOn(int omiaAmmuksiaKentalla) {
+        for (Ammus ammus : ammukset) {
+            if (ammus.getSuunta() == Suunta.YLOS) {
+                omiaAmmuksiaKentalla++;
+            }
+        }
+        return omiaAmmuksiaKentalla;
+    }
+
+    private int kuinkaMontaOmaaAmmustaVoiKentallaOlla() {
         int sallitutAmmuksetKentalla = 7;
         if (omaAlus.getAseistus() == Aseistus.TUPLA) {
             sallitutAmmuksetKentalla++;
@@ -96,19 +122,7 @@ public class Pelikentta {
             sallitutAmmuksetKentalla += 2;
             sallitutAmmuksetKentalla *= 3;
         }
-
-        for (Ammus ammus : ammukset) {
-            if (ammus.getSuunta() == Suunta.YLOS) {
-                omiaAmmuksiaKentalla++;
-            }
-        }
-
-        if (omiaAmmuksiaKentalla < sallitutAmmuksetKentalla) {
-            ammukset.add(omaAlus.ammu());
-            if (omaAlus.getAseistus() != Aseistus.NORMAALI) {
-                ammukset.addAll(omaAlus.ammuEnemman());
-            }
-        }
+        return sallitutAmmuksetKentalla;
     }
 
     public Peli getPeli() {
@@ -167,31 +181,41 @@ public class Pelikentta {
     private boolean osuukoAmmusKasitteleVihollisetListassa(Ammus ammus) {
         Iterator<Vihollisolio> iterator = viholliset.iterator();
         while (iterator.hasNext()) {
-            Vihollisolio vihollinen = iterator.next();
-            if (vihollinen.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
-                vihollinen.vahennaElamapisteita();
-                if (vihollinen.getElamapisteet() <= 0) {
-                    lisaaRajahdys(vihollinen);
-                    iterator.remove();
-                    peli.lisaaPisteita();
-                }
+            if (osuukoAmmusKasitteleVihollinen(iterator, ammus)) {
                 return true;
             }
         }
         return false;
     }
 
+    private boolean osuukoAmmusKasitteleVihollinen(Iterator<Vihollisolio> iterator, Ammus ammus) {
+        Vihollisolio vihollinen = iterator.next();
+        if (vihollinen.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.YLOS)) {
+            vihollinen.vahennaElamapisteita();
+            if (vihollinen.getElamapisteet() <= 0) {
+                lisaaRajahdys(vihollinen);
+                iterator.remove();
+                peli.lisaaPisteita();
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
-     * Metodi asettaa vihollisoliota kentän yläreunan yläpuolelle sekä mahdollisesti kentän sivujen ulkopuolelle, josta ne
-     * lähtevät liikkumaan kentälle päin.
+     * Metodi asettaa vihollisoliota kentän yläreunan yläpuolelle sekä
+     * mahdollisesti kentän sivujen ulkopuolelle, josta ne lähtevät liikkumaan
+     * kentälle päin.
      *
      * @param montako Kuinka monta vihollista halutaan kentälle saapuvan
      */
     public void vihollisetTulevatEsille(int montako) {
+
         Random satunaismuuttuja = new Random();
         int alusRykelmanLeveys = montako * ALUKSIENKOKO * 2;
         int ensimmaisenAluksenX = satunaismuuttuja.nextInt(pelikentanLeveys + alusRykelmanLeveys - 1) - alusRykelmanLeveys;
         int aluksienYSuuntainenValitys = (int) (ALUKSIENKOKO * 1.5);
+
         for (int i = 0; i < montako; i++) {
             int x = ensimmaisenAluksenX + (ALUKSIENKOKO * 2 * i);
 
@@ -205,7 +229,8 @@ public class Pelikentta {
 
     /**
      * Pomo vihollinen saapuu peliin. Pomo vihollisen koko on tuplasti suurempi
-     * kuin tavallisten vihollisten ja sen kestävyys on myös 10 elämäpistettä parempi kuin tavallisten vihollisolioden.
+     * kuin tavallisten vihollisten ja sen kestävyys on myös 10 elämäpistettä
+     * parempi kuin tavallisten vihollisolioden.
      */
     public void pomoVihollinenTuleeEsille() {
         pomo = new PomoVihollinen(pelikentanLeveys / 2, -1 * ALUKSIENKOKO * 2, 2 * ALUKSIENKOKO, vihollistenKestavyys + 10);
@@ -217,6 +242,7 @@ public class Pelikentta {
      */
     public void ammuksetLiiku() {
         Iterator<Ammus> iterator = ammukset.iterator();
+
         while (iterator.hasNext()) {
             Ammus ammus = iterator.next();
             ammus.liiku();
@@ -356,11 +382,9 @@ public class Pelikentta {
         Suunta suunta = vihollinen.getSuunta();
         if (suunta == Suunta.OIKEA) {
             kasitteleKunMenossaOikealle(vihollinen);
-
         } else if (suunta == Suunta.VASEN) {
             kasitteleKunMenossaVasemmalle(vihollinen);
         }
-
     }
 
     private void kasitteleKunMenossaVasemmalle(Vihollisolio vihollinen) {
