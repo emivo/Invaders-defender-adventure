@@ -1,16 +1,28 @@
 package invadersdefender.sovelluslogiikka;
 
 import invadersdefender.sovelluslogiikka.huipputulokset.Huipputulokset;
-import invadersdefender.gui.PelinPiirtoalusta;
+import invadersdefender.graafinenkayttoliittyma.PelinPiirtoalusta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 /**
  * Luokka on pelin ydin, joka luo pelikentän ja kertoo mitä pelissä tapahtuu.
- * Luokka pitää huolen pelissä liikkuvien liikkeestä, pistetilanteesta ja
- * taustakuvan vierityksestä
+ * Tapahtuvat muutokset luokka ilmoittaa PelinPiirtoalustalle, joka voi pelin
+ * piirtää JFrame ikkunaan. Luokka antaa käskyjä Pelikentta luokalla
+ * tarvittaessa liikuttaa liikkuvia ja tuoda pelikentälle lisää vihollisia.
+ * Luokka pitää huolen Pelintilanteesta (KAYNNISSA, LOPPU, PAUSE jne.),
+ * pistetilanteesta ja taustakuvan vierityksestä. Pistetilanteen ollessa
+ * riittävän suuri voi luokka päivittää pelikentällä olevan omanAluksen
+ * aseistusta tai korjata siihen syntyneitä vahinkoja
  *
+ * Pelissä syntyvät huipputulokset luokka käskee Huipputulokset luokan tallentaa
+ * tai poistaa.
+ *
+ * @see Pelitilanne
+ * @see Pelikentta
+ * @see Huipputulokset
+ * 
  * @author emivo
  */
 public class Peli extends Timer implements ActionListener {
@@ -43,13 +55,13 @@ public class Peli extends Timer implements ActionListener {
         this.tilanne = Pelitilanne.ALKURUUTU;
         this.vihollistenMaara = 2;
 
-        setInitialDelay(200);
+        setInitialDelay(100);
         lisaaKuuntelija();
 
     }
 
     /**
-     * metodi asettaa olion testaus käyttöön, jolloin huipputuloksia ei lueta
+     * Metodi asettaa olion testaus käyttöön, jolloin huipputuloksia ei lueta
      * eikä tallenneta
      */
     public void setTEST() {
@@ -89,7 +101,7 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * Pysäyttää pelin, kun peli on käynnissä. Käynnistää pelin, kun peli on
+     * Pysäyttää pelin, kun peli on käynnissä ja käynnistää pelin, kun peli on
      * pysäytetty
      */
     public void pause() {
@@ -138,7 +150,7 @@ public class Peli extends Timer implements ActionListener {
 
     /**
      * Metodi antaa piirtoalustalle piirretäväksi räjähdyksen sijainnin Pala
-     * oliona
+     * oliona, jolloin piirtoalusta saa helposti koordinaatit sekä räjähdyksen koon
      *
      * @param sijainti Paikka pelikentällä, johon räjähdys halutaan piirtää
      */
@@ -169,8 +181,8 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * metodi asettaa pelin loppu tilaan ja tarkistaa onko syntynyt tallennetava
-     * huipputulos
+     * Metodi asettaa pelin lopputilaan ja tarkistaa onko syntynyt tallennetava
+     * huipputulos.
      */
     public void peliLoppuu() {
         paivitaPelinpiirto();
@@ -199,8 +211,8 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * metodi kasvattaa käynnissä olevan pelin pistetilannetta sekä lisää
-     * tarvittaessa esiin tulevien vihollisten määrää ja niiden kestävyyttyä
+     * Metodi kasvattaa käynnissä olevan pelin pistetilannetta sekä lisää
+     * tarvittaessa esiin tulevien vihollisten määrää ja niiden kestävyyttyä.
      */
     public void lisaaPisteita() {
         if (tilanne == Pelitilanne.KAYNNISSA) {
@@ -208,26 +220,26 @@ public class Peli extends Timer implements ActionListener {
             // pelinopeus
             if (pisteet != 0 && pisteet % 50 == 0 && getDelay() - 1 >= 33) {
                 setDelay(getDelay() - 2);
-                if (getDelay() % 5 == 0 && vihollistenMaara < 7) {
+                if (getDelay() % vihollistenMaara == 0 && vihollistenMaara < 7) {
                     vihollistenMaara++;
                 }
             }
             // vihollisten kestävyys
-            if (pisteet % 500 == 0) {
+            if (pisteet != 0 && pisteet % 100 == 0) {
                 pelikentta.parannaVihollistenKestavyytta();
             }
         }
     }
 
     /**
-     * Pelin huipputuloslista tallennetaan
+     * Pelin huipputuloslista tallennetaan.
      */
     public void tallennaTulokset() {
         huipputulokset.tallennaTulokset();
     }
 
     /**
-     * metodi asettaa pelin huipputulosten katselutilaan
+     * Metodi asettaa pelin huipputulosten katselutilaan.
      */
     public void asetaHuipputuloistenKatselutilaan() {
         if (tilanne == Pelitilanne.LOPPU) {
@@ -239,16 +251,16 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * Pelissä oleva huipputuloslista tyhjennetään
+     * Pelissä oleva huipputuloslista tyhjennetään.
      */
     public void tyhjennaHuipputulokset() {
         huipputulokset.tyhjennaHuipputulokset();
     }
 
     /**
-     * Parantaa pelissä olevan aluksen aseistus
+     * Parantaa pelissä olevan aluksen aseistus.
      *
-     * @param aseistus uusi aseistus
+     * @param aseistus uusi aseistus, joka omalle alukselle asetetaan
      */
     public void parannaAluksenAseistusta(Aseistus aseistus) {
         int kuinkaPaljonPisteitaMaksaa = 0;
@@ -265,7 +277,7 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * Korjaa pelissä olevan omaan alukseen syntyneitä vahinkoja
+     * Korjaa pelissä olevan omaan alukseen syntyneitä vahinkoja.
      *
      */
     public void korjaaOmaaAlusta() {

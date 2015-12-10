@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Luokalla luodaan pelille pelaajan oma alus. Oman aluksen aseistusta on
- * mahdollista parantaa pelin edetessä Oman aluksen elämäpisteet ovat alussa 10,
- * mutta pisteillä voidaan ostaa lisää suojaa
+ * Luokalla luodaan pelille pelaajan oma alus. Oman aluksen aseistusta on alussa
+ * on normaali, mutta sitä voidaan parantaa tuplasti tai triplasti ampuvaan.
+ * Oman aluksen elämäpisteet ovat alussa 10, mutta pisteitä on mahdollista
+ * lisätä.
  *
  * @author emivo
  */
@@ -34,6 +35,12 @@ public class OmaAlus extends Alus {
         }
     }
 
+    /**
+     * Jos aluksen Aseistus on muu kuin normaali niin tällä metodilla saadaan
+     * lista muita ammuksia, joita alus haluaa luoda paremalla aseituksella.
+     *
+     * @return Palauttaa listan ammuksia, joita alus haluaisi ammuttavan.
+     */
     public List<Ammus> ammuEnemman() {
         ArrayList<Ammus> ammukset = new ArrayList<>();
         if (aseistus.compareTo(Aseistus.TUPLA) >= 0) {
@@ -47,7 +54,7 @@ public class OmaAlus extends Alus {
     }
 
     /**
-     * Paranna aluksen aseistusta
+     * Metodi parantaa aluksen aseistusta.
      *
      * @param uusiAseistus Uusi aseistus, joka alukselle asennetaan
      */
@@ -55,17 +62,14 @@ public class OmaAlus extends Alus {
         aseistus = uusiAseistus;
     }
 
-    /**
-     * Aseistus get metodi
-     *
-     * @return palauttaa aluksen aseistuksen
-     */
     public Aseistus getAseistus() {
         return aseistus;
     }
 
     /**
-     * Metodilla voi korjata omaa alusta niin, että sen elämän pisteet lisääntyvät
+     * Metodilla voi korjata omaa alusta niin, että sen elämän pisteet
+     * lisääntyvät
+     *
      * @param kuinkaPaljon kuinka monta elämäpistettä alukselle lisätään
      */
     public void korjaaSuojausta(int kuinkaPaljon) {

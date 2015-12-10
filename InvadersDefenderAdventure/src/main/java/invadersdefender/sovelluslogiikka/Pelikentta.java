@@ -1,4 +1,4 @@
-package invadersdefender.sovelluslogiikka;
+ package invadersdefender.sovelluslogiikka;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Luokka hallistee aluksia ja ammuksia ja ilmoittaa tapahtuvista muutoksista
- * {@code Peli}:lle
+ * Luokka hallistee aluksia ja ammuksia ja ilmoittaa tarvittaessa tapahtuvista
+ * muutoksista {@code Peli}:lle. Luokka liikkuttaa liikkuvia kentällä sekä
+ * poistaa ne tarvitaessa. Luokka hallitsee osumatapahtumia ja niiden
+ * perusteellä vähentää elämäpisteitä aluksilta.
  *
  * @author emivo
  */
@@ -27,7 +29,7 @@ public class Pelikentta {
     public Pelikentta(int pelikentanKorkeus, Peli peli) {
         this.peli = peli;
         this.pelikentanKorkeus = pelikentanKorkeus * ALUKSIENKOKO;
-        this.pelikentanLeveys = (int) (this.pelikentanKorkeus * 2 / 3);
+        this.pelikentanLeveys = (int) (this.pelikentanKorkeus * 5 / 7);
         this.omaAlus = luoOmaAlus();
         vihollistenKestavyys = 10;
 
@@ -118,7 +120,7 @@ public class Pelikentta {
      * olevaan alukseen
      *
      * @param ammus tarkasteltava ammus
-     * @return totuusarvo osuuko ammmus johonkin alukseen
+     * @return totuusarvo osuuko ammus johonkin alukseen
      */
     public boolean osuukoAmmus(Ammus ammus) {
         if (omaAlus.osuukoAlukseen(ammus) && (ammus.getSuunta() == Suunta.ALAS)) {
@@ -180,10 +182,10 @@ public class Pelikentta {
     }
 
     /**
-     * metodi asettaa vihollisoliota kentän yläreunan yläpuolelle, josta ne
-     * lähtevät liikkumaan alas kentälle päin
+     * Metodi asettaa vihollisoliota kentän yläreunan yläpuolelle sekä mahdollisesti kentän sivujen ulkopuolelle, josta ne
+     * lähtevät liikkumaan kentälle päin.
      *
-     * @param montako Kuinka monta vihollista tulee esille
+     * @param montako Kuinka monta vihollista halutaan kentälle saapuvan
      */
     public void vihollisetTulevatEsille(int montako) {
         Random satunaismuuttuja = new Random();
@@ -203,7 +205,7 @@ public class Pelikentta {
 
     /**
      * Pomo vihollinen saapuu peliin. Pomo vihollisen koko on tuplasti suurempi
-     * kuin tavallisten vihollisten ja sen kestävyys on myös hieman parempi
+     * kuin tavallisten vihollisten ja sen kestävyys on myös 10 elämäpistettä parempi kuin tavallisten vihollisolioden.
      */
     public void pomoVihollinenTuleeEsille() {
         pomo = new PomoVihollinen(pelikentanLeveys / 2, -1 * ALUKSIENKOKO * 2, 2 * ALUKSIENKOKO, vihollistenKestavyys + 10);
@@ -211,7 +213,7 @@ public class Pelikentta {
 
     /**
      * Metodi liikuttaa kaikkia kentällä olevia ammuksia sekä tarkistaa osuvatko
-     * ne johonkin alukseen tai poistuvatko ne kentältä
+     * ne johonkin alukseen tai poistuvatko ne kentältä.
      */
     public void ammuksetLiiku() {
         Iterator<Ammus> iterator = ammukset.iterator();
@@ -384,7 +386,7 @@ public class Pelikentta {
     }
 
     /**
-     * Satunnainen kentällä oleva vihollinen ampuu {@code Ammus} olion
+     * Satunnainen kentällä oleva vihollinen ampuu {@code Ammus} olion.
      */
     public void jokuVihollinenAmpuu() {
         if (!viholliset.isEmpty()) {
@@ -406,8 +408,8 @@ public class Pelikentta {
     }
 
     /**
-     * Nollaa pelikentän alkuasentoon, ei ammuksia ei vihollisia ja oma alus
-     * alkupaikalla
+     * Nollaa pelikentän alkuasentoon, ei ammuksia, ei vihollisia ja oma alus
+     * alkupaikalla.
      */
     public void kaynnistaUudelleen() {
         this.omaAlus = luoOmaAlus();
@@ -422,7 +424,7 @@ public class Pelikentta {
 
     /**
      * Vihollisten ammusten kestävyys paranee yhdellä metodia kutsuttaessa.
-     * Vihollisten kestävyyden maksimi on 100
+     * Vihollisten kestävyyden maksimi on 100.
      */
     public void parannaVihollistenKestavyytta() {
         if (vihollistenKestavyys < 100) {

@@ -1,16 +1,17 @@
 package invadersdefender.sovelluslogiikka;
 
-
 /**
- * Luokka muodostaa olioita, joita voidaan liikutella x,y koordinaatistossa ja voiva ampua {@link Ammus} luokan oliota
- * 
+ * Luokkasta voidaa muodostaa luokkia, joilla voidaan muodostaa olioita, joita
+ * voidaan liikutella x,y koordinaatistossa ja voiva ampua {@link Ammus} luokan
+ * oliota
+ *
  * @author emivo
  */
 public abstract class Alus implements Liikkuva {
 
-    private final int koko; // aluksen sivunpituus
+    private final int koko;
     private final Pala sijainti;
-    private int elamapisteet; // lisataan kohta
+    private int elamapisteet;
 
     public Alus(int alkuX, int alkuY, int koko, int elamapisteet) {
         this.koko = koko;
@@ -19,26 +20,33 @@ public abstract class Alus implements Liikkuva {
         this.elamapisteet = elamapisteet;
     }
 
+    /**
+     * Metodilla saadaa neliönmuotoisen aluksen sivunpituus.
+     *
+     * @return Aluksen sivunpituus.
+     */
     @Override
     public int getKoko() {
         return koko;
     }
+
     /**
-     * Jokaisella luotavalla aluksella on mahdollisuus ampua
-     * @return palauttaa ammutun Ammuksen 
+     * Jokaisella luotavalla aluksella on mahdollisuus ampua.
+     *
+     * @return palauttaa ammutun Ammuksen
      */
     abstract Ammus ammu();
-    
+
     /**
-     * Palauttaa totuus arvon osuuko alukseen jokin toinen liikkuva.
-     * Kaikki liikkuvat ovat neliön muotoisia, joten metodi tutkii osuuko jokin kulma 
-     * 
+     * Palauttaa totuus arvon osuuko alukseen jokin toinen liikkuva. Kaikki
+     * liikkuvat ovat neliön muotoisia, joten metodi tutkii osuuko jokin kulma
+     *
      * @param liikkuva vertailtava liikkuva
      * @return Palauttaa true, jos jokin liikkuva on samalla koordinaatilla
      * aluksen kanssa
      */
     public boolean osuukoAlukseen(Liikkuva liikkuva) {
-        // liikkuvat ovat neliön muotoisia jolloin nurkat riittää tarkistaa
+        // liikkuvat ovat neliön muotoisia, jolloin nurkat riittää tarkistaa
         boolean vasenYlakulma = (getX() <= liikkuva.getX()
                 && getX() + getKoko() > liikkuva.getX())
                 && (getY() <= liikkuva.getY()
@@ -47,18 +55,22 @@ public abstract class Alus implements Liikkuva {
             return vasenYlakulma;
         }
         boolean oikeaYlakulma = osuukoAlukseen(new Pala(liikkuva.getX() + (liikkuva.getKoko() - 1), liikkuva.getY()));
-        if (oikeaYlakulma) return oikeaYlakulma;
+        if (oikeaYlakulma) {
+            return oikeaYlakulma;
+        }
         boolean vasenAlakulma = osuukoAlukseen(new Pala(liikkuva.getX(), liikkuva.getY() + (liikkuva.getKoko() - 1)));
-        if (vasenAlakulma) return vasenAlakulma;
+        if (vasenAlakulma) {
+            return vasenAlakulma;
+        }
         // oikea alakulma
         return osuukoAlukseen(new Pala(liikkuva.getX() + (liikkuva.getKoko() - 1), liikkuva.getY() + (liikkuva.getKoko() - 1)));
 
     }
 
     /**
-     * metodi antaa aluksen vasemman reunan x koordinaatin
+     * metodi antaa aluksen vasemman reunan koordinaatin.
      *
-     * @return
+     * @return Palauttaa x -koordinaattin vasemmassa yläreunassa.
      */
     @Override
     public int getX() {
@@ -66,9 +78,9 @@ public abstract class Alus implements Liikkuva {
     }
 
     /**
-     * metodi antaa aluksen yläreunan koordinaatin
+     * metodi antaa aluksen yläreunan koordinaatin.
      *
-     * @return
+     * @return Palauttaa y -koordinaattin vasemmassa yläreunassa.
      */
     @Override
     public int getY() {
@@ -77,15 +89,18 @@ public abstract class Alus implements Liikkuva {
 
     /**
      * Metodi antaa aluksen elämäpisteet
-     * @return 
+     *
+     * @return Palauttaa kuinka monta elämäpistettä aluksella on.
      */
     public int getElamapisteet() {
         return elamapisteet;
     }
-    
+
     /**
      * Metodilla voidaan asettaa uudet elamapisteet alukselle
-     * @param elamapisteet Pistemäärä, joka halutaan asettaa aluksen elämäpisteiksi
+     *
+     * @param elamapisteet Pistemäärä, joka halutaan asettaa aluksen
+     * elämäpisteiksi
      */
     public void setElamapisteet(int elamapisteet) {
         this.elamapisteet = elamapisteet;
@@ -93,23 +108,24 @@ public abstract class Alus implements Liikkuva {
 
     /**
      * metodilla saadaan aluksen vasemman yläreunan palan. Muiden palojen paikat
-     * voidaan laskea tämän avulla 
+     * voidaan laskea tämän avulla.
      *
-     * @return
+     * @return Palauttaa Pala oliona aluksen vasemman yläreunan palan.
      */
     public Pala sijainti() {
         return sijainti;
     }
 
     /**
-     * Metodi liikutta aluksen sijainti palasta haluttuun suuntaan
+     * Metodi liikutta aluksen sijainti palasta haluttuun suuntaan.
+     *
      * @param suunta Suunta, johon halutaan palasta liikuttaa
      */
     @Override
     public void liiku(Suunta suunta) {
         this.sijainti.liiku(suunta);
     }
-    
+
     /**
      * Kun alus saa osumaa sen elämäpisteet vähenevät
      */

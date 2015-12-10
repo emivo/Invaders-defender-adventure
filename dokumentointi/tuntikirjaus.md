@@ -20,5 +20,7 @@
 |2.12.| Testit päivitetty| n. 3 tuntia|
 |3.12.| Sekvenssikaavioita ja koodin siivoamista| 2,5 tuntia|
 |4.12.|Vihollisten liikettä parannettu| 1,5tuntia|
+|9.12.| Javadocin tekemistä, rakenteen kuvasta ja jotain saatoin jopa koodissa siivota| 3 tuntia |
+|10.12.| Rakenteen kuvausta ja ohjelman testausta käsin| 1,5 tuntia|
 
 

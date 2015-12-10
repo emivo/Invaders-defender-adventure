@@ -352,7 +352,7 @@ public class PelikenttaTest {
 
     @Test
     public void testaaPelikentanleveys() {
-        assertEquals((int) (pelikentta.getPelikentanKorkeus() * 2 / 3), pelikentta.getPelikentanLeveys());
+        assertEquals((int) (pelikentta.getPelikentanKorkeus() * 5 / 7), pelikentta.getPelikentanLeveys());
     }
 
     @Test

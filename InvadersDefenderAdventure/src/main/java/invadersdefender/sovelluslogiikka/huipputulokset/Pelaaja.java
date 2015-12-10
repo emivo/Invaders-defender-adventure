@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- *
+ * Luokka toimii apuna tallentaa nimi ja numero yhtenä oliona sekä helpottaa niiden järjestämistä.
  * @author emivo
  */
 public class Pelaaja implements Comparable<Pelaaja>, Serializable {

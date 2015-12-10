@@ -1,8 +1,8 @@
 package invadersdefender.sovelluslogiikka;
 
 /**
- *  Luokka toimii samoin tavoin kuin yläluokkansa, mutta sisältää {@code Suunta} muuttujan, jonka avulla voidaan määritellä olion liikkumista.
- * Poiketen {@link Alus} luokan olioihin, tämän luokan oliot {@code ammu()} metodi luo ammukset olion alapuolelle ja niiden suunta on alas.
+ * Luokka toimii kuin Alus luokan tavoin, mutta se sisältää {@code Suunta} muuttujan, jonka avulla voidaan määritellä olion liikkumista.
+ * Luokan oliot {@code ammu()} metodi luo ammukset olion alapuolelle ja niiden suunta on alas. Eikä setElamapisteet() metodi tee mitään.
  * 
  * @author emivo
  */
@@ -46,8 +46,7 @@ public class Vihollisolio extends Alus {
     }
 
     /**
-     * metodi liikuttaa oliota, sen sille asetetun suunnan mukaan
-     * @see setSuunta(Suunta)
+     * Metodi liikuttaa oliota, sen sille asetetun suunnan mukaan.
      */
     public void liiku() {
         super.liiku(suunta);

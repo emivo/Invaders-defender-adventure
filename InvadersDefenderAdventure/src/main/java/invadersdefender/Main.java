@@ -1,11 +1,11 @@
 package invadersdefender;
 
-import invadersdefender.gui.Kayttoliittyma;
+import invadersdefender.graafinenkayttoliittyma.Kayttoliittyma;
 import invadersdefender.sovelluslogiikka.Peli;
 import javax.swing.SwingUtilities;
 
 /**
- *
+ * Main luokka, joka käynnistää pelin ja käyttöliittymän ja niihin liittyvät luokat.
  * @author emivo
  */
 public class Main {
@@ -16,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
         
         
-        int pelikentanKoko = 25;
+        int pelikentanKoko = 20;
         int palojenKoko = 10;
         Peli peli = new Peli(pelikentanKoko);
 

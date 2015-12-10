@@ -1,7 +1,10 @@
 package invadersdefender.sovelluslogiikka;
 
 /**
- * Luokan olioilla on konstruktiossa annettu suunta, johon luokan oliot liikuttaessa aina liikkuvat
+ * Luokka luo olion, joka perii pala luokan. Lisäominaisuuten luokan olioilla on
+ * konstruktiossa annettu suunta, johon luokan oliot liikuttaessa aina
+ * liikkuvat.
+ *
  * @author emivo
  */
 public class Ammus extends Pala {
@@ -12,8 +15,10 @@ public class Ammus extends Pala {
         super(x, y);
         this.suunta = suunta;
     }
+
     /**
-     * metodi antaa suunnan johon ammus on liikkumassa
+     * Metodi antaa suunnan johon ammus on liikkumassa
+     *
      * @return paluttaa suunnan, johon ammus liikkuu
      */
     public Suunta getSuunta() {
@@ -21,11 +26,13 @@ public class Ammus extends Pala {
     }
 
     /**
-     * metodilla siirretään oliota samoin kuin Pala.liiku(Suunta)
+     * Metodilla siirretään oliota samoin kuin Pala.liiku(Suunta), mutta olio
+     * liikkuu aina vain siihen suuntaan, johon se on luotu kulkemaan.
+     *
      * @see Pala#liiku(Suunta)
      */
     public void liiku() {
-        liiku(this.suunta);
+        super.liiku(this.suunta);
     }
 
 }

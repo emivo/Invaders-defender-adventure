@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * Luokka luo olion, joka perii luokan Vihollisolio ominaisuudet, mutta ammu() metodilla on kaksi mahdollista paikkaa, johon Ammus voi ilmestyä.
- * Pelin kannalta on mielekästä että PomoVihollinen luokan olioiden koko olisi suurempi kuin Vihollisolio
+ * Pelin kannalta on mielekästä että PomoVihollinen luokan olioiden koko olisi suurempi kuin Vihollisolio.
  * @author emivo
  */
 public class PomoVihollinen extends Vihollisolio {
