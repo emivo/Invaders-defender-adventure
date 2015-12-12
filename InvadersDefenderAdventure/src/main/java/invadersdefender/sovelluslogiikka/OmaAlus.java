@@ -15,6 +15,13 @@ public class OmaAlus extends Alus {
 
     private Aseistus aseistus;
 
+    /**
+     * Luo OmaAlus-luokan olion, jolle asetetaan alkusijainti sekä koko.
+     *
+     * @param alkuX x-koordinaatti, johon aluksen vasen ylänurkan pala tulee.
+     * @param alkuY y-koordinaatti, johon aluksen vasen ylänurkan pala tulee
+     * @param koko aluksen sivunpituus
+     */
     public OmaAlus(int alkuX, int alkuY, int koko) {
         super(alkuX, alkuY, koko, 100);
         aseistus = Aseistus.NORMAALI;
@@ -67,8 +74,8 @@ public class OmaAlus extends Alus {
     }
 
     /**
-     * Metodilla voi korjata omaa alusta niin, että sen elämän pisteet
-     * lisääntyvät
+     * Metodilla voi korjata omaa alusta niin, että sen elämäpisteet
+     * lisääntyvät.
      *
      * @param kuinkaPaljon kuinka monta elämäpistettä alukselle lisätään
      */

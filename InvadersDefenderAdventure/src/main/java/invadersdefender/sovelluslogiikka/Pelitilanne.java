@@ -1,10 +1,11 @@
 package invadersdefender.sovelluslogiikka;
 
 /**
+ * Tilanteet, joissa peli voi olla.
  *
  * @author emivo
  */
 public enum Pelitilanne {
 
-    ALKURUUTU, KAYNNISSA, PAUSE, LOPPU, TULOKSET
+    ALKURUUTU, KAYNNISSA, PYSAYTETTY, LOPPU, TULOKSET
 }

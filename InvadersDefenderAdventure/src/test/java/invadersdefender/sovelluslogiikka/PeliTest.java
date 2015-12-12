@@ -45,14 +45,14 @@ public class PeliTest {
     }
 
     @Test
-    public void pausePysayttaaPelinJaKaynnistaaPelin() {
+    public void peliPysahtyyJaKaynnistyy() {
         assertEquals("Pelin pitäisi olla alkuruudussa, kun peli kännistetään", Pelitilanne.ALKURUUTU, peli.getTilanne());
         peli.start();
         assertEquals("Pelin tulisi käynnistyä", Pelitilanne.KAYNNISSA, peli.getTilanne());
-        peli.pause();
-        assertEquals("Kun peli pysäytettään, pelin tulisi pysähtyä", Pelitilanne.PAUSE, peli.getTilanne());
+        peli.pysaytaTaiJatkaPysahtynytta();
+        assertEquals("Kun peli pysäytettään, pelin tulisi pysähtyä", Pelitilanne.PYSAYTETTY, peli.getTilanne());
         assertTrue("Pelin tulisi olla pysäytetty", !peli.isRunning());
-        peli.pause();
+        peli.pysaytaTaiJatkaPysahtynytta();
         assertEquals("Kun pause painetaan uudelleen pelin tulisi jatkua", Pelitilanne.KAYNNISSA, peli.getTilanne());
         assertTrue("Pelin tulisi olla käynnissä", peli.isRunning());
     }
@@ -95,12 +95,12 @@ public class PeliTest {
         peli.asetaHuipputuloistenKatselutilaan();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.TULOKSET, peli.getTilanne());
         assertFalse(peli.isRunning());
-        peli.pause();
+        peli.pysaytaTaiJatkaPysahtynytta();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.KAYNNISSA, peli.getTilanne());
         Alus vanhaAlus = peli.getPelikentta().getOmaAlus();
         peli.peliLoppuu();
         peli.asetaHuipputuloistenKatselutilaan();
-        peli.pause();
+        peli.pysaytaTaiJatkaPysahtynytta();
         assertNotEquals(vanhaAlus, peli.getPelikentta().getOmaAlus());
         assertEquals("Peli on väärässä tilassa", Pelitilanne.KAYNNISSA, peli.getTilanne());
 

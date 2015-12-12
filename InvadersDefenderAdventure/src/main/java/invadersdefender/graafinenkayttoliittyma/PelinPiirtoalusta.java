@@ -10,7 +10,6 @@ import invadersdefender.sovelluslogiikka.Suunta;
 import invadersdefender.sovelluslogiikka.Vihollisolio;
 import invadersdefender.sovelluslogiikka.huipputulokset.Pelaaja;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -26,7 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
- * Luokka tarjoaa mahdollisuuden piirtää kuvina konstruktiossa annetun pelin
+ * Luokka piirtää kuvina konstruktiossa annetun pelin.
  *
  * @author emivo
  */
@@ -39,6 +38,13 @@ public class PelinPiirtoalusta extends JPanel {
     private JFrame ikkuna;
     private final List<Pala> rajahdykset;
 
+    /**
+     * Luo PelinPiirtoalusta-luokan olion, jolle asetetaan peli ja palojen koko.
+     * Samalla lataa peliin tarvittavat kuvat muistiin.
+     *
+     * @param peli peli, jota halutaan piirtää.
+     * @param palojenKoko pikselileveys paloille, joita piirretään
+     */
     public PelinPiirtoalusta(Peli peli, int palojenKoko) {
         this.peli = peli;
         this.pelikentta = peli.getPelikentta();
@@ -49,22 +55,28 @@ public class PelinPiirtoalusta extends JPanel {
         lataaKuvat();
     }
 
+    /**
+     * Metodi piirtää pelintilanteen mukaisen kuvan parametrinä annettuun
+     * Graphics luokan olioon
+     *
+     * @param grafiikat alusta, johon peli piirretään
+     */
     @Override
-    public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
+    public void paintComponent(Graphics grafiikat) {
+        super.paintComponent(grafiikat);
 
-        piirraTausta(graphics);
+        piirraTausta(grafiikat);
 
         if (peli.getTilanne() == Pelitilanne.KAYNNISSA) {
-            piirraPeli(graphics);
-        } else if (peli.getTilanne() == Pelitilanne.PAUSE) {
-            piirraPause(graphics);
+            piirraPeli(grafiikat);
+        } else if (peli.getTilanne() == Pelitilanne.PYSAYTETTY) {
+            piirraPysaytettyPeli(grafiikat);
         } else if (peli.getTilanne() == Pelitilanne.TULOKSET) {
-            piirraHuipputulokset(graphics);
+            piirraHuipputulokset(grafiikat);
         } else if (peli.getTilanne() == Pelitilanne.ALKURUUTU) {
-            piirraPelinAlkuruutu(graphics);
+            piirraPelinAlkuruutu(grafiikat);
         } else {
-            piirraPeliLoppu(graphics);
+            piirraPeliLoppu(grafiikat);
         }
 
     }
@@ -73,29 +85,29 @@ public class PelinPiirtoalusta extends JPanel {
         this.ikkuna = ikkuna;
     }
 
-    private void piirraPeli(Graphics graphics) {
+    private void piirraPeli(Graphics grafiikat) {
 
-        piirraOmaAlus(graphics);
-        piirraViholliset(graphics);
-        piirraPomo(graphics);
-        piirraAmmukset(graphics);
+        piirraOmaAlus(grafiikat);
+        piirraViholliset(grafiikat);
+        piirraPomo(grafiikat);
+        piirraAmmukset(grafiikat);
 
         if (!rajahdykset.isEmpty()) {
-            piirraRajahdykset(graphics);
+            piirraRajahdykset(grafiikat);
         }
 
-        piirraPistetilanne(graphics);
-        piirraOmatElamapisteet(graphics);
+        piirraPistetilanne(grafiikat);
+        piirraOmatElamapisteet(grafiikat);
 
     }
 
-    private void piirraPistetilanne(Graphics graphics) {
-        graphics.setColor(Color.red);
+    private void piirraPistetilanne(Graphics grafiikat) {
+        grafiikat.setColor(Color.red);
         String pisteet = "" + peli.getPisteet();
-        graphics.drawString(pisteet, palojenKoko, (int) (palojenKoko * 1.5));
+        grafiikat.drawString(pisteet, palojenKoko, (int) (palojenKoko * 1.5));
     }
 
-    private void piirraAmmukset(Graphics graphics) {
+    private void piirraAmmukset(Graphics grafiikat) {
         for (Ammus ammus : pelikentta.getAmmukset()) {
             Image kuva;
             if (ammus.getSuunta() == Suunta.YLOS) {
@@ -103,13 +115,13 @@ public class PelinPiirtoalusta extends JPanel {
             } else {
                 kuva = kuvat.get("vihollisenammus");
             }
-            piirraLiikkuva(graphics, ammus, kuva);
+            piirraLiikkuva(grafiikat, ammus, kuva);
         }
     }
 
-    private void piirraViholliset(Graphics graphics) {
+    private void piirraViholliset(Graphics grafiikat) {
         for (Vihollisolio vihu : pelikentta.getViholliset()) {
-            piirraLiikkuva(graphics, vihu, kuvat.get("vihollisolio"));
+            piirraLiikkuva(grafiikat, vihu, kuvat.get("vihollisolio"));
         }
     }
 
@@ -125,17 +137,17 @@ public class PelinPiirtoalusta extends JPanel {
         }
     }
 
-    private void piirraKuva(Graphics graphics, int x, int y, int koko, Image kuva) {
+    private void piirraKuva(Graphics grafiikat, int x, int y, int koko, Image kuva) {
         if (kuva != null) {
             koko *= palojenKoko;
-            graphics.drawImage(kuva, x * palojenKoko, y * palojenKoko, koko, koko, this);
+            grafiikat.drawImage(kuva, x * palojenKoko, y * palojenKoko, koko, koko, this);
         } else {
             virhe();
         }
     }
 
-    private void piirraOmaAlus(Graphics graphics) {
-        piirraLiikkuva(graphics, pelikentta.getOmaAlus(), kuvat.get("omaalus"));
+    private void piirraOmaAlus(Graphics grafiikat) {
+        piirraLiikkuva(grafiikat, pelikentta.getOmaAlus(), kuvat.get("omaalus"));
     }
 
     /**
@@ -145,39 +157,39 @@ public class PelinPiirtoalusta extends JPanel {
         super.repaint();
     }
 
-    private void piirraPeliLoppu(Graphics graphics) {
+    private void piirraPeliLoppu(Graphics grafiikat) {
 
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
-        piirraTeksti(graphics, "Game Over", paikkaX, paikkaY);
+        piirraTeksti(grafiikat, "Game Over", paikkaX, paikkaY);
         String pisteet = "Your score: " + peli.getPisteet();
-        piirraTeksti(graphics, pisteet, paikkaX, paikkaY + palojenKoko + 3);
-        piirraTeksti(graphics, "Press enter to start again", paikkaX, paikkaY + (palojenKoko + 3) * 2);
+        piirraTeksti(grafiikat, pisteet, paikkaX, paikkaY + palojenKoko + 3);
+        piirraTeksti(grafiikat, "Press enter to start again", paikkaX, paikkaY + (palojenKoko + 3) * 2);
     }
 
-    private void piirraPause(Graphics graphics) {
-        piirraPeli(graphics);
+    private void piirraPysaytettyPeli(Graphics grafiikat) {
+        piirraPeli(grafiikat);
 
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
-        piirraTeksti(graphics, "Pause. Press enter to continue", paikkaX, paikkaY);
+        piirraTeksti(grafiikat, "Pause. Press enter to continue", paikkaX, paikkaY);
     }
 
-    private void piirraTausta(Graphics graphics) {
+    private void piirraTausta(Graphics grafiikat) {
 
         BufferedImage tausta = kuvat.get("tausta");
         if (peli.getTaustanLeikkauskohta() >= ikkuna.getHeight() - palojenKoko / 2 - 1) {
             peli.setTaustanLeikkauskohta(0);
         }
 
-        graphics.drawImage(tausta,
+        grafiikat.drawImage(tausta,
                 0, 0,
                 pelikentta.getPelikentanLeveys() * palojenKoko, peli.getTaustanLeikkauskohta(),
                 0, tausta.getHeight() - peli.getTaustanLeikkauskohta(),
                 tausta.getWidth(), tausta.getHeight(),
                 this);
 
-        graphics.drawImage(tausta,
+        grafiikat.drawImage(tausta,
                 0, peli.getTaustanLeikkauskohta(),
                 pelikentta.getPelikentanLeveys() * palojenKoko, pelikentta.getPelikentanKorkeus() * palojenKoko,
                 0, 0,
@@ -185,8 +197,8 @@ public class PelinPiirtoalusta extends JPanel {
                 this);
     }
 
-    private void piirraLiikkuva(Graphics graphics, Liikkuva liikkuva, Image kuva) {
-        piirraKuva(graphics, liikkuva.getX(), liikkuva.getY(), liikkuva.getKoko(), kuva);
+    private void piirraLiikkuva(Graphics grafiikat, Liikkuva liikkuva, Image kuva) {
+        piirraKuva(grafiikat, liikkuva.getX(), liikkuva.getY(), liikkuva.getKoko(), kuva);
     }
 
     private void lataaKuvat() {
@@ -200,7 +212,7 @@ public class PelinPiirtoalusta extends JPanel {
         kuvat.put("nappaimet", lueKuva(haeOsoite("/nappaimet.png")));
     }
 
-    private void piirraHuipputulokset(Graphics graphics) {
+    private void piirraHuipputulokset(Graphics grafiikat) {
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
         int huipputuloksia = peli.getHuipputulokset().getTulokset().size();
@@ -210,10 +222,10 @@ public class PelinPiirtoalusta extends JPanel {
             if (i < huipputuloksia) {
                 pelaaja = peli.getHuipputulokset().getTulokset().get(i);
             }
-            piirraTeksti(graphics, luoRivi(i + 1, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
+            piirraTeksti(grafiikat, luoRivi(i + 1, pelaaja), paikkaX, paikkaY + (i - 1) * 2 * palojenKoko);
         }
 
-        piirraTeksti(graphics, "Clear highscores press X", (int) (paikkaX * palojenKoko), paikkaY);
+        piirraTeksti(grafiikat, "Clear highscores press X", (int) (paikkaX * palojenKoko), paikkaY);
     }
 
     private String luoRivi(int i, Pelaaja pelaaja) {
@@ -239,27 +251,27 @@ public class PelinPiirtoalusta extends JPanel {
         peli.peliLoppuu();
     }
 
-    private void piirraPelinAlkuruutu(Graphics graphics) {
+    private void piirraPelinAlkuruutu(Graphics grafiikat) {
 
         int paikkaX = (pelikentta.getPelikentanLeveys() + palojenKoko) / 2;
         int paikkaY = (pelikentta.getPelikentanKorkeus() + palojenKoko) / 2;
         String alkuteksti = "Press enter to start a game";
-        piirraTeksti(graphics, alkuteksti, paikkaX, paikkaY);
+        piirraTeksti(grafiikat, alkuteksti, paikkaX, paikkaY);
 
-        piirraKontrolliohjeet(graphics, paikkaX, paikkaY, palojenKoko * 14);
+        piirraKontrolliohjeet(grafiikat, paikkaX, paikkaY, palojenKoko * 14);
 
-        piirraOmaAlus(graphics);
+        piirraOmaAlus(grafiikat);
 
-        piirraPistetilanne(graphics);
+        piirraPistetilanne(grafiikat);
     }
 
-    private void piirraKontrolliohjeet(Graphics graphics, int paikkaX, int paikkaY, int korkeus) {
-        graphics.drawImage(kuvat.get("nappaimet"), paikkaX + palojenKoko * 2, paikkaY + palojenKoko * 3, (int) (2.44 * korkeus), korkeus, this);
+    private void piirraKontrolliohjeet(Graphics grafiikat, int paikkaX, int paikkaY, int korkeus) {
+        grafiikat.drawImage(kuvat.get("nappaimet"), paikkaX + palojenKoko * 2, paikkaY + palojenKoko * 3, (int) (2.44 * korkeus), korkeus, this);
     }
 
-    private void piirraTeksti(Graphics graphics, String merkkijono, int x, int y) {
-        graphics.setColor(Color.red);
-        graphics.drawString(merkkijono, x, y);
+    private void piirraTeksti(Graphics grafiikat, String merkkijono, int x, int y) {
+        grafiikat.setColor(Color.red);
+        grafiikat.drawString(merkkijono, x, y);
     }
 
     /**
@@ -283,9 +295,9 @@ public class PelinPiirtoalusta extends JPanel {
         return nimi;
     }
 
-    private void piirraPomo(Graphics graphics) {
+    private void piirraPomo(Graphics grafiikat) {
         if (pelikentta.getPomo() != null) {
-            piirraLiikkuva(graphics, pelikentta.getPomo(), kuvat.get("pomo"));
+            piirraLiikkuva(grafiikat, pelikentta.getPomo(), kuvat.get("pomo"));
         }
     }
 
@@ -299,32 +311,32 @@ public class PelinPiirtoalusta extends JPanel {
         rajahdykset.add(sijainti);
     }
 
-    private void piirraOmatElamapisteet(Graphics graphics) {
+    private void piirraOmatElamapisteet(Graphics grafiikat) {
         int x = pelikentta.getPelikentanLeveys() * palojenKoko * 3 / 4;
         int y = (int) (palojenKoko * 1.5);
-        piirraTeksti(graphics, "HP: " + pelikentta.getOmaAlus().getElamapisteet(), x, y);
+        piirraTeksti(grafiikat, "HP: " + pelikentta.getOmaAlus().getElamapisteet(), x, y);
     }
 
-    private void piirraRajahdykset(Graphics graphics) {
+    private void piirraRajahdykset(Graphics grafiikat) {
         Iterator<Pala> iteraattori = rajahdykset.iterator();
         while (iteraattori.hasNext()) {
             Pala sijainti = iteraattori.next();
             if (sijainti.getX() >= 0 && sijainti.getY() >= 0) {
-                piirraKuva(graphics, sijainti.getX(), sijainti.getY(), sijainti.getKoko(), kuvat.get("rajahdys"));
+                piirraKuva(grafiikat, sijainti.getX(), sijainti.getY(), sijainti.getKoko(), kuvat.get("rajahdys"));
             } else {
-                piirraRajahdysJonkaYTaiXOnKentanUlkopuolella(sijainti, graphics);
+                piirraRajahdysJonkaYTaiXOnKentanUlkopuolella(sijainti, grafiikat);
             }
             iteraattori.remove();
         }
     }
 
-    private void piirraRajahdysJonkaYTaiXOnKentanUlkopuolella(Pala sijainti, Graphics graphics) {
+    private void piirraRajahdysJonkaYTaiXOnKentanUlkopuolella(Pala sijainti, Graphics grafiikat) {
         int x = sijainti.getX();
         int y = sijainti.getY();
         if (x < 0) {
-            graphics.drawImage(kuvat.get("rajahdys"), 0, y * palojenKoko, sijainti.getKoko() * palojenKoko + x * palojenKoko, sijainti.getKoko() * palojenKoko, this);
+            grafiikat.drawImage(kuvat.get("rajahdys"), 0, y * palojenKoko, sijainti.getKoko() * palojenKoko + x * palojenKoko, sijainti.getKoko() * palojenKoko, this);
         } else if (y < 0) {
-            graphics.drawImage(kuvat.get("rajahdys"), x * palojenKoko, 0, sijainti.getKoko() * palojenKoko, sijainti.getKoko() * palojenKoko + y * palojenKoko, this);
+            grafiikat.drawImage(kuvat.get("rajahdys"), x * palojenKoko, 0, sijainti.getKoko() * palojenKoko, sijainti.getKoko() * palojenKoko + y * palojenKoko, this);
         }
     }
 

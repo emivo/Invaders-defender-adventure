@@ -18,6 +18,9 @@ public class Huipputulokset {
 
     private ArrayList<Pelaaja> tulokset;
 
+    /**
+     * Luo {@code Huipputulokset}-luokan olion.
+     */
     public Huipputulokset() {
         tulokset = new ArrayList<>();
     }

@@ -9,15 +9,15 @@ import javax.swing.Timer;
 /**
  * Luokka on pelin ydin, joka luo pelikentän ja kertoo mitä pelissä tapahtuu.
  * Tapahtuvat muutokset luokka ilmoittaa PelinPiirtoalustalle, joka voi pelin
- * piirtää JFrame ikkunaan. Luokka antaa käskyjä Pelikentta luokalla
+ * piirtää JFrame ikkunaan. Luokka antaa käskyjä {@link Pelikentta}-luokalla
  * tarvittaessa liikuttaa liikkuvia ja tuoda pelikentälle lisää vihollisia.
- * Luokka pitää huolen Pelintilanteesta (KAYNNISSA, LOPPU, PAUSE jne.),
- * pistetilanteesta ja taustakuvan vierityksestä. Pistetilanteen ollessa
- * riittävän suuri voi luokka päivittää pelikentällä olevan omanAluksen
- * aseistusta tai korjata siihen syntyneitä vahinkoja
+ * Luokka pitää huolen pelintilanteesta, pistetilanteesta ja taustakuvan
+ * vierityksestä. Pistetilanteen ollessa riittävän suuri voi luokka päivittää
+ * pelikentällä olevan oman aluksen aseistusta tai korjata siihen syntyneitä
+ * vahinkoja
  *
- * Pelissä syntyvät huipputulokset luokka käskee Huipputulokset luokan tallentaa
- * tai poistaa.
+ * Pelissä syntyvät huipputulokset luokka käskee {@link Huipputulokset}-luokan
+ * tallentaa tai poistaa.
  *
  * @see Pelitilanne
  * @see Pelikentta
@@ -39,6 +39,12 @@ public class Peli extends Timer implements ActionListener {
     private int taustanLeikkauskohta;
     private int vihollistenMaara;
 
+    /**
+     * Luo {@code Peli}-luokan olion ja alustaa sen alkutilaan.
+     *
+     * @param pelikentanSivunpituus kuinka montaa palaa pitkä pelikentän korkeus
+     * on
+     */
     public Peli(int pelikentanSivunpituus) {
         super(100, null);
 
@@ -104,10 +110,10 @@ public class Peli extends Timer implements ActionListener {
      * Pysäyttää pelin, kun peli on käynnissä ja käynnistää pelin, kun peli on
      * pysäytetty
      */
-    public void pause() {
+    public void pysaytaTaiJatkaPysahtynytta() {
         if (tilanne == Pelitilanne.KAYNNISSA) {
             stop();
-            setTilanne(Pelitilanne.PAUSE);
+            setTilanne(Pelitilanne.PYSAYTETTY);
         } else if (tilanne != Pelitilanne.LOPPU) {
             start();
         }
@@ -170,7 +176,7 @@ public class Peli extends Timer implements ActionListener {
 
         pelikentta.ammuksetLiiku();
         vihollistenViiveAmmustenLiikkeeseen();
-        
+
         taustanLeikkauskohta += 2;
         paivitaPelinpiirto();
 

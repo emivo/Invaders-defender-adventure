@@ -8,8 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * Luokka kuuntelee näppäimistötapahtumia ja antaa sen perusteella pelille
- * käskyjä, mitä tulee tehdä.
+ * Luokka luodaan kuuntelemaan näppäimistötapahtumia ja antamaan sen perusteella
+ * pelille käskyjä, joita pelaaja haluaa suorittaa pelille.
  *
  * @author emivo
  */
@@ -18,6 +18,12 @@ public class Nappaimistokuuntelija implements KeyListener {
     private final Peli peli;
     private final Pelikentta pelikentta;
 
+    /**
+     * Luo {@code Nappaimistokuuntelija}-luokan olion, jolle asetetaan peli,
+     * jolle se antaa käskyt.
+     *
+     * @param peli pelattava peli, jolle käskyt annetaan
+     */
     public Nappaimistokuuntelija(Peli peli) {
         this.peli = peli;
         this.pelikentta = peli.getPelikentta();
@@ -47,13 +53,13 @@ public class Nappaimistokuuntelija implements KeyListener {
                 ammu();
                 break;
             case KeyEvent.VK_P:
-                pause();
+                pysaytaPeliTaiJatkaPysahtynytta();
                 break;
             case KeyEvent.VK_ENTER:
                 if (peli.getTilanne() == Pelitilanne.LOPPU) {
                     uusiPeli();
                 } else {
-                    pause();
+                    pysaytaPeliTaiJatkaPysahtynytta();
                 }
                 break;
             case KeyEvent.VK_X:
@@ -68,8 +74,8 @@ public class Nappaimistokuuntelija implements KeyListener {
         peli.paivitaPelinpiirto();
     }
 
-    private void pause() {
-        peli.pause();
+    private void pysaytaPeliTaiJatkaPysahtynytta() {
+        peli.pysaytaTaiJatkaPysahtynytta();
         peli.paivitaPelinpiirto();
     }
 

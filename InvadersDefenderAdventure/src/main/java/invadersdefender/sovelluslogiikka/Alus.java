@@ -1,9 +1,8 @@
 package invadersdefender.sovelluslogiikka;
 
 /**
- * Luokkasta voidaa muodostaa luokkia, joilla voidaan muodostaa olioita, joita
- * voidaan liikutella x,y koordinaatistossa ja voiva ampua {@link Ammus} luokan
- * oliota
+ * Abstrakti alus-luokka, joka sisältää kaikkille aluksille tulevat piirteet
+ * esimerkiksi liikuttamisen x,y koordinaatistossa ja ampumisen.
  *
  * @author emivo
  */

@@ -6,7 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 /**
- * Luokka luo pelille JFrame ikkunan ja lisää Nappaimistokuuntelijan ikkunalle
+ * Luokka luo pelille, joka annetaan konstruktiossa JFrame ikkunan ja lisää
+ * Nappaimistokuuntelijan ikkunalle sekä valikkopalkin.
+ *
  * @author emivo
  */
 public class Kayttoliittyma implements Runnable {
@@ -16,6 +18,14 @@ public class Kayttoliittyma implements Runnable {
     private final int palojenKoko;
     private final PelinPiirtoalusta piirtoalusta;
 
+    /**
+     * Luo {@code Kayttoliittyma}-luokan olion ja asettaa käyttöliittymää varten
+     * peli ja piirtoalustan oliolle sekä asetetaan kuinka monta pikseliä yhden
+     * palan koko on.
+     *
+     * @param peli Peli, jolle käyttöliittymä luodaan
+     * @param palojenKoko kuinka monta pikseliä yksi pala on
+     */
     public Kayttoliittyma(Peli peli, int palojenKoko) {
         this.palojenKoko = palojenKoko;
         this.peli = peli;
@@ -30,14 +40,14 @@ public class Kayttoliittyma implements Runnable {
         if (System.getProperty("os.name").startsWith("Linux")) {
             reuna += 10;
         }
-        int ikkunanLeveys = peli.getPelikentta().getPelikentanLeveys()* palojenKoko + reuna;
+        int ikkunanLeveys = peli.getPelikentta().getPelikentanLeveys() * palojenKoko + reuna;
         int ikkunanKorkeus = peli.getPelikentta().getPelikentanKorkeus() * palojenKoko + 43 + reuna;
         piirtoalusta.setIkkuna(ikkuna);
-        
+
         ikkuna.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         rakennaIkkunanKomponentit();
-        ikkuna.setPreferredSize(new Dimension(ikkunanLeveys, ikkunanKorkeus + ikkuna.getJMenuBar().getHeight() ));
+        ikkuna.setPreferredSize(new Dimension(ikkunanLeveys, ikkunanKorkeus + ikkuna.getJMenuBar().getHeight()));
 
         ikkuna.pack();
         ikkuna.setVisible(true);
@@ -50,10 +60,11 @@ public class Kayttoliittyma implements Runnable {
     }
 
     /**
-     * Metodi lisää pelinpiirtoalustan ikkunaan sekä valikon ja näppäimistökuuntelijan
+     * Metodi lisää pelinpiirtoalustan ikkunaan sekä valikon ja
+     * näppäimistökuuntelijan.
      */
     public void rakennaIkkunanKomponentit() {
-        
+
         ikkuna.getContentPane().add(piirtoalusta);
         ikkuna.setJMenuBar(new Valikko(peli, ikkuna).luoValikko());
 

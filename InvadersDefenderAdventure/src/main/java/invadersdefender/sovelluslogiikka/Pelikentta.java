@@ -26,6 +26,12 @@ public class Pelikentta {
     private static final int ALUKSIENKOKO = 3;
     private int vihollistenKestavyys;
 
+    /**
+     * Luo {@code Pelikentta}-luokan olion ja asettaa sen alkutilaan
+     *
+     * @param pelikentanKorkeus pelikentän korkeus
+     * @param peli peli, johon pelikenttä liittyy
+     */
     public Pelikentta(int pelikentanKorkeus, Peli peli) {
         this.peli = peli;
         this.pelikentanKorkeus = pelikentanKorkeus * ALUKSIENKOKO;
