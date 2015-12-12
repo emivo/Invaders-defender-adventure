@@ -26,10 +26,8 @@ public class Ammus extends Pala {
     }
 
     /**
-     * Metodilla siirretään oliota samoin kuin Pala.liiku(Suunta), mutta olio
+     * Metodilla siirretään oliota samoin kuin {@link invadersdefender.sovelluslogiikka.Pala#liiku(Suunta)}, mutta olio
      * liikkuu aina vain siihen suuntaan, johon se on luotu kulkemaan.
-     *
-     * @see Pala#liiku(Suunta)
      */
     public void liiku() {
         super.liiku(this.suunta);

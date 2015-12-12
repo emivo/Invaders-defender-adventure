@@ -167,6 +167,13 @@ public class Peli extends Timer implements ActionListener {
         }
     }
 
+    /**
+     * Metodi kutsuu vihollisia kentälle, liikuttaa niitä tai käskee niiden
+     * ampua tarvittaessa. Lisäksi metodi liikuttaa ammuksia, vierittää
+     * taustakuvaa sekä ilmoittaa piirtoalustalle päivittämään pelin piirron.
+     *
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -189,10 +196,14 @@ public class Peli extends Timer implements ActionListener {
     }
 
     private void lisataankoVihollisiaKentalle() {
+        boolean onkoPeliEdennytRiittavanPitkalle = getDelay() < 80;
+        int viimeinenVihollinenY = pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY();
+        int viimeinenVihollinenKoko = pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getKoko();
+
         if (pelikentta.getViholliset().isEmpty()) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
-        } else if (getDelay() < 80
-                && pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY() > pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getKoko()) {
+        } else if (onkoPeliEdennytRiittavanPitkalle
+                && viimeinenVihollinenY > viimeinenVihollinenKoko) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara / 2);
         }
     }

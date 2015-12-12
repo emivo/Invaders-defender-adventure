@@ -1,9 +1,10 @@
 package invadersdefender.sovelluslogiikka;
 
 /**
- * Luokkalla voidaan luoda yksinkertainen kaksiulotteinen neliön muotoinen pala,
- * jota voidaan liikutella liiku metodin avulla. Palalla on myös koko, joka
- * tarkoittaa neliön sivunpituutta, ja joka on vakiona yksi.
+ * Luokan rakenne on yksinkertainen kaksiuloitteinen sijainti sekä koko. Luokan
+ * muodostamat oliot ajatellaan neliön muotoisina, jolloin koko on palan
+ * sivunpituus. Luokka toteuttaa {@code Liikuva} rajapinnan, jolloin
+ * liikuteltaessa sen x,y -koordinaatit muuttuvat annetun suunnan mukaan.
  *
  * @author emivo
  */

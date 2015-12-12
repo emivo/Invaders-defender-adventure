@@ -79,7 +79,10 @@ public class Pelikentta {
 
     /**
      * Metodi käskee parametrinä annetua alusta ampumaan ja asettaa tämän
-     * ampuman ammuksen, joka lisätään ammukset listaan
+     * ampuman ammuksen, joka lisätään ammukset listaan. Jos alus on pelaajan
+     * oma alus, metodi tarkistaa onko alus ampunut jo liikaa ammuksia kentälle
+     * sekä jos omalla aluksella on jokin muu aseistus tuleeko ammuksia listätä
+     * enemmän.
      *
      * @param alus olio, jonka koordinaatien perusteella {@code Ammus} saa
      * sijaintinsa ja suuntansa

@@ -6,8 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 /**
- * Luokka luo pelille, joka annetaan konstruktiossa JFrame ikkunan ja lisää
- * Nappaimistokuuntelijan ikkunalle sekä valikkopalkin.
+ * Luokka luo JFrame ikkunan, jossa konstruktiossa annettavaa peliä voidaan
+ * pelata. Ikkunaan lisätään näppäimistönkuuntelija sekä valikkopalkki, jotta
+ * peliä voidaan hallita.
  *
  * @author emivo
  */
@@ -36,12 +37,13 @@ public class Kayttoliittyma implements Runnable {
     public void run() {
         ikkuna = new JFrame("Invaders defender adventures");
         int reuna = 6;
-        // ikkunaa pitää hieman suurentaa ainakin ubuntulla ja mintillä
+//         ikkunaa pitää hieman suurentaa ainakin ubuntulla ja mintillä
         if (System.getProperty("os.name").startsWith("Linux")) {
-            reuna += 10;
+            reuna = 10;
         }
         int ikkunanLeveys = peli.getPelikentta().getPelikentanLeveys() * palojenKoko + reuna;
-        int ikkunanKorkeus = peli.getPelikentta().getPelikentanKorkeus() * palojenKoko + 43 + reuna;
+
+        int ikkunanKorkeus = peli.getPelikentta().getPelikentanKorkeus() * palojenKoko + 49;
         piirtoalusta.setIkkuna(ikkuna);
 
         ikkuna.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -63,12 +65,12 @@ public class Kayttoliittyma implements Runnable {
      * Metodi lisää pelinpiirtoalustan ikkunaan sekä valikon ja
      * näppäimistökuuntelijan.
      */
-    public void rakennaIkkunanKomponentit() {
+    private void rakennaIkkunanKomponentit() {
 
-        ikkuna.getContentPane().add(piirtoalusta);
         ikkuna.setJMenuBar(new Valikko(peli, ikkuna).luoValikko());
-
         ikkuna.addKeyListener(new Nappaimistokuuntelija(peli));
+        ikkuna.getContentPane().add(piirtoalusta);
+
     }
 
 }

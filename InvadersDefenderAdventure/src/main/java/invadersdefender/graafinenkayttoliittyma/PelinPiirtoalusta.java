@@ -154,6 +154,7 @@ public class PelinPiirtoalusta extends JPanel {
      * Metodi päivittää piirroksen ajan tasalle
      */
     public void paivitaPiirto() {
+        super.revalidate();
         super.repaint();
     }
 

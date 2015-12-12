@@ -24,13 +24,6 @@ public class Main {
         Kayttoliittyma kaytto = new Kayttoliittyma(peli, palojenKoko);
         SwingUtilities.invokeLater(kaytto);
 
-        while (kaytto.getPiirtoalusta() == null) {
-            try {
-                Thread.sleep(100);
-            } catch (Exception e) {
-                System.out.println("Piirtoalusta ei ole vielä valmis");
-            }
-        }
         peli.setPiirtoalusta(kaytto.getPiirtoalusta());
     }
 

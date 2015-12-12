@@ -1,7 +1,7 @@
 package invadersdefender.sovelluslogiikka;
 
 /**
- * Suunnat, joihin liikuvat voivat liikkua.
+ * Suunnat, joihin {@link Liikkuva} voi liikkua.
  *
  * @author emivo
  */
