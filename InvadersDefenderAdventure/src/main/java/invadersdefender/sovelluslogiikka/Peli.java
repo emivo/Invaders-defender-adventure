@@ -4,6 +4,7 @@ import invadersdefender.sovelluslogiikka.huipputulokset.Huipputulokset;
 import invadersdefender.graafinenkayttoliittyma.PelinPiirtoalusta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.Timer;
 
 /**
@@ -196,14 +197,14 @@ public class Peli extends Timer implements ActionListener {
     }
 
     private void lisataankoVihollisiaKentalle() {
-        boolean onkoPeliEdennytRiittavanPitkalle = getDelay() < 80;
-        int viimeinenVihollinenY = pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getY();
-        int viimeinenVihollinenKoko = pelikentta.getViholliset().get(pelikentta.getViholliset().size() - 1).getKoko();
-
-        if (pelikentta.getViholliset().isEmpty()) {
+        List<Vihollisolio> viholliset = pelikentta.getViholliset();
+        // viimeisen vihollisen indeksi, nimetty lyhyesti
+        int i = viholliset.size() - 1;
+        
+        if (viholliset.isEmpty()) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
-        } else if (onkoPeliEdennytRiittavanPitkalle
-                && viimeinenVihollinenY > viimeinenVihollinenKoko) {
+        } else if (getDelay() < 80
+                && viholliset.get(i).getY() > viholliset.get(i).getKoko()) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara / 2);
         }
     }

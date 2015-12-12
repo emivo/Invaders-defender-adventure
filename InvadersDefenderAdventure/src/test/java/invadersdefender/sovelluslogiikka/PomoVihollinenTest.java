@@ -40,6 +40,12 @@ public class PomoVihollinenTest {
     @Test
     public void testaaPomonAmpuminen() {
         PomoVihollinen pomo = new PomoVihollinen(3, 3, 6, 1);
+        for (int i = 0; i < 10; i++) {
+            ampuessaTuleeAmmus(pomo);
+        }
+    }
+
+    private void ampuessaTuleeAmmus(PomoVihollinen pomo) {
         Ammus ammus = pomo.ammu();
         boolean xKoordinaattiOikein = ammus.getX() == pomo.getX() + pomo.getKoko() / 4 || ammus.getX() == pomo.getX() + pomo.getKoko() * 3 / 4;
         boolean yKoordinaattiOikein = ammus.getY() == pomo.getY() + pomo.getKoko() + 1;

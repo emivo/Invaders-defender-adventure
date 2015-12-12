@@ -46,25 +46,54 @@ public class PelikenttaTest {
 
     @Test
     public void omaAlusAmpuuAmmuksenKentalle() {
-        pelikentta.alusAmmu(pelikentta.getOmaAlus());
+        omaAlusAmmu();
         assertTrue("Yhtään ammusta ei ilmesty kentälle", !pelikentta.getAmmukset().isEmpty());
 
         // tupla aseistus ampuu kaksi
         pelikentta.getOmaAlus().parannaAseistusta(Aseistus.TUPLA);
         int ammuksia = pelikentta.getAmmukset().size();
-        pelikentta.alusAmmu(pelikentta.getOmaAlus());
+        omaAlusAmmu();
         assertEquals(ammuksia + 2, pelikentta.getAmmukset().size());
 
         // tripla ampuu kolme
         pelikentta.getOmaAlus().parannaAseistusta(Aseistus.TRIPLA);
         ammuksia = pelikentta.getAmmukset().size();
-        pelikentta.alusAmmu(pelikentta.getOmaAlus());
+        omaAlusAmmu();
         assertEquals(ammuksia + 3, pelikentta.getAmmukset().size());
     }
+    
+    @Test
+    public void omaAlusEiAmmuLiikaa() {
+        omaAlusYritaAmpua10Kertaa();
+        assertEquals(7, pelikentta.getAmmukset().size());
+        
+        pelikentta.kaynnistaUudelleen();
+        
+        pelikentta.getOmaAlus().parannaAseistusta(Aseistus.TUPLA);
+        omaAlusYritaAmpua10Kertaa();
+        assertEquals(16, pelikentta.getAmmukset().size());
+        
+        pelikentta.kaynnistaUudelleen();
+        
+        pelikentta.getOmaAlus().parannaAseistusta(Aseistus.TRIPLA);
+        omaAlusYritaAmpua10Kertaa();
+        assertEquals(27, pelikentta.getAmmukset().size());
+        
+    }
 
+    private void omaAlusYritaAmpua10Kertaa() {
+        for (int i = 0; i < 10; i++) {
+            omaAlusAmmu();
+        }
+    }
+
+    private void omaAlusAmmu() {
+        pelikentta.alusAmmu(pelikentta.getOmaAlus());
+    }
+    
     @Test
     public void ammuksetLiikkuvatKentalla() {
-        pelikentta.alusAmmu(pelikentta.getOmaAlus());
+        omaAlusAmmu();
         try {
             Ammus ammus = pelikentta.getAmmukset().get(0);
             int x = ammus.getX();
@@ -237,8 +266,10 @@ public class PelikenttaTest {
 
     @Test
     public void vihollisetLiikkuuOmaaAlustaPain() {
+        pelikentta.getPeli().setTilanne(Pelitilanne.KAYNNISSA);
         int elamapisteet = liikutaVihollinenOmaaAlustaPain();
         assertTrue(pelikentta.getViholliset().isEmpty());
+        assertEquals(10, pelikentta.getPeli().getPisteet());
         assertEquals(elamapisteet - 20, pelikentta.getOmaAlus().getElamapisteet());
         for (int i = 0; i < 4; i++) {
             elamapisteet -= 20;
@@ -278,7 +309,6 @@ public class PelikenttaTest {
 
     @Test
     public void aluksetTuhoutuuAmmuksistaKunAmmuksetLiikkuu() {
-        // Testin onnistuminen edellytää kaikkien edellisten testien toimivuutta
         try {
             int x = 1;
             int y = 1;
@@ -352,7 +382,8 @@ public class PelikenttaTest {
 
     @Test
     public void testaaPelikentanleveys() {
-        assertEquals((int) (pelikentta.getPelikentanKorkeus() * 5 / 7), pelikentta.getPelikentanLeveys());
+        int pelikentanKorkeus = 20 * 3;
+        assertEquals((int) (pelikentanKorkeus * 5 / 7), pelikentta.getPelikentanLeveys());
     }
 
     @Test

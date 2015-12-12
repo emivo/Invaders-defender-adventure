@@ -287,8 +287,8 @@ public class Pelikentta {
     }
 
     /**
-     * Metodi liikuttaa omaa alusta pelikentällä
-     *
+     * Metodi liikuttaa omaa alusta pelikentällä.
+     * 
      * @param suunta Suunta, johon alusta halutaan liikuttaa
      */
     public void omaAlusLiiku(Suunta suunta) {
@@ -300,8 +300,7 @@ public class Pelikentta {
     }
 
     /**
-     * Metodi tarkistaa osuuko jokin vihollisista omaan alukseen
-     *
+     * Metodi tarkistaa osuuko jokin vihollisista omaan alukseen.
      */
     public void osuvatkoVihollisetOmaanAlukseen() {
         Iterator<Vihollisolio> iteraattori = viholliset.iterator();

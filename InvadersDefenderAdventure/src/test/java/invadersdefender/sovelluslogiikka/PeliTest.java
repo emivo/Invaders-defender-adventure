@@ -59,6 +59,9 @@ public class PeliTest {
 
     @Test
     public void pelinUudelleenKaynnistysKaynnistaaPelin() {
+        for (int i = 0; i < 20; i++) {
+            peli.lisaaPisteita();
+        }
         Alus vanhaAlus = peli.getPelikentta().getOmaAlus();
         peli.kaynnistaPeliUuudelleen();
 
@@ -92,6 +95,7 @@ public class PeliTest {
 
     @Test
     public void huipputuloksetSiirtymyminen() {
+        peli.start();
         peli.asetaHuipputuloistenKatselutilaan();
         assertEquals("Peli on väärässä tilassa", Pelitilanne.TULOKSET, peli.getTilanne());
         assertFalse(peli.isRunning());
@@ -182,5 +186,24 @@ public class PeliTest {
     private void aseistusEiMuutu(Aseistus uusiAseistus, Aseistus vanhaAseistus) {
         peli.parannaAluksenAseistusta(uusiAseistus);
         assertEquals(vanhaAseistus, peli.getPelikentta().getOmaAlus().getAseistus());
+    }
+
+    @Test
+    public void pelillaOnAloitusviive() {
+        assertEquals(100, peli.getInitialDelay());
+        lisaaPisteitaTarvittavaMaara(1000);
+        peli.kaynnistaPeliUuudelleen();
+        assertEquals(100, peli.getInitialDelay());
+        assertEquals(100, peli.getDelay());
+    }
+    
+    @Test
+    public void peliKuunteleeItseaan() {
+        peli.getActionListeners()[0].equals(peli);
+    }
+    
+    @Test
+    public void huipputuloksetGetteri() {
+        assertTrue(peli.getHuipputulokset() != null);
     }
 }
