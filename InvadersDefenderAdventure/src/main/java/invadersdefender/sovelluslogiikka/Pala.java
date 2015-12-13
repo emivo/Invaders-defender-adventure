@@ -18,8 +18,8 @@ public class Pala implements Liikkuva {
      * Luo olion kuin {@link #Pala(int x, int y, int koko)}, mutta koko on aina
      * yksi.
      *
-     * @param x x-koordinaatti, jonka pala saa
-     * @param y y-koordinaatti, jonka pala saa
+     * @param x x-koordinaatti, johon pala luodaan
+     * @param y y-koordinaatti, johon pala luodaan
      */
     public Pala(int x, int y) {
         this(x, y, 1);
@@ -28,9 +28,9 @@ public class Pala implements Liikkuva {
     /**
      * Luo Pala-luokan olion paikkaan x,y, jonka koko on annettu koko.
      *
-     * @param x
-     * @param y
-     * @param koko
+     * @param x x-koordinaatti, johon pala luodaan
+     * @param y y-koordinaatti, johon pala luodaan
+     * @param koko palan sivunpituus
      */
     public Pala(int x, int y, int koko) {
         this.x = x;

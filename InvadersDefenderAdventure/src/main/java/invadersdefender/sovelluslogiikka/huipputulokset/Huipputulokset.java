@@ -26,7 +26,7 @@ public class Huipputulokset {
     }
 
     /**
-     * Metodi hakee tietokoneen paikallisesta tallennustilasta, onko edellisten
+     * Metodi hakee tietokoneen paikallisesta muistista, onko edellisten
      * pelikertojen tuloksia on tallennettu.
      *
      * @return {@code true} jos huipputuloslista löytyy

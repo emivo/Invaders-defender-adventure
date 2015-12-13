@@ -45,7 +45,7 @@ public class Pelikentta {
     }
 
     /**
-     * Luo oman aluksen kentän alareunaan keskelle
+     * Luo oman aluksen kentän alareunan keskelle.
      *
      * @return Alus, joka toimii pelaajan aluksena
      */
@@ -81,7 +81,7 @@ public class Pelikentta {
      * Metodi käskee parametrinä annetua alusta ampumaan ja asettaa tämän
      * ampuman ammuksen, joka lisätään ammukset listaan. Jos alus on pelaajan
      * oma alus, metodi tarkistaa onko alus ampunut jo liikaa ammuksia kentälle
-     * sekä jos omalla aluksella on jokin muu aseistus tuleeko ammuksia listätä
+     * sekä jos omalla aluksella on jokin muu aseistus tuleeko ammuksia lisätä
      * enemmän.
      *
      * @param alus olio, jonka koordinaatien perusteella {@code Ammus} saa
@@ -140,7 +140,7 @@ public class Pelikentta {
 
     /**
      * Metodi tarkastaa osuuko parametrinä annettu ammus johonkin pelissä
-     * olevaan alukseen
+     * olevaan alukseen.
      *
      * @param ammus tarkasteltava ammus
      * @return totuusarvo osuuko ammus johonkin alukseen
@@ -239,7 +239,7 @@ public class Pelikentta {
     /**
      * Pomo vihollinen saapuu peliin. Pomo vihollisen koko on tuplasti suurempi
      * kuin tavallisten vihollisten ja sen kestävyys on myös 10 elämäpistettä
-     * parempi kuin tavallisten vihollisolioden.
+     * parempi kuin tavallisten vihollisolioiden.
      */
     public void pomoVihollinenTuleeEsille() {
         pomo = new PomoVihollinen(pelikentanLeveys / 2, -1 * ALUKSIENKOKO * 2, 2 * ALUKSIENKOKO, vihollistenKestavyys + 10);
@@ -266,7 +266,7 @@ public class Pelikentta {
 
     /**
      * Metodi ilmoittaa pelille tapahtuneesta törmäyksestä, johon voidaan
-     * piirtää räjähdyskuva
+     * piirtää räjähdyskuva.
      *
      * @param liikkuva Parametrinä annetaan liikkuva, jonka johdosta räjähdys
      * tapahtuu
@@ -275,7 +275,7 @@ public class Pelikentta {
         peli.lisaaRajahdysPiirrettavaksiKohtaan(new Pala(liikkuva.getX(), liikkuva.getY(), liikkuva.getKoko()));
     }
 
-    private void osuukoAmmukset() {
+    private void osuvatkoAmmukset() {
         Iterator<Ammus> iterator = ammukset.iterator();
         while (iterator.hasNext()) {
             Ammus ammus = iterator.next();
@@ -288,7 +288,7 @@ public class Pelikentta {
 
     /**
      * Metodi liikuttaa omaa alusta pelikentällä.
-     * 
+     *
      * @param suunta Suunta, johon alusta halutaan liikuttaa
      */
     public void omaAlusLiiku(Suunta suunta) {
@@ -296,7 +296,7 @@ public class Pelikentta {
             omaAlus.liiku(suunta);
         }
         osuvatkoVihollisetOmaanAlukseen();
-        osuukoAmmukset();
+        osuvatkoAmmukset();
     }
 
     /**
@@ -349,7 +349,7 @@ public class Pelikentta {
 
             pomoLiiku();
 
-            osuukoAmmukset();
+            osuvatkoAmmukset();
             osuvatkoVihollisetOmaanAlukseen();
         }
     }
@@ -418,7 +418,7 @@ public class Pelikentta {
     }
 
     /**
-     * Satunnainen kentällä oleva vihollinen ampuu {@code Ammus} olion.
+     * Satunnainen kentällä oleva vihollinen ampuu {@code Ammus}-olion.
      */
     public void jokuVihollinenAmpuu() {
         if (!viholliset.isEmpty()) {
@@ -455,7 +455,7 @@ public class Pelikentta {
     }
 
     /**
-     * Vihollisten ammusten kestävyys paranee yhdellä metodia kutsuttaessa.
+     * Vihollisten ammusten kestävyys paranee kymmenellä metodia kutsuttaessa.
      * Vihollisten kestävyyden maksimi on 100.
      */
     public void parannaVihollistenKestavyytta() {

@@ -57,7 +57,7 @@ public class PelinPiirtoalusta extends JPanel {
 
     /**
      * Metodi piirtää pelintilanteen mukaisen kuvan parametrinä annettuun
-     * Graphics luokan olioon
+     * Graphics-luokan olioon.
      *
      * @param grafiikat alusta, johon peli piirretään
      */
@@ -276,7 +276,7 @@ public class PelinPiirtoalusta extends JPanel {
     }
 
     /**
-     * Metodi luo ikkunan pelaajan nimen kysymistä varten
+     * Metodi luo ikkunan pelaajan nimen kysymistä varten.
      *
      * @return palauttaa nimen, jonka käyttäjä syöttää ikkunaan. Jos mitään ei
      * syötetä palautetaan {@code XXXXX}
@@ -304,7 +304,7 @@ public class PelinPiirtoalusta extends JPanel {
 
     /**
      * Metodi asettaa uuden räjähdyksen piirrettäväksi seuraavalla
-     * piirtokerralla
+     * piirtokerralla.
      *
      * @param sijainti Paikka, johon räjähdys halutaan piirrettävän
      */

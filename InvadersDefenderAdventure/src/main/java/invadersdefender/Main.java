@@ -16,15 +16,22 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        kaynnistaPeli();
+    }
 
-        int pelikentanKoko = 20;
+    private static void kaynnistaPeli() {
         int palojenKoko = 10;
-        Peli peli = new Peli(pelikentanKoko);
-
+        Peli peli = luoPeli();
         Kayttoliittyma kaytto = new Kayttoliittyma(peli, palojenKoko);
         SwingUtilities.invokeLater(kaytto);
 
         peli.setPiirtoalusta(kaytto.getPiirtoalusta());
+    }
+
+    private static Peli luoPeli() {
+        int pelikentanKoko = 20;
+        Peli peli = new Peli(pelikentanKoko);
+        return peli;
     }
 
 }

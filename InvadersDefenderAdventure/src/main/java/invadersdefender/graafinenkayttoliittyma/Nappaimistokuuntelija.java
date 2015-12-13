@@ -34,6 +34,12 @@ public class Nappaimistokuuntelija implements KeyListener {
         // ei mitään tänne
     }
 
+    /**
+     * Metodi antaa pelille käskyjä, kun pelille asetettuja kontrolleja
+     * käytetään.
+     *
+     * @param e näppäintapahtuma
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -56,16 +62,18 @@ public class Nappaimistokuuntelija implements KeyListener {
                 pysaytaPeliTaiJatkaPysahtynytta();
                 break;
             case KeyEvent.VK_ENTER:
-                if (peli.getTilanne() == Pelitilanne.LOPPU) {
-                    uusiPeli();
-                } else {
-                    pysaytaPeliTaiJatkaPysahtynytta();
-                }
+                pelaajaPainaaEnter();
                 break;
             case KeyEvent.VK_X:
-                if (peli.getTilanne() == Pelitilanne.TULOKSET) {
-                    tyhjennaHuipputulokset();
-                }
+                tyhjennaHuipputulokset();
+        }
+    }
+
+    private void pelaajaPainaaEnter() {
+        if (peli.getTilanne() == Pelitilanne.LOPPU) {
+            uusiPeli();
+        } else {
+            pysaytaPeliTaiJatkaPysahtynytta();
         }
     }
 
@@ -94,8 +102,10 @@ public class Nappaimistokuuntelija implements KeyListener {
     }
 
     private void tyhjennaHuipputulokset() {
-        peli.tyhjennaHuipputulokset();
-        peli.paivitaPelinpiirto();
+        if (peli.getTilanne() == Pelitilanne.TULOKSET) {
+            peli.tyhjennaHuipputulokset();
+            peli.paivitaPelinpiirto();
+        }
     }
 
     @Override

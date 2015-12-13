@@ -28,10 +28,10 @@ public class OmaAlus extends Alus {
     }
 
     /**
-     * Luo {@link Ammus} -luokan olion aluksen yläreunan yläpuolelle ja
-     * leveyssuunnassa aluksen keskelle
+     * Luo {@link Ammus} -luokan olion aluksen yläreunan yläpuolelle.
+     * Leveyssuuntainen sijainti riippuu aluksen aseistuksesta
      *
-     * @return {@link Ammus} -luokan olio
+     * @return metodin luoma {@code Ammus}
      */
     @Override
     public Ammus ammu() {
@@ -63,7 +63,7 @@ public class OmaAlus extends Alus {
     /**
      * Metodi parantaa aluksen aseistusta.
      *
-     * @param uusiAseistus Uusi aseistus, joka alukselle asennetaan
+     * @param uusiAseistus aluksen uusi aseistus
      */
     public void parannaAseistusta(Aseistus uusiAseistus) {
         aseistus = uusiAseistus;
@@ -77,7 +77,7 @@ public class OmaAlus extends Alus {
      * Metodilla voi korjata omaa alusta niin, että sen elämäpisteet
      * lisääntyvät.
      *
-     * @param kuinkaPaljon kuinka monta elämäpistettä alukselle lisätään
+     * @param kuinkaPaljon elämäpisteet, jotka alukselle lisätään
      */
     public void korjaaSuojausta(int kuinkaPaljon) {
         setElamapisteet(getElamapisteet() + kuinkaPaljon);

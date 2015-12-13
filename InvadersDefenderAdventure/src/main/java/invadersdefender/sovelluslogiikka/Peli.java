@@ -15,7 +15,7 @@ import javax.swing.Timer;
  * Luokka pitää huolen pelintilanteesta, pistetilanteesta ja taustakuvan
  * vierityksestä. Pistetilanteen ollessa riittävän suuri voi luokka päivittää
  * pelikentällä olevan oman aluksen aseistusta tai korjata siihen syntyneitä
- * vahinkoja
+ * vahinkoja.
  *
  * Pelissä syntyvät huipputulokset luokka käskee {@link Huipputulokset}-luokan
  * tallentaa tai poistaa.
@@ -69,7 +69,7 @@ public class Peli extends Timer implements ActionListener {
 
     /**
      * Metodi asettaa olion testaus käyttöön, jolloin huipputuloksia ei lueta
-     * eikä tallenneta
+     * eikä tallenneta.
      */
     public void setTEST() {
         huipputulokset = new Huipputulokset();
@@ -109,7 +109,7 @@ public class Peli extends Timer implements ActionListener {
 
     /**
      * Pysäyttää pelin, kun peli on käynnissä ja käynnistää pelin, kun peli on
-     * pysäytetty
+     * pysäytetty.
      */
     public void pysaytaTaiJatkaPysahtynytta() {
         if (tilanne == Pelitilanne.KAYNNISSA) {
@@ -121,7 +121,7 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * Käynnistää Timerin sekä asettaa pelitilanteen käynnissä tilaan
+     * Käynnistää Timerin sekä asettaa pelitilanteen käynnissätilaan.
      */
     @Override
     public void start() {
@@ -134,7 +134,7 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * Nollaa pelikentän ja pisteet sekä kännistä pelin
+     * Nollaa pelikentän ja pisteet sekä käynnistää pelin.
      */
     public void kaynnistaPeliUuudelleen() {
         pelikentta.kaynnistaUudelleen();
@@ -147,7 +147,7 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * Metodi päivittää pelin piirtoalustan, jos sellainen on sille asetettu
+     * Metodi päivittää pelin piirtoalustan, jos sellainen on sille asetettu.
      */
     public void paivitaPelinpiirto() {
         if (piirtoalusta != null) {
@@ -156,11 +156,11 @@ public class Peli extends Timer implements ActionListener {
     }
 
     /**
-     * Metodi antaa piirtoalustalle piirretäväksi räjähdyksen sijainnin Pala
-     * oliona, jolloin piirtoalusta saa helposti koordinaatit sekä räjähdyksen
-     * koon
+     * Metodi antaa piirtoalustalle piirretäväksi räjähdyksen sijainnin
+     * Pala-oliona, jolloin piirtoalusta saa helposti koordinaatit sekä
+     * räjähdyksen koon.
      *
-     * @param sijainti Paikka pelikentällä, johon räjähdys halutaan piirtää
+     * @param sijainti Paikka pelikentällä, johon räjähdys halutaan piirtää.
      */
     public void lisaaRajahdysPiirrettavaksiKohtaan(Pala sijainti) {
         if (piirtoalusta != null) {
@@ -173,7 +173,7 @@ public class Peli extends Timer implements ActionListener {
      * ampua tarvittaessa. Lisäksi metodi liikuttaa ammuksia, vierittää
      * taustakuvaa sekä ilmoittaa piirtoalustalle päivittämään pelin piirron.
      *
-     * @param e
+     * @param e tapahtuma, joka aiheuttaa kutsun
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -200,7 +200,7 @@ public class Peli extends Timer implements ActionListener {
         List<Vihollisolio> viholliset = pelikentta.getViholliset();
         // viimeisen vihollisen indeksi, nimetty lyhyesti
         int i = viholliset.size() - 1;
-        
+
         if (viholliset.isEmpty()) {
             pelikentta.vihollisetTulevatEsille(vihollistenMaara);
         } else if (getDelay() < 80

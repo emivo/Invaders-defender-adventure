@@ -48,24 +48,32 @@ public class Valikko implements ActionListener {
 
         JMenu alavalikko = new JMenu("Upgrade guns");
         alavalikko.setMnemonic(KeyEvent.VK_U);
-        lisaaValikkopainike(alavalikko, "Double Fire     1000 points", KeyEvent.VK_D);
-        lisaaValikkopainike(alavalikko, "Triple Fire     1500 points", KeyEvent.VK_T);
-        aluksenPaivitysvalikko.add(alavalikko);
+        lisaaAlavalikonPainikkeet(alavalikko, aluksenPaivitysvalikko);
 
-        lisaaValikkopainike(aluksenPaivitysvalikko, "Repair spaceship       10 points", KeyEvent.VK_R);
-
-        lisaaValikkopainike(paavalikko, "Start new game", KeyEvent.VK_S);
-
-        lisaaValikkopainike(paavalikko, "Pause", KeyEvent.VK_P);
-
-        lisaaValikkopainike(paavalikko, "Highscores", KeyEvent.VK_H);
-
-        lisaaValikkopainike(paavalikko, "Exit", KeyEvent.VK_E);
+        lisaaValikkopainikkeet(aluksenPaivitysvalikko, paavalikko);
 
         valikkopalkki.add(paavalikko);
         valikkopalkki.add(aluksenPaivitysvalikko);
 
         return valikkopalkki;
+    }
+
+    private void lisaaAlavalikonPainikkeet(JMenu alavalikko, JMenu aluksenPaivitysvalikko) {
+        lisaaValikkopainike(alavalikko, "Double Fire     1000 points", KeyEvent.VK_D);
+        lisaaValikkopainike(alavalikko, "Triple Fire     1500 points", KeyEvent.VK_T);
+        aluksenPaivitysvalikko.add(alavalikko);
+    }
+
+    private void lisaaValikkopainikkeet(JMenu aluksenPaivitysvalikko, JMenu paavalikko) {
+        lisaaValikkopainike(aluksenPaivitysvalikko, "Repair spaceship       10 points", KeyEvent.VK_R);
+        
+        lisaaValikkopainike(paavalikko, "Start new game", KeyEvent.VK_S);
+        
+        lisaaValikkopainike(paavalikko, "Pause", KeyEvent.VK_P);
+        
+        lisaaValikkopainike(paavalikko, "Highscores", KeyEvent.VK_H);
+        
+        lisaaValikkopainike(paavalikko, "Exit", KeyEvent.VK_E);
     }
 
     private void lisaaValikkopainike(JMenu paavalikko, String nimi, int ke) {
@@ -81,31 +89,46 @@ public class Valikko implements ActionListener {
                 peli.kaynnistaPeliUuudelleen();
                 break;
             case "Pause":
-                peli.pysaytaTaiJatkaPysahtynytta();
-                peli.paivitaPelinpiirto();
+                pause();
                 break;
             case "Exit":
-                peli.tallennaTulokset();
-                ikkuna.setVisible(false);
-                ikkuna.dispose();
-                peli.stop();
+                exitPainikkeenTapahtuma();
                 break;
             case "Highscores":
                 peli.asetaHuipputuloistenKatselutilaan();
                 break;
             case "Double Fire     1000 points":
-                peli.parannaAluksenAseistusta(Aseistus.TUPLA);
-                peli.paivitaPelinpiirto();
+                parannaAseistusta(Aseistus.TUPLA);
                 break;
             case "Triple Fire     1500 points":
-                peli.parannaAluksenAseistusta(Aseistus.TRIPLA);
-                peli.paivitaPelinpiirto();
+                parannaAseistusta(Aseistus.TRIPLA);
                 break;
             case "Repair spaceship       10 points":
-                peli.korjaaOmaaAlusta();
-                peli.paivitaPelinpiirto();
+                korjaaOmaaAlusta();
                 break;
         }
+    }
+
+    private void pause() {
+        peli.pysaytaTaiJatkaPysahtynytta();
+        peli.paivitaPelinpiirto();
+    }
+
+    private void korjaaOmaaAlusta() {
+        peli.korjaaOmaaAlusta();
+        peli.paivitaPelinpiirto();
+    }
+
+    private void parannaAseistusta(Aseistus aseistus) {
+        peli.parannaAluksenAseistusta(aseistus);
+        peli.paivitaPelinpiirto();
+    }
+
+    private void exitPainikkeenTapahtuma() {
+        peli.tallennaTulokset();
+        ikkuna.setVisible(false);
+        ikkuna.dispose();
+        peli.stop();
     }
 
 }
