@@ -2,6 +2,7 @@ package invadersdefender.graafinenkayttoliittyma;
 
 import invadersdefender.sovelluslogiikka.Aseistus;
 import invadersdefender.sovelluslogiikka.Peli;
+import invadersdefender.sovelluslogiikka.Pelitilanne;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -66,13 +67,13 @@ public class Valikko implements ActionListener {
 
     private void lisaaValikkopainikkeet(JMenu aluksenPaivitysvalikko, JMenu paavalikko) {
         lisaaValikkopainike(aluksenPaivitysvalikko, "Repair spaceship       10 points", KeyEvent.VK_R);
-        
+
         lisaaValikkopainike(paavalikko, "Start new game", KeyEvent.VK_S);
-        
+
         lisaaValikkopainike(paavalikko, "Pause", KeyEvent.VK_P);
-        
+
         lisaaValikkopainike(paavalikko, "Highscores", KeyEvent.VK_H);
-        
+
         lisaaValikkopainike(paavalikko, "Exit", KeyEvent.VK_E);
     }
 
@@ -115,13 +116,19 @@ public class Valikko implements ActionListener {
     }
 
     private void korjaaOmaaAlusta() {
-        peli.korjaaOmaaAlusta();
-        peli.paivitaPelinpiirto();
+        if (peli.getTilanne() == Pelitilanne.KAYNNISSA
+                || peli.getTilanne() == Pelitilanne.PYSAYTETTY) {
+            peli.korjaaOmaaAlusta();
+            peli.paivitaPelinpiirto();
+        }
     }
 
     private void parannaAseistusta(Aseistus aseistus) {
-        peli.parannaAluksenAseistusta(aseistus);
-        peli.paivitaPelinpiirto();
+        if (peli.getTilanne() == Pelitilanne.KAYNNISSA
+                || peli.getTilanne() == Pelitilanne.PYSAYTETTY) {
+            peli.parannaAluksenAseistusta(aseistus);
+            peli.paivitaPelinpiirto();
+        }
     }
 
     private void exitPainikkeenTapahtuma() {
