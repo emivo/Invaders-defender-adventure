@@ -132,7 +132,24 @@ public class PeliTest {
 
     @Test
     public void parannaAlustaToimiiNiinKuinKuuluu() {
+        parannaAlustaToimiiOikeassaPelitilanteessa(Pelitilanne.KAYNNISSA);
+        parannaAlustaToimiiOikeassaPelitilanteessa(Pelitilanne.PYSAYTETTY);
+        
+        aseistusEiMuutuVaarassaTilassa(Pelitilanne.ALKURUUTU);
+        aseistusEiMuutuVaarassaTilassa(Pelitilanne.LOPPU);
+        aseistusEiMuutuVaarassaTilassa(Pelitilanne.TULOKSET);
+    }
 
+    private void aseistusEiMuutuVaarassaTilassa(Pelitilanne tilanne) {
+        lisaaPisteitaTarvittavaMaara(1500);
+        peli.setTilanne(tilanne);
+        aseistusEiMuutu(Aseistus.TUPLA, Aseistus.NORMAALI);
+        aseistusEiMuutu(Aseistus.TRIPLA, Aseistus.NORMAALI);
+        setUp();
+    }
+
+    private void parannaAlustaToimiiOikeassaPelitilanteessa(Pelitilanne tilanne) {
+        peli.setTilanne(tilanne);
         aseistusEiMuutu(Aseistus.TUPLA, Aseistus.NORMAALI);
         aseistusEiMuutu(Aseistus.TRIPLA, Aseistus.NORMAALI);
         lisaaPisteitaTarvittavaMaara(1000);
@@ -145,13 +162,23 @@ public class PeliTest {
         assertEquals(0, peli.getPisteet());
         aseistusEiMuutu(Aseistus.NORMAALI, Aseistus.TRIPLA);
         aseistusEiMuutu(Aseistus.TUPLA, Aseistus.TRIPLA);
-
+        setUp();
     }
 
     @Test
     public void omaaAlustaVoiKorjataJaMutteiLiikaa() {
+        korjaaminenOnnistuuKunPitaakin(Pelitilanne.KAYNNISSA);
+        korjaaminenOnnistuuKunPitaakin(Pelitilanne.PYSAYTETTY);
+        alustaEiVoiKorjataVaarassaTilassa(Pelitilanne.LOPPU);
+        alustaEiVoiKorjataVaarassaTilassa(Pelitilanne.TULOKSET);
+        alustaEiVoiKorjataVaarassaTilassa(Pelitilanne.ALKURUUTU);
+    }
+
+    private void korjaaminenOnnistuuKunPitaakin(Pelitilanne tilanne) {
+        peli.setTilanne(tilanne);
         peli.getPelikentta().getOmaAlus().setElamapisteet(10);
         int pisteet = peli.getPisteet();
+
         peli.korjaaOmaaAlusta();
         assertEquals(pisteet, peli.getPisteet());
         assertEquals(10, peli.getPelikentta().getOmaAlus().getElamapisteet());
@@ -169,6 +196,15 @@ public class PeliTest {
         }
         assertEquals(pisteet, peli.getPisteet());
         assertEquals(100, peli.getPelikentta().getOmaAlus().getElamapisteet());
+        setUp();
+    }
+
+    private void alustaEiVoiKorjataVaarassaTilassa(Pelitilanne tilanne) {
+        peli.getPelikentta().getOmaAlus().setElamapisteet(10);
+        peli.setTilanne(tilanne);
+        peli.korjaaOmaaAlusta();
+        assertEquals(10, peli.getPelikentta().getOmaAlus().getElamapisteet());
+        setUp();
     }
 
     private void lisaaPisteitaTarvittavaMaara(int tarvittavatPisteet) {
@@ -196,12 +232,12 @@ public class PeliTest {
         assertEquals(100, peli.getInitialDelay());
         assertEquals(100, peli.getDelay());
     }
-    
+
     @Test
     public void peliKuunteleeItseaan() {
         peli.getActionListeners()[0].equals(peli);
     }
-    
+
     @Test
     public void huipputuloksetGetteri() {
         assertTrue(peli.getHuipputulokset() != null);

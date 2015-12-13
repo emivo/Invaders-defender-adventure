@@ -116,19 +116,13 @@ public class Valikko implements ActionListener {
     }
 
     private void korjaaOmaaAlusta() {
-        if (peli.getTilanne() == Pelitilanne.KAYNNISSA
-                || peli.getTilanne() == Pelitilanne.PYSAYTETTY) {
-            peli.korjaaOmaaAlusta();
-            peli.paivitaPelinpiirto();
-        }
+        peli.korjaaOmaaAlusta();
+        peli.paivitaPelinpiirto();
     }
 
     private void parannaAseistusta(Aseistus aseistus) {
-        if (peli.getTilanne() == Pelitilanne.KAYNNISSA
-                || peli.getTilanne() == Pelitilanne.PYSAYTETTY) {
-            peli.parannaAluksenAseistusta(aseistus);
-            peli.paivitaPelinpiirto();
-        }
+        peli.parannaAluksenAseistusta(aseistus);
+        peli.paivitaPelinpiirto();
     }
 
     private void exitPainikkeenTapahtuma() {

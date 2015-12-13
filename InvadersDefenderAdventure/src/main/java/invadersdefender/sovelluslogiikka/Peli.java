@@ -292,16 +292,19 @@ public class Peli extends Timer implements ActionListener {
      * @param aseistus uusi aseistus, joka omalle alukselle asetetaan
      */
     public void parannaAluksenAseistusta(Aseistus aseistus) {
-        int kuinkaPaljonPisteitaMaksaa = 0;
-        if (aseistus == Aseistus.TUPLA) {
-            kuinkaPaljonPisteitaMaksaa = 1000;
-        } else if (aseistus == Aseistus.TRIPLA) {
-            kuinkaPaljonPisteitaMaksaa = 1500;
-        }
+        if (getTilanne() == Pelitilanne.KAYNNISSA
+                || getTilanne() == Pelitilanne.PYSAYTETTY) {
+            int kuinkaPaljonPisteitaMaksaa = 0;
+            if (aseistus == Aseistus.TUPLA) {
+                kuinkaPaljonPisteitaMaksaa = 1000;
+            } else if (aseistus == Aseistus.TRIPLA) {
+                kuinkaPaljonPisteitaMaksaa = 1500;
+            }
 
-        if (pisteet - kuinkaPaljonPisteitaMaksaa >= 0 && pelikentta.getOmaAlus().getAseistus().compareTo(aseistus) < 0) {
-            pelikentta.getOmaAlus().parannaAseistusta(aseistus);
-            pisteet -= kuinkaPaljonPisteitaMaksaa;
+            if (pisteet - kuinkaPaljonPisteitaMaksaa >= 0 && pelikentta.getOmaAlus().getAseistus().compareTo(aseistus) < 0) {
+                pelikentta.getOmaAlus().parannaAseistusta(aseistus);
+                pisteet -= kuinkaPaljonPisteitaMaksaa;
+            }
         }
     }
 
@@ -310,9 +313,12 @@ public class Peli extends Timer implements ActionListener {
      *
      */
     public void korjaaOmaaAlusta() {
-        if (pisteet - 10 > 0 && pelikentta.getOmaAlus().getElamapisteet() < 100) {
-            pelikentta.getOmaAlus().korjaaSuojausta(10);
-            pisteet -= 10;
+        if (getTilanne() == Pelitilanne.KAYNNISSA
+                || getTilanne() == Pelitilanne.PYSAYTETTY) {
+            if (pisteet - 10 > 0 && pelikentta.getOmaAlus().getElamapisteet() < 100) {
+                pelikentta.getOmaAlus().korjaaSuojausta(10);
+                pisteet -= 10;
+            }
         }
     }
 
