@@ -23,5 +23,6 @@
 |9.12.| Javadocin tekemistä, rakenteen kuvasta ja jotain saatoin jopa koodissa siivota| 3 tuntia |
 |10.12.| Rakenteen kuvausta ja ohjelman testausta käsin| 1,5 tuntia|
 |12.12.| Refactorointia sekä javadoc| muutama tunti|
+|13.12.| Viimeistely| ainakin 3 tuntia|
 
 
