@@ -56,7 +56,6 @@ public class AlusTest {
         return alus.sijainti().equals(oikeaSijantipalalle);
     }
 
-    // Testit
     @Test
     public void alusPysyyPaikkoillaan() {
         assertEquals("Alus liikkuu, vaikkei pitäisi", new Pala(1, 1), alus.sijainti());
@@ -84,8 +83,17 @@ public class AlusTest {
     
     @Test
     public void osuuLiikkuvaanToimii() {
-        Ammus ammus = new Ammus(1, 1, Suunta.ALAS);
-        assertTrue("Ammus osuu alukseen", alus.osuukoAlukseen(ammus));
+        int x = alus.getX();
+        int y = alus.getY();
+        int koko = alus.getKoko();
+        Ammus ammus;
+        for (int i = 0; i < koko; i++) {
+            for (int j = 0; j < koko; j++) {
+                ammus = new Ammus(x + i, y + j, Suunta.ALAS);
+                assertTrue("Ammus osuu alukseen", alus.osuukoAlukseen(ammus));
+            }
+        }
+        
         Alus toinenAlus = new OmaAlus(alus.getX(), alus.getY(), alus.getKoko());
         // samassa kohdassa
         assertTrue(alus.osuukoAlukseen(toinenAlus));

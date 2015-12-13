@@ -327,30 +327,38 @@ public class Pelikentta {
      */
     public void vihollisetLiiku() {
         if (!viholliset.isEmpty()) {
-            boolean onkoViimeinenVihollinenKentalla = viholliset.get(viholliset.size() - 1).getY() >= -1 * ALUKSIENKOKO + 1;
-            Iterator<Vihollisolio> iteraattori = viholliset.iterator();
-            int edellinenY = pelikentanKorkeus;
-            while (iteraattori.hasNext()) {
-                Vihollisolio vihollinen = iteraattori.next();
-                if (onkoViimeinenVihollinenKentalla) {
-                    if (edellinenY < pelikentanKorkeus && edellinenY - vihollinen.getY() > ALUKSIENKOKO + 1) {
-                        vihollinen.liiku(Suunta.ALAS);
-                    } else {
-                        valitseVihollistenSuunta(vihollinen);
-                    }
-                } else {
-                    vihollinen.liiku(Suunta.ALAS);
-                }
-                edellinenY = vihollinen.getY();
-                if (vihollinen.getY() > pelikentanKorkeus) {
-                    iteraattori.remove();
-                }
-            }
+            liikutaListassaOleviaVihollisia();
 
             pomoLiiku();
 
             osuvatkoAmmukset();
             osuvatkoVihollisetOmaanAlukseen();
+        }
+    }
+
+    private void liikutaListassaOleviaVihollisia() {
+        boolean onkoViimeinenVihollinenKentalla = viholliset.get(viholliset.size() - 1).getY() >= -1 * ALUKSIENKOKO + 1;
+        Iterator<Vihollisolio> iteraattori = viholliset.iterator();
+        int edellinenY = pelikentanKorkeus;
+        while (iteraattori.hasNext()) {
+            Vihollisolio vihollinen = iteraattori.next();
+            liikutaYhtaVihollista(onkoViimeinenVihollinenKentalla, edellinenY, vihollinen);
+            edellinenY = vihollinen.getY();
+            if (vihollinen.getY() > pelikentanKorkeus) {
+                iteraattori.remove();
+            }
+        }
+    }
+
+    private void liikutaYhtaVihollista(boolean onkoViimeinenVihollinenKentalla, int edellinenY, Vihollisolio vihollinen) {
+        if (onkoViimeinenVihollinenKentalla) {
+            if (edellinenY < pelikentanKorkeus && edellinenY - vihollinen.getY() > ALUKSIENKOKO + 1) {
+                vihollinen.liiku(Suunta.ALAS);
+            } else {
+                valitseVihollistenSuunta(vihollinen);
+            }
+        } else {
+            vihollinen.liiku(Suunta.ALAS);
         }
     }
 

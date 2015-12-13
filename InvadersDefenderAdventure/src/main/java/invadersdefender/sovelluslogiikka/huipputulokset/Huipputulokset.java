@@ -33,8 +33,8 @@ public class Huipputulokset {
      */
     public boolean lataaTulokset() {
         try {
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("huipputulokset.data"))) {
-                tulokset = (ArrayList<Pelaaja>) ois.readObject();
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("huipputulokset.data"))) {
+                tulokset = (ArrayList<Pelaaja>) objectInputStream.readObject();
                 return true;
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -90,10 +90,11 @@ public class Huipputulokset {
      */
     public void tallennaTulokset() {
         try {
-            try (FileOutputStream fos = new FileOutputStream("huipputulokset.data"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-                oos.writeObject(tulokset);
-                oos.close();
-                fos.close();
+            try (FileOutputStream fileOutputStream = new FileOutputStream("huipputulokset.data"); 
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+                objectOutputStream.writeObject(tulokset);
+                objectOutputStream.close();
+                fileOutputStream.close();
             }
         } catch (Exception e) {
             // tänne ei pitäisi voida päätyä
